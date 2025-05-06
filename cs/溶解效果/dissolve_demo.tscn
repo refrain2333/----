@@ -1,0 +1,251 @@
+[gd_scene load_steps=3 format=3 uid="uid://xfysagam0act"]
+
+[ext_resource type="Script" uid="uid://bls2agyoub0kw" path="res://cs/溶解效果/dissolve_demo.gd" id="1_yepqu"]
+[ext_resource type="Texture2D" uid="uid://ca3pbuhthj5ea" path="res://assets/images/pokers/1.jpg" id="2_fo78l"]
+
+[node name="DissolveDemo" type="Node2D"]
+script = ExtResource("1_yepqu")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.478449, 0.612472, 0.874536, 1)
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 1900.0
+offset_bottom = 1060.0
+theme_override_constants/separation = 15
+
+[node name="Title" type="Label" parent="MainContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "溶解效果展示"
+horizontal_alignment = 1
+
+[node name="SpritesContainer" type="GridContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 6
+
+[node name="Sprite1" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite2" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite3" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite4" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite5" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite6" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite7" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite8" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite9" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite10" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite11" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite12" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite13" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite14" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sprite15" type="TextureRect" parent="MainContainer/SpritesContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_fo78l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Row1" type="HBoxContainer" parent="MainContainer/ButtonsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="CircleButton" type="Button" parent="MainContainer/ButtonsContainer/Row1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "圆形溶解"
+
+[node name="RadialButton" type="Button" parent="MainContainer/ButtonsContainer/Row1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "径向溶解"
+
+[node name="SquaresButton" type="Button" parent="MainContainer/ButtonsContainer/Row1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "方块溶解"
+
+[node name="ScribblesButton" type="Button" parent="MainContainer/ButtonsContainer/Row1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "涂鸦溶解"
+
+[node name="Row2" type="HBoxContainer" parent="MainContainer/ButtonsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="HorizontalButton" type="Button" parent="MainContainer/ButtonsContainer/Row2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "水平溶解"
+
+[node name="VerticalButton" type="Button" parent="MainContainer/ButtonsContainer/Row2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "垂直溶解"
+
+[node name="DiagonalButton" type="Button" parent="MainContainer/ButtonsContainer/Row2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "对角溶解"
+
+[node name="CurtainsButton" type="Button" parent="MainContainer/ButtonsContainer/Row2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "幕布溶解"
+
+[node name="Row3" type="HBoxContainer" parent="MainContainer/ButtonsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="LiquidButton" type="Button" parent="MainContainer/ButtonsContainer/Row3"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "液体溶解"
+
+[node name="RippleButton" type="Button" parent="MainContainer/ButtonsContainer/Row3"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "波纹溶解"
+
+[node name="NoiseButton" type="Button" parent="MainContainer/ButtonsContainer/Row3"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "噪声溶解"
+
+[node name="HeartButton" type="Button" parent="MainContainer/ButtonsContainer/Row3"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "心形溶解"
+
+[node name="Row4" type="HBoxContainer" parent="MainContainer/ButtonsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="SpiralButton" type="Button" parent="MainContainer/ButtonsContainer/Row4"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "螺旋溶解"
+
+[node name="TwistButton" type="Button" parent="MainContainer/ButtonsContainer/Row4"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "扭曲溶解"
+
+[node name="FireButton" type="Button" parent="MainContainer/ButtonsContainer/Row4"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "火焰溶解"
+
+[node name="BottomPadding" type="Control" parent="MainContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2

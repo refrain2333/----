@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://c60ov5um21hni"]
+
+[ext_resource type="Script" uid="uid://cfty6aiad2oon" path="res://cs/溶解效果/创建过程/generate_spiral.gd" id="1_spiral"]
+
+[node name="SpiralGenerator" type="Node"]
+script = ExtResource("1_spiral")
+
+[node name="Preview" type="TextureRect" parent="."]
+offset_right = 256.0
+offset_bottom = 256.0
+expand_mode = 1
+stretch_mode = 5

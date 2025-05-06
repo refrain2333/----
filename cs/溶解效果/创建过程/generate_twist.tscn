@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://q1mpexdv2hou"]
+
+[ext_resource type="Script" uid="uid://b8d6ua6rgenji" path="res://cs/溶解效果/创建过程/generate_twist.gd" id="1_twist"]
+
+[node name="TwistGenerator" type="Node"]
+script = ExtResource("1_twist")
+
+[node name="Preview" type="TextureRect" parent="."]
+offset_right = 256.0
+offset_bottom = 256.0
+expand_mode = 1
+stretch_mode = 5

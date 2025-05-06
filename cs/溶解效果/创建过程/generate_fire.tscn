@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn4qbyhi3d4n0"]
+
+[ext_resource type="Script" uid="uid://obkexplg8dsw" path="res://cs/溶解效果/创建过程/generate_fire.gd" id="1_fire"]
+
+[node name="FireGenerator" type="Node"]
+script = ExtResource("1_fire")
+
+[node name="Preview" type="TextureRect" parent="."]
+offset_right = 256.0
+offset_bottom = 256.0
+expand_mode = 1
+stretch_mode = 5
