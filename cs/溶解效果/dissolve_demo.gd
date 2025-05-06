@@ -70,7 +70,7 @@ func setup_all_sprites():
 
 func setup_sprite_material(sprite: TextureRect):
 	var shader_material = ShaderMaterial.new()
-	shader_material.shader = preload("res://cs/溶解效果/着色器/Dissolve2d.gdshader")
+	shader_material.shader = preload("res://cs/dissolve_shader.gdshader")
 	shader_material.set_shader_parameter("dissolve_amount", 0.0)
 	shader_material.set_shader_parameter("fade_color", Color(1, 1, 1, 1))
 	sprite.material = shader_material

@@ -1,77 +1,48 @@
-[gd_scene load_steps=8 format=3 uid="uid://cb0pbjicpt426"]
+[gd_scene load_steps=6 format=3 uid="uid://cb0pbjicpt426"]
 
 [ext_resource type="Script" uid="uid://dqoqv35tnbamn" path="res://cs/主场景/MainGame.gd" id="1_dxm15"]
-[ext_resource type="Texture2D" uid="uid://dnee3ydo7wgrh" path="res://assets/images/background/image_fx_看图王.png" id="2_image_fx"]
+[ext_resource type="Texture2D" uid="uid://dnee3ydo7wgrh" path="res://assets/images/background/image_fx_看图王.png" id="2_yx6wj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlmvk"]
-bg_color = Color(0.0666667, 0.101961, 0.227451, 0.784314)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.317647, 0.592157, 0.858824, 0.490196)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e00f1"]
+bg_color = Color(0.0980392, 0.133333, 0.188235, 0.901961)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.290196, 0.490196, 0.6, 0.498039)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.439216)
+shadow_color = Color(0, 0, 0, 0.384314)
 shadow_size = 4
+shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rhvyt"]
-bg_color = Color(0.0901961, 0.184314, 0.345098, 0.862745)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f15s3"]
+bg_color = Color(0.129412, 0.223529, 0.243137, 0.752941)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.258824, 0.415686, 0.662745, 0.686275)
+border_color = Color(0.329412, 0.584314, 0.635294, 0.392157)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.270588)
-shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.196078)
+shadow_size = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gbs"]
-bg_color = Color(0.137255, 0.254902, 0.439216, 0.862745)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ijp33"]
+bg_color = Color(0.105882, 0.203922, 0.301961, 0.784314)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.427451, 0.670588, 0.909804, 0.686275)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.270588)
-shadow_size = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ry6tg"]
-bg_color = Color(0.0627451, 0.121569, 0.25098, 0.980392)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.290196, 0.478431, 0.776471, 0.686275)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.270588)
-shadow_size = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qux8n"]
-bg_color = Color(0.0901961, 0.184314, 0.345098, 0.862745)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.317647, 0.592157, 0.858824, 0.490196)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.270588)
-shadow_size = 3
+border_color = Color(0.286275, 0.52549, 0.764706, 0.501961)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="MainGame" type="Node2D"]
 script = ExtResource("1_dxm15")
@@ -79,168 +50,9 @@ script = ExtResource("1_dxm15")
 [node name="Background" type="TextureRect" parent="."]
 offset_right = 1920.0
 offset_bottom = 1080.0
-texture = ExtResource("2_image_fx")
+texture = ExtResource("2_yx6wj")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="GridPattern" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HorizontalLines" type="Control" parent="GridPattern"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Line1" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 120.0
-offset_right = 1920.0
-offset_bottom = 121.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line2" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 240.0
-offset_right = 1920.0
-offset_bottom = 241.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line3" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 360.0
-offset_right = 1920.0
-offset_bottom = 361.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line4" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 480.0
-offset_right = 1920.0
-offset_bottom = 481.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line5" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 600.0
-offset_right = 1920.0
-offset_bottom = 601.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line6" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 720.0
-offset_right = 1920.0
-offset_bottom = 721.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line7" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 840.0
-offset_right = 1920.0
-offset_bottom = 841.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line8" type="ColorRect" parent="GridPattern/HorizontalLines"]
-layout_mode = 0
-offset_top = 960.0
-offset_right = 1920.0
-offset_bottom = 961.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="VerticalLines" type="Control" parent="GridPattern"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Line1" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 161.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line2" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 320.0
-offset_right = 321.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line3" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 480.0
-offset_right = 481.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line4" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 640.0
-offset_right = 641.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line5" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 800.0
-offset_right = 801.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line6" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 960.0
-offset_right = 961.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line7" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 1120.0
-offset_right = 1121.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line8" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 1280.0
-offset_right = 1281.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line9" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 1440.0
-offset_right = 1441.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line10" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 1600.0
-offset_right = 1601.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="Line11" type="ColorRect" parent="GridPattern/VerticalLines"]
-layout_mode = 0
-offset_left = 1760.0
-offset_right = 1761.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.270588, 0.427451, 0.121569)
-
-[node name="PatternOverlay" type="ColorRect" parent="."]
-modulate = Color(1, 1, 1, 0.0980392)
-offset_right = 1920.0
-offset_bottom = 1080.0
-color = Color(0.164706, 0.305882, 0.556863, 0.0980392)
 
 [node name="UIContainer" type="Control" parent="."]
 layout_mode = 3
@@ -256,27 +68,27 @@ size_flags_vertical = 3
 layout_mode = 0
 offset_left = 20.0
 offset_top = 20.0
-offset_right = 300.0
+offset_right = 320.0
 offset_bottom = 1060.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_e00f1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UIContainer/LeftPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -15.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 12
 
 [node name="TitlePanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
 
 [node name="TitleLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/TitlePanel"]
 layout_mode = 1
@@ -285,350 +97,260 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.501961)
+theme_override_colors/font_color = Color(0, 0.831373, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.247059, 0.341176, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 34
-text = "智牌奇旅"
+theme_override_constants/shadow_outline_size = 0
+theme_override_font_sizes/font_size = 30
+text = "小盲注"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CharacterPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="CharacterIcon" type="ColorRect" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel/HBoxContainer"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-color = Color(0.317647, 0.372549, 0.886275, 1)
-
-[node name="Mask" type="ColorRect" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel/HBoxContainer/CharacterIcon"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -25.0
-offset_top = -25.0
-offset_right = 25.0
-offset_bottom = 25.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.564706, 0.6, 0.972549, 1)
-
-[node name="CharacterInfo" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CharacterName" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel/HBoxContainer/CharacterInfo"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.501961)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "奥术探索者"
-
-[node name="CharacterLevel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/CharacterPanel/HBoxContainer/CharacterInfo"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
-text = "入门层级"
-
 [node name="BlindPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 170)
+custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
 
-[node name="TitleLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
+[node name="BlindImage" type="TextureRect" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
 layout_mode = 0
-offset_left = 15.0
+offset_left = 20.0
 offset_top = 15.0
-offset_right = 250.0
-offset_bottom = 45.0
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+offset_right = 100.0
+offset_bottom = 95.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TargetScoreContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 15.0
+offset_right = 290.0
+offset_bottom = 100.0
+
+[node name="TargetScoreLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel/TargetScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.658824, 0.141176, 1)
+theme_override_colors/font_shadow_color = Color(0.431373, 0.141176, 0, 0.603922)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "目标学识魔力"
+theme_override_font_sizes/font_size = 24
+text = "至少得分"
 
-[node name="TargetScore" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 50.0
-offset_right = 250.0
-offset_bottom = 125.0
-theme_override_colors/font_color = Color(0.694118, 0.756863, 0.988235, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+[node name="TargetScore" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel/TargetScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.337255, 0.337255, 1)
+theme_override_colors/font_shadow_color = Color(0.411765, 0, 0, 0.603922)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 60
+theme_override_font_sizes/font_size = 42
 text = "300"
+horizontal_alignment = 1
 
-[node name="WaitingLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
+[node name="NoRewardLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BlindPanel"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -35.0
-offset_bottom = -5.0
+offset_top = -30.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_color = Color(0.517647, 0.552941, 0.639216, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.239216)
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
-text = "待解锁公理"
+theme_override_font_sizes/font_size = 20
+text = "无奖励"
 horizontal_alignment = 1
 
 [node name="ScorePanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 90)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
 
-[node name="TitleContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel"]
+[node name="RoundScoreLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel"]
 layout_mode = 0
-offset_left = 15.0
-offset_top = 10.0
-offset_right = 250.0
+offset_left = 20.0
+offset_top = 5.0
+offset_right = 100.0
 offset_bottom = 40.0
-
-[node name="CurrentLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel/TitleContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "当前魔力"
-
-[node name="ValueContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel"]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 40.0
-offset_right = 250.0
-offset_bottom = 80.0
-
-[node name="ScoreLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel/ValueContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.427451, 0.596078, 0.933333, 1)
+theme_override_colors/font_color = Color(0.815686, 0.815686, 0.815686, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 30
-text = "0"
-vertical_alignment = 1
+theme_override_font_sizes/font_size = 22
+text = "回合分数"
 
-[node name="MagicCrystalIcon" type="ColorRect" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel/ValueContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-size_flags_vertical = 4
-color = Color(0.427451, 0.596078, 0.933333, 1)
-
-[node name="MagicPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 90)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel"]
+[node name="ScoreLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/ScorePanel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 14
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.5
+offset_top = -23.0
+offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="MagicContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MagicLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer/MagicContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "施法"
-horizontal_alignment = 1
-
-[node name="MagicCountLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer/MagicContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.756863, 0.886275, 0.968627, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 34
-text = "5"
-horizontal_alignment = 1
-
-[node name="Separator" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.239216)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 34
-text = "/"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TheoryContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TheoryLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer/TheoryContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "理论摆置"
-horizontal_alignment = 1
-
-[node name="TheoryCountLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MagicPanel/HBoxContainer/TheoryContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.886275, 0.811765, 0.34902, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 34
-text = "3"
+theme_override_colors/font_color = Color(1, 0.439216, 0.439216, 1)
+theme_override_colors/font_shadow_color = Color(0.384314, 0, 0, 0.588235)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
 horizontal_alignment = 1
 
 [node name="PlaysPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 5.0
-offset_right = -15.0
-offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="StudyContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer"]
+[node name="PlayContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="StudyLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/StudyContainer"]
+[node name="PlayLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/PlayContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
-text = "学业试炼"
-horizontal_alignment = 1
-
-[node name="StudyLevelLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/StudyContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.756863, 0.886275, 0.968627, 1)
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
+text = "出牌"
+horizontal_alignment = 1
+
+[node name="PlaysLeftLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/PlayContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.894118, 0.345098, 1)
+theme_override_colors/font_shadow_color = Color(0.384314, 0.266667, 0, 0.588235)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 28
+text = "5"
+horizontal_alignment = 1
+
+[node name="Separator" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_font_sizes/font_size = 28
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscardContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DiscardLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/DiscardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 22
+text = "弃牌"
+horizontal_alignment = 1
+
+[node name="HandsLeftLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/DiscardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.396078, 0.741176, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.141176, 0.384314, 0.588235)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 28
+text = "3"
+horizontal_alignment = 1
+
+[node name="BetPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/BetPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BetLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BetPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 22
+text = "底注"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BetValue" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/BetPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.894118, 0.345098, 1)
+theme_override_colors/font_shadow_color = Color(0.384314, 0.266667, 0, 0.588235)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 28
 text = "1 / 8"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TheoryLevelContainer" type="VBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer"]
+[node name="MoneyPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
 
-[node name="TheoryLevelLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/TheoryLevelContainer"]
+[node name="MoneyContainer" type="HBoxContainer" parent="UIContainer/LeftPanel/VBoxContainer/MoneyPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="CoinImage" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MoneyPanel/MoneyContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_colors/font_color = Color(1, 0.894118, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.384314, 0.266667, 0, 0.588235)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
-text = "理论层级"
+theme_override_font_sizes/font_size = 32
+text = "$"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="LevelNumberLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/PlaysPanel/HBoxContainer/TheoryLevelContainer"]
+[node name="MoneyLabel" type="Label" parent="UIContainer/LeftPanel/VBoxContainer/MoneyPanel/MoneyContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.886275, 0.811765, 0.34902, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+theme_override_colors/font_color = Color(1, 0.913725, 0.321569, 1)
+theme_override_colors/font_shadow_color = Color(0.384314, 0.266667, 0, 0.588235)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 32
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OptionsButton" type="Button" parent="UIContainer/LeftPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.815686, 0.815686, 0.815686, 1)
+theme_override_colors/font_focus_color = Color(0.815686, 0.815686, 0.815686, 1)
+theme_override_colors/font_pressed_color = Color(0.580392, 0.690196, 0.784314, 1)
 theme_override_font_sizes/font_size = 24
-text = "1"
-horizontal_alignment = 1
-
-[node name="ButtonPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
-
-[node name="ManageButton" type="Button" parent="UIContainer/LeftPanel/VBoxContainer/ButtonPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 10.0
-offset_right = -15.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_hover_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
-theme_override_colors/font_focus_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.501961, 0.741176, 1, 1)
-theme_override_font_sizes/font_size = 22
-text = "奥术公理"
-
-[node name="InfoButtonPanel" type="Panel" parent="UIContainer/LeftPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rhvyt")
-
-[node name="InfoButton" type="Button" parent="UIContainer/LeftPanel/VBoxContainer/InfoButtonPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 10.0
-offset_right = -15.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_hover_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
-theme_override_colors/font_focus_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.501961, 0.741176, 1, 1)
-theme_override_font_sizes/font_size = 22
-text = "领域信息"
+text = "选项"
 
 [node name="PlayArea" type="Control" parent="UIContainer"]
 layout_mode = 1
@@ -638,110 +360,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CenterDecoration" type="ColorRect" parent="UIContainer/PlayArea"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -400.0
-offset_right = 400.0
-offset_bottom = 400.0
-grow_horizontal = 2
-grow_vertical = 2
-rotation = 0.785398
-color = Color(0.0901961, 0.180392, 0.368627, 0.0784314)
-
-[node name="InnerDecoration" type="ColorRect" parent="UIContainer/PlayArea/CenterDecoration"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -300.0
-offset_right = 300.0
-offset_bottom = 300.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.164706, 0.305882, 0.556863, 0.0588235)
-
-[node name="DecorationLine1" type="ColorRect" parent="UIContainer/PlayArea"]
-layout_mode = 0
-offset_left = 315.0
-offset_top = 220.0
-offset_right = 1605.0
-offset_bottom = 222.0
-color = Color(0.164706, 0.305882, 0.556863, 0.317647)
-
-[node name="DecorationLine2" type="ColorRect" parent="UIContainer/PlayArea"]
-layout_mode = 0
-offset_left = 315.0
-offset_top = 880.0
-offset_right = 1605.0
-offset_bottom = 882.0
-color = Color(0.164706, 0.305882, 0.556863, 0.317647)
-
-[node name="DecorationLine3" type="ColorRect" parent="UIContainer/PlayArea"]
-layout_mode = 0
-offset_left = 318.0
-offset_top = 220.0
-offset_right = 320.0
-offset_bottom = 880.0
-color = Color(0.164706, 0.305882, 0.556863, 0.317647)
-
-[node name="DecorationLine4" type="ColorRect" parent="UIContainer/PlayArea"]
-layout_mode = 0
-offset_left = 1600.0
-offset_top = 220.0
-offset_right = 1602.0
-offset_bottom = 880.0
-color = Color(0.164706, 0.305882, 0.556863, 0.317647)
-
-[node name="HeaderPanel" type="Panel" parent="UIContainer/PlayArea"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 320.0
-offset_top = 160.0
-offset_right = -180.0
-offset_bottom = 200.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/PlayArea/HeaderPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 2.0
-offset_right = -10.0
-offset_bottom = -2.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="IconRect" type="ColorRect" parent="UIContainer/PlayArea/HeaderPanel/HBoxContainer"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_vertical = 4
-color = Color(0.317647, 0.372549, 0.886275, 1)
-
-[node name="HeaderLabel" type="Label" parent="UIContainer/PlayArea/HeaderPanel/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.501961)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "奥术演算台"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="CardDisplayArea" type="Panel" parent="UIContainer/PlayArea"]
 layout_mode = 1
 anchors_preset = 8
@@ -749,561 +367,199 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -600.0
-offset_top = -280.0
-offset_right = 600.0
-offset_bottom = -80.0
+offset_left = -400.0
+offset_top = -200.0
+offset_right = 400.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ijp33")
 
-[node name="CardDisplay" type="Label" parent="UIContainer/PlayArea/CardDisplayArea"]
+[node name="PlayAreaLabel" type="Label" parent="UIContainer/PlayArea/CardDisplayArea"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -95.0
-offset_top = 15.0
-offset_right = 95.0
-offset_bottom = 45.0
+offset_left = -100.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 50.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+theme_override_colors/font_color = Color(0.545098, 0.909804, 1, 0.784314)
+theme_override_colors/font_shadow_color = Color(0, 0.211765, 0.501961, 0.392157)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "符文牌组区域"
+theme_override_font_sizes/font_size = 22
+text = "出牌区域"
 horizontal_alignment = 1
 
-[node name="CardPlacementGuides" type="Control" parent="UIContainer/PlayArea/CardDisplayArea"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GuideCircle" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardPlacementGuides"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -250.0
-offset_right = 250.0
-offset_bottom = 250.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.215686, 0.356863, 0.631373, 0.0392157)
-
-[node name="GuideDot" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardPlacementGuides"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -5.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = 5.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.317647, 0.521569, 0.807843, 0.235294)
-
-[node name="GuideLabels" type="Control" parent="UIContainer/PlayArea/CardDisplayArea"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GuideLabel1" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/GuideLabels"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -150.0
-offset_top = 20.0
-offset_right = 150.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.317647, 0.521569, 0.807843, 0.541176)
-theme_override_font_sizes/font_size = 16
-text = "拖拽卡牌至此区域"
-horizontal_alignment = 1
-
-[node name="GuideLabel2" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/GuideLabels"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.317647, 0.521569, 0.807843, 0.541176)
-theme_override_font_sizes/font_size = 16
-text = "排列算力值以增强法术效果"
-horizontal_alignment = 1
-
-[node name="CardContainer" type="HBoxContainer" parent="UIContainer/PlayArea/CardDisplayArea"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = 50.0
-offset_right = -100.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 40
-alignment = 1
-
-[node name="Card1" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer"]
-custom_minimum_size = Vector2(120, 160)
-layout_mode = 2
-color = Color(0.0901961, 0.129412, 0.25098, 1)
-
-[node name="Value" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card1"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -25.0
-offset_top = 10.0
-offset_right = 25.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "Q"
-horizontal_alignment = 1
-
-[node name="Symbol" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card1"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = 10.0
-offset_right = 20.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.462745, 0.807843, 0.980392, 1)
-theme_override_font_sizes/font_size = 28
-text = "♦"
-horizontal_alignment = 1
-
-[node name="Card2" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer"]
-custom_minimum_size = Vector2(120, 160)
-layout_mode = 2
-color = Color(0.0901961, 0.129412, 0.25098, 1)
-
-[node name="Value" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card2"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -25.0
-offset_top = 10.0
-offset_right = 25.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "K"
-horizontal_alignment = 1
-
-[node name="Symbol" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card2"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = 10.0
-offset_right = 20.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "♠"
-horizontal_alignment = 1
-
-[node name="Card3" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer"]
-custom_minimum_size = Vector2(120, 160)
-layout_mode = 2
-color = Color(0.0901961, 0.129412, 0.25098, 1)
-
-[node name="Value" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card3"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -25.0
-offset_top = 10.0
-offset_right = 25.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "J"
-horizontal_alignment = 1
-
-[node name="Symbol" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card3"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = 10.0
-offset_right = 20.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "♠"
-horizontal_alignment = 1
-
-[node name="Card4" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer"]
-custom_minimum_size = Vector2(120, 160)
-layout_mode = 2
-color = Color(0.0901961, 0.129412, 0.25098, 1)
-
-[node name="Value" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card4"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -25.0
-offset_top = 10.0
-offset_right = 25.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "Q"
-horizontal_alignment = 1
-
-[node name="Symbol" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card4"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = 10.0
-offset_right = 20.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.984314, 0.45098, 0.45098, 1)
-theme_override_font_sizes/font_size = 28
-text = "♥"
-horizontal_alignment = 1
-
-[node name="Card5" type="ColorRect" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer"]
-custom_minimum_size = Vector2(120, 160)
-layout_mode = 2
-color = Color(0.0901961, 0.129412, 0.25098, 1)
-
-[node name="Value" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card5"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -25.0
-offset_top = 10.0
-offset_right = 25.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 28
-text = "9"
-horizontal_alignment = 1
-
-[node name="Symbol" type="Label" parent="UIContainer/PlayArea/CardDisplayArea/CardContainer/Card5"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = 10.0
-offset_right = 20.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.27451, 0.866667, 0.513726, 1)
-theme_override_font_sizes/font_size = 28
-text = "♣"
-horizontal_alignment = 1
-
-[node name="SpellPanel" type="Panel" parent="UIContainer/PlayArea"]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 320.0
-offset_top = -70.0
-offset_right = -180.0
-offset_bottom = 30.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
-
-[node name="StatusLabel" type="Label" parent="UIContainer/PlayArea/SpellPanel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 200.0
-offset_bottom = 39.0
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "当前法则解读"
-
-[node name="SpellLabel" type="Label" parent="UIContainer/PlayArea/SpellPanel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 40.0
-offset_right = 1050.0
-offset_bottom = 75.0
-theme_override_colors/font_color = Color(0.886275, 0.811765, 0.34902, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 24
-text = "同花 - 元素法则共鸣"
-
-[node name="ScoreBonus" type="Label" parent="UIContainer/PlayArea/SpellPanel"]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -180.0
-offset_top = -20.0
-offset_right = -20.0
-offset_bottom = 20.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.886275, 0.811765, 0.34902, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 24
-text = "学识魔力增益: +75"
-horizontal_alignment = 2
-
-[node name="ButtonPanel" type="Panel" parent="UIContainer/PlayArea"]
+[node name="ActionPanel" type="Panel" parent="UIContainer/PlayArea"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 320.0
+offset_left = 350.0
 offset_top = -120.0
-offset_right = -180.0
-offset_bottom = -40.0
+offset_right = -350.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ijp33")
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="UIContainer/PlayArea/ButtonPanel"]
+[node name="ActionButtons" type="HBoxContainer" parent="UIContainer/PlayArea/ActionPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = -20.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="SpellButton" type="Button" parent="UIContainer/PlayArea/ButtonPanel/ButtonsContainer"]
-custom_minimum_size = Vector2(160, 0)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 0.929412, 0.439216, 1)
-theme_override_colors/font_color = Color(0.956863, 0.980392, 1, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_f2gbs")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ry6tg")
-theme_override_styles/normal = SubResource("StyleBoxFlat_qux8n")
-text = "释放法术"
-
-[node name="ValueButton" type="Button" parent="UIContainer/PlayArea/ButtonPanel/ButtonsContainer"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.921569, 0.968627, 1, 1)
-theme_override_colors/font_color = Color(0.780392, 0.847059, 0.945098, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_f2gbs")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ry6tg")
-theme_override_styles/normal = SubResource("StyleBoxFlat_qux8n")
-text = "按数值排序"
-
-[node name="SuitButton" type="Button" parent="UIContainer/PlayArea/ButtonPanel/ButtonsContainer"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.921569, 0.968627, 1, 1)
-theme_override_colors/font_color = Color(0.780392, 0.847059, 0.945098, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_f2gbs")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ry6tg")
-theme_override_styles/normal = SubResource("StyleBoxFlat_qux8n")
-text = "按花色排序"
-
-[node name="DiscardButton" type="Button" parent="UIContainer/PlayArea/ButtonPanel/ButtonsContainer"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.921569, 0.968627, 1, 1)
-theme_override_colors/font_color = Color(0.780392, 0.847059, 0.945098, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_f2gbs")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ry6tg")
-theme_override_styles/normal = SubResource("StyleBoxFlat_qux8n")
-text = "补充新牌"
-
-[node name="ButtonDecorations" type="Control" parent="UIContainer/PlayArea/ButtonPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="LeftDecor" type="ColorRect" parent="UIContainer/PlayArea/ButtonPanel/ButtonDecorations"]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 8.0
-offset_top = -30.0
-offset_right = 12.0
-offset_bottom = 30.0
-grow_vertical = 2
-color = Color(0.317647, 0.521569, 0.807843, 0.235294)
-
-[node name="RightDecor" type="ColorRect" parent="UIContainer/PlayArea/ButtonPanel/ButtonDecorations"]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -12.0
-offset_top = -30.0
-offset_right = -8.0
-offset_bottom = 30.0
-grow_horizontal = 0
-grow_vertical = 2
-color = Color(0.317647, 0.521569, 0.807843, 0.235294)
-
-[node name="RightPanel" type="Panel" parent="UIContainer"]
-layout_mode = 0
-offset_left = 1740.0
-offset_top = 160.0
-offset_right = 1880.0
-offset_bottom = 210.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
-
-[node name="CapacityLabel" type="Label" parent="UIContainer/RightPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 22
-text = "符文容量: 8/8"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DeckPanel" type="Panel" parent="UIContainer"]
-layout_mode = 0
-offset_left = 1740.0
-offset_top = 480.0
-offset_right = 1880.0
-offset_bottom = 700.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlmvk")
-
-[node name="DeckCountLabel" type="Label" parent="UIContainer/DeckPanel"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = -10.0
-offset_bottom = 40.0
+offset_bottom = -10.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.678431, 0.909804, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.392157)
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="UIContainer/PlayArea/ActionPanel/ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(0.729412, 1, 1, 1)
+theme_override_colors/font_color = Color(0.545098, 0.909804, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.407843, 0.6, 0.784314, 1)
+theme_override_font_sizes/font_size = 22
+text = "出牌"
+
+[node name="SortPanel" type="Panel" parent="UIContainer/PlayArea/ActionPanel/ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_f15s3")
+
+[node name="SortButtons" type="HBoxContainer" parent="UIContainer/PlayArea/ActionPanel/ActionButtons/SortPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="ValueButton" type="Button" parent="UIContainer/PlayArea/ActionPanel/ActionButtons/SortPanel/SortButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.858824, 0.858824, 0.858824, 1)
+theme_override_colors/font_pressed_color = Color(0.407843, 0.6, 0.784314, 1)
+theme_override_font_sizes/font_size = 20
+text = "点数"
+
+[node name="SuitButton" type="Button" parent="UIContainer/PlayArea/ActionPanel/ActionButtons/SortPanel/SortButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.858824, 0.858824, 0.858824, 1)
+theme_override_colors/font_pressed_color = Color(0.407843, 0.6, 0.784314, 1)
+theme_override_font_sizes/font_size = 20
+text = "花色"
+
+[node name="DiscardButton" type="Button" parent="UIContainer/PlayArea/ActionPanel/ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(1, 0.729412, 0.729412, 1)
+theme_override_colors/font_color = Color(1, 0.588235, 0.588235, 1)
+theme_override_colors/font_pressed_color = Color(0.784314, 0.407843, 0.407843, 1)
+theme_override_font_sizes/font_size = 22
+text = "弃牌"
+
+[node name="RightPanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 1520.0
+offset_top = 440.0
+offset_right = 1620.0
+offset_bottom = 640.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e00f1")
+
+[node name="DeckImage" type="TextureRect" parent="UIContainer/RightPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DeckCountLabel" type="Label" parent="UIContainer/RightPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -25.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0.831373, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.247059, 0.341176, 0.392157)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "44/52"
+theme_override_font_sizes/font_size = 18
+text = "44 / 52"
 horizontal_alignment = 1
 
+[node name="StatusPanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 80.0
+offset_right = 1280.0
+offset_bottom = 140.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e00f1")
+
+[node name="StatusLabel" type="Label" parent="UIContainer/StatusPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.545098, 0.909804, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.247059, 0.341176, 0.588235)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 24
+text = "请选择要出的牌"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="HandContainer" type="HBoxContainer" parent="UIContainer"]
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -600.0
-offset_top = -150.0
-offset_right = 600.0
-offset_bottom = -20.0
+offset_left = -800.0
+offset_top = -250.0
+offset_right = 800.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 30
+theme_override_constants/separation = 20
 alignment = 1
 
-[node name="HandLabel" type="Label" parent="UIContainer"]
-layout_mode = 0
-offset_left = 320.0
-offset_top = 930.0
-offset_right = 500.0
-offset_bottom = 960.0
-theme_override_colors/font_color = Color(0.501961, 0.670588, 0.917647, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "符文手牌"
-
-[connection signal="pressed" from="UIContainer/LeftPanel/VBoxContainer/ButtonPanel/ManageButton" to="." method="_on_options_button_pressed"]
-[connection signal="pressed" from="UIContainer/LeftPanel/VBoxContainer/InfoButtonPanel/InfoButton" to="." method="_on_options_button_pressed"]
-[connection signal="pressed" from="UIContainer/PlayArea/ButtonPanel/ButtonsContainer/SpellButton" to="." method="_on_evaluate_button_pressed"]
-[connection signal="pressed" from="UIContainer/PlayArea/ButtonPanel/ButtonsContainer/ValueButton" to="." method="_on_value_button_pressed"]
-[connection signal="pressed" from="UIContainer/PlayArea/ButtonPanel/ButtonsContainer/SuitButton" to="." method="_on_suit_button_pressed"]
-[connection signal="pressed" from="UIContainer/PlayArea/ButtonPanel/ButtonsContainer/DiscardButton" to="." method="_on_new_hand_button_pressed"]
+[connection signal="pressed" from="UIContainer/LeftPanel/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="UIContainer/PlayArea/ActionPanel/ActionButtons/PlayButton" to="." method="_on_evaluate_button_pressed"]
+[connection signal="pressed" from="UIContainer/PlayArea/ActionPanel/ActionButtons/SortPanel/SortButtons/ValueButton" to="." method="_on_value_button_pressed"]
+[connection signal="pressed" from="UIContainer/PlayArea/ActionPanel/ActionButtons/SortPanel/SortButtons/SuitButton" to="." method="_on_suit_button_pressed"]
+[connection signal="pressed" from="UIContainer/PlayArea/ActionPanel/ActionButtons/DiscardButton" to="." method="_on_new_hand_button_pressed"]

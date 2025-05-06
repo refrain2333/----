@@ -9,7 +9,7 @@ uniform float edge_width : hint_range(0.0, 0.1) = 0.05; // 新增参数：过渡
 
 void fragment() {
     vec4 original_color = texture(TEXTURE, UV);
-
+    
     if (dissolve_amount < 0.0001 || dissolve_amount > 0.9999 || fade) {
         COLOR = original_color;
     } else {
@@ -23,4 +23,4 @@ void fragment() {
         float alpha_factor = smoothstep(edge0, edge1, sample);
         COLOR = vec4(original_color.rgb, alpha_factor * original_color.a);
     }
-}
+} 
