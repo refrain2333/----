@@ -10,15 +10,21 @@ config_version=5
 
 [application]
 
-config/name="卡牌基础"
-run/main_scene="uid://xfysagam0act"
+config/name="卡牌基础1"
+run/main_scene="res://cs/主场景/MainGame.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://cs/卡牌系统/数据/GameManager.gd"
+UIRegistry="*res://cs/主场景/ui/UIRegistry.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/stretch/mode="viewport"
 
 [rendering]
 

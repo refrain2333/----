@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3w2i5rg5tgcb"]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/视图/ArtifactItem.gd" id="1_artifact"]
+[ext_resource type="Texture2D" uid="uid://buhrl3w8b8ydw" path="res://assets/images/background/icon.png" id="2_artifactimg"]
+
+
+[node name="ArtifactItem" type="Control"]
+custom_minimum_size = Vector2(80, 120)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_artifact")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_artifactimg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 80.0
+offset_bottom = 106.0
+grow_horizontal = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 12
+text = "法器"
+horizontal_alignment = 1 

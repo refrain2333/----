@@ -1,0 +1,649 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmujjbqtwvghq"]
+
+[ext_resource type="Script" uid="uid://jpx36gb30vbb" path="res://cs/主场景/ui/Sidebar.gd" id="1_sidebar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
+bg_color = Color(0.0470588, 0.0627451, 0.137255, 0.862745)
+border_width_right = 1
+border_color = Color(0.356863, 0.454902, 0.901961, 0.498039)
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+shadow_color = Color(0, 0, 0, 0.301961)
+shadow_size = 5
+shadow_offset = Vector2(2, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.121569, 0.156863, 0.301961, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34902, 0.439216, 0.8, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_red_panel"]
+bg_color = Color(0.25, 0.1, 0.1, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.4, 0.2, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.239216)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blue_panel"]
+bg_color = Color(0.1, 0.15, 0.25, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.4, 0.8, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.239216)
+shadow_size = 2
+
+[node name="Sidebar" type="Panel"]
+offset_left = 40.0
+offset_top = 15.0
+offset_right = 325.0
+offset_bottom = 1044.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sidebar")
+script = ExtResource("1_sidebar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.356863, 0.454902, 0.901961, 0.4)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "✧ 设置选项 ✧"
+
+[node name="ButtonDecoration" type="Label" parent="VBoxContainer/SettingsButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -14.0
+offset_right = 40.0
+offset_bottom = 14.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.73, 0.3, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "⚙"
+vertical_alignment = 1
+
+[node name="ButtonDecorationRight" type="Label" parent="VBoxContainer/SettingsButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -14.0
+offset_right = -18.0
+offset_bottom = 14.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.73, 0.3, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "⚙"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="TitlePanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/TitlePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.490196)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "智牌奇旅"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator1" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ManaPanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+
+[node name="ManaTitle" type="Label" parent="VBoxContainer/ManaPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = -10.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "学识魔力"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaLabel" type="Label" parent="VBoxContainer/ManaPanel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -5.5
+offset_right = -10.0
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.917647, 0.964706, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.356863, 0.454902, 0.901961, 0.6)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResourcePanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+
+[node name="ResourceTitle" type="Label" parent="VBoxContainer/ResourcePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 28
+text = "魔法资源"
+horizontal_alignment = 1
+
+[node name="MainResourcesContainer" type="VBoxContainer" parent="VBoxContainer/ResourcePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 47.0
+offset_right = -15.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="ActionResourcesGrid" type="GridContainer" parent="VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="FocusLabel" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "集中力:"
+
+[node name="FocusValue" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "5"
+horizontal_alignment = 1
+
+[node name="EssenceLabel" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "精华:"
+
+[node name="EssenceValue" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "3"
+horizontal_alignment = 1
+
+[node name="ResourceSeparator" type="HSeparator" parent="VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="OtherResourcesGrid" type="GridContainer" parent="VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="LoreLabel" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/OtherResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "学识点:"
+
+[node name="LoreValue" type="Label" parent="VBoxContainer/ResourcePanel/MainResourcesContainer/OtherResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.980392, 0.866667, 0.505882, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "4"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ScorePanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+
+[node name="ScoreTitle" type="Label" parent="VBoxContainer/ScorePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 24
+text = "奥术收益"
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="VBoxContainer/ScorePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 49.0
+offset_right = -10.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="BaseScoreBox" type="Panel" parent="VBoxContainer/ScorePanel/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_red_panel")
+
+[node name="ScoreValue" type="Label" parent="VBoxContainer/ScorePanel/ScoreContainer/BaseScoreBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.5
+offset_top = -5.0
+offset_right = 31.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_colors/font_shadow_color = Color(0.615686, 0.2, 0, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 30
+text = "50"
+horizontal_alignment = 1
+
+[node name="MultiplierBox" type="Panel" parent="VBoxContainer/ScorePanel/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_blue_panel")
+
+[node name="MultiplierValue" type="Label" parent="VBoxContainer/ScorePanel/ScoreContainer/MultiplierBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.5
+offset_top = -5.0
+offset_right = 31.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.2, 0.4, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 30
+text = "x1"
+horizontal_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="TargetPanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="TargetTitle" type="Label" parent="VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 23
+text = "学术试炼"
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -15.0
+offset_right = -15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="TargetLabel" type="Label" parent="VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "目标:"
+
+[node name="TargetValue" type="Label" parent="VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.858824, 0.411765, 1)
+theme_override_colors/font_shadow_color = Color(0.615686, 0.427451, 0, 0.6)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 28
+text = "300"
+
+[node name="ScoreSuffix" type="Label" parent="VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "分"
+
+[node name="RewardContainer" type="HBoxContainer" parent="VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -40.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="RewardLabel" type="Label" parent="VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "奖励:"
+
+[node name="RewardValue" type="Label" parent="VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.1, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 24
+text = "10"
+
+[node name="RewardSuffix" type="Label" parent="VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "学识点"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="GameProgressPanel" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="ProgressTitle" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 57.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_colors/font_shadow_color = Color(0.0862745, 0.164706, 0.317647, 0.3)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 26
+text = "✧ 学术进度 ✧"
+horizontal_alignment = 1
+
+[node name="TitleDecoration1" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 35.0
+offset_right = 100.0
+offset_bottom = 49.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "• • • • • • • • • • • • • • • • • • •"
+horizontal_alignment = 1
+
+[node name="ProgressContainer" type="VBoxContainer" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 58.0
+offset_right = -25.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="YearSectionTitle" type="Label" parent="VBoxContainer/GameProgressPanel/ProgressContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 0.8)
+theme_override_font_sizes/font_size = 22
+text = "学术年度"
+horizontal_alignment = 1
+
+[node name="ProgressTable" type="GridContainer" parent="VBoxContainer/GameProgressPanel/ProgressContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="YearLabel" type="Label" parent="VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.568627, 0.74902, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "学年:"
+horizontal_alignment = 2
+
+[node name="YearValue" type="Label" parent="VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.6
+theme_override_colors/font_color = Color(1, 0.858824, 0.411765, 1)
+theme_override_colors/font_shadow_color = Color(0.6, 0.392157, 0.0392157, 0.34902)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 20
+text = "第1学年"
+
+[node name="TermLabel" type="Label" parent="VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.568627, 0.74902, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "学期:"
+horizontal_alignment = 2
+
+[node name="TermValue" type="Label" parent="VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.6
+theme_override_colors/font_color = Color(0.470588, 0.807843, 0.886275, 1)
+theme_override_colors/font_shadow_color = Color(0.0431373, 0.0901961, 0.184314, 0.25)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 20
+text = "1/4"
+
+[node name="RightDecoration" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -38.0
+offset_top = -38.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 28
+text = "✧"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeftDecoration" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -32.0
+offset_right = 31.0
+offset_bottom = -10.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopLeftDecoration" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 31.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopRightDecoration" type="Label" parent="VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -31.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 28.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]

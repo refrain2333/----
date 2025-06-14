@@ -1,0 +1,181 @@
+[gd_scene load_steps=3 format=3 uid="uid://bebw7yqepltjq"]
+
+[ext_resource type="Script" uid="uid://tykwdavpoev3" path="res://cs/主场景/ui/TopDock.gd" id="1_topdock"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.0705882, 0.0862745, 0.207843, 0.741176)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.356863, 0.454902, 0.901961, 0.737255)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.239216)
+shadow_size = 3
+
+[node name="TopDock" type="Control"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 15.0
+offset_bottom = 290.0
+grow_horizontal = 2
+script = ExtResource("1_topdock")
+
+[node name="ArtifactPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 15.0
+offset_right = 1420.0
+offset_bottom = 265.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ArtifactTitle" type="Label" parent="ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 20
+text = "传奇法器"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArtifactContainer" type="HBoxContainer" parent="ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 50.0
+offset_right = -25.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="ArtifactCountLabel" type="Label" parent="ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -30.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0 / 6"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MagicDiscoveryPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 1440.0
+offset_top = 15.0
+offset_right = 1890.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="DiscoveryTitle" type="Label" parent="MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 20
+text = "魔法发现"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscoveryContainer" type="HBoxContainer" parent="MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="DiscoveryCountLabel" type="Label" parent="MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -30.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0 / 3"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="DiscoveryArea" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -600.0
+offset_top = 20.0
+offset_right = 600.0
+offset_bottom = 320.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="DiscoveryContainer" type="HBoxContainer" parent="DiscoveryArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 60.0
+offset_right = -50.0
+offset_bottom = -60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="PromptLabel" type="Label" parent="DiscoveryArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_right = 300.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "选择一张卡牌添加到你的手牌"
+horizontal_alignment = 1
+vertical_alignment = 1

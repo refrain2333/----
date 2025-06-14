@@ -1,0 +1,115 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/视图/JokerView.gd" id="1_2yjpk"]
+[ext_resource type="Texture2D" path="res://assets/images/jokers/common_joker.png" id="2_7ynmr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j7hn"]
+bg_color = Color(0.0392157, 0.0392157, 0.0784314, 0.752941)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.25098)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vxjtu"]
+bg_color = Color(0.109804, 0.109804, 0.156863, 0.752941)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="JokerView" type="Control"]
+custom_minimum_size = Vector2(150, 220)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+offset_bottom = 220.0
+script = ExtResource("1_2yjpk")
+
+[node name="JokerTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.6
+offset_bottom = 0.199997
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_7ynmr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.199997
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8j7hn")
+
+[node name="NameLabel" type="Label" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.2
+offset_left = 5.0
+offset_right = -5.0
+grow_horizontal = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+text = "普通小丑"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TypePanel" type="Panel" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 1.0
+anchor_bottom = 0.35
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vxjtu")
+
+[node name="TypeLabel" type="Label" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 1.0
+anchor_bottom = 0.35
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.701961, 0.701961, 0.701961, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 12
+text = "普通"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EffectLabel" type="Label" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.35
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 12
+text = "基础分数+10"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Highlight" type="Sprite2D" parent="."]
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."] 

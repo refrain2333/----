@@ -1,0 +1,1324 @@
+[gd_scene load_steps=17 format=3 uid="uid://umwfhwe2f45r"]
+
+[ext_resource type="Texture2D" uid="uid://dnee3ydo7wgrh" path="res://assets/images/background/image_fx_看图王.png" id="2_g1eqr"]
+[ext_resource type="Texture2D" uid="uid://buhrl3w8b8ydw" path="res://assets/images/background/icon.png" id="3_7ipun"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
+bg_color = Color(0.0470588, 0.0627451, 0.137255, 0.862745)
+border_width_right = 1
+border_color = Color(0.356863, 0.454902, 0.901961, 0.498039)
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+shadow_color = Color(0, 0, 0, 0.301961)
+shadow_size = 5
+shadow_offset = Vector2(2, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings_button_hover"]
+bg_color = Color(0.98, 0.98, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.85, 0.9, 0.8)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.3, 0.3, 0.35, 0.2)
+shadow_size = 5
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings_button"]
+bg_color = Color(0.92, 0.92, 0.94, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0.75, 0.8, 0.7)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.121569, 0.156863, 0.301961, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34902, 0.439216, 0.8, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_title_bg"]
+bg_color = Color(0.121569, 0.168627, 0.352941, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34902, 0.439216, 0.8, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.0705882, 0.0862745, 0.207843, 0.741176)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.356863, 0.454902, 0.901961, 0.737255)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.239216)
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_red_panel"]
+bg_color = Color(0.7, 0.15, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.4, 0.4, 0.7)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0.5, 0.1, 0.1, 0.3)
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blue_panel"]
+bg_color = Color(0.15, 0.25, 0.7, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.5, 0.9, 0.7)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0.1, 0.15, 0.5, 0.3)
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hand_panel"]
+bg_color = Color(0.0705882, 0.0862745, 0.207843, 0.741176)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.356863, 0.568627, 0.901961, 0.737255)
+border_blend = true
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.239216)
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gold_button_hover"]
+bg_color = Color(0.35, 0.25, 0.1, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.75, 0.25, 0.8)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.6, 0.4, 0.1, 0.2)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gold_button"]
+bg_color = Color(0.25, 0.18, 0.07, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.65, 0.2, 0.6)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 3
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.196078, 0.243137, 0.458824, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.466667, 0.54902, 0.886275, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_light_button_hover"]
+bg_color = Color(0.25, 0.3, 0.38, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.87, 0.95, 0.8)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.1, 0.15, 0.25, 0.2)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_light_button"]
+bg_color = Color(0.18, 0.22, 0.28, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.65, 0.75, 0.85, 0.7)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 3
+shadow_offset = Vector2(1, 1)
+
+[node name="MainGame" type="Node2D"]
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_g1eqr")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="UIContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1071.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SidePanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 15.0
+offset_right = 325.0
+offset_bottom = 1044.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sidebar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIContainer/SidePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="SettingsButton" type="Button" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(0.2, 0.2, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.8, 0.8, 0.85, 0.4)
+theme_override_colors/font_color = Color(0.25, 0.25, 0.3, 1)
+theme_override_colors/font_focus_color = Color(0.15, 0.15, 0.2, 1)
+theme_override_constants/outline_size = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/icon_max_width = 14
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxFlat_settings_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_settings_button")
+text = "✧ 设置选项 ✧"
+
+[node name="ButtonDecoration" type="Label" parent="UIContainer/SidePanel/VBoxContainer/SettingsButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -14.0
+offset_right = 40.0
+offset_bottom = 14.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.73, 0.3, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "⚙"
+vertical_alignment = 1
+
+[node name="ButtonDecorationRight" type="Label" parent="UIContainer/SidePanel/VBoxContainer/SettingsButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -14.0
+offset_right = -18.0
+offset_bottom = 14.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.73, 0.3, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "⚙"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsSeparator" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="TitlePanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_title_bg")
+
+[node name="TitleLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TitlePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.490196)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "智牌奇旅"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator1" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ManaPanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ManaTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ManaPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = -10.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "学识魔力"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ManaPanel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -5.5
+offset_right = -10.0
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.917647, 0.964706, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.356863, 0.454902, 0.901961, 0.6)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator5" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="TargetPanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="TargetTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 23
+text = "学术试炼"
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -15.0
+offset_right = -15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="TargetLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "目标:"
+
+[node name="TargetValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.858824, 0.411765, 1)
+theme_override_colors/font_shadow_color = Color(0.615686, 0.427451, 0, 0.6)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 28
+text = "300"
+
+[node name="ScoreSuffix" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "分"
+
+[node name="RewardContainer" type="HBoxContainer" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -40.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="RewardLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "奖励:"
+
+[node name="RewardValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.1, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 24
+text = "10"
+
+[node name="RewardSuffix" type="Label" parent="UIContainer/SidePanel/VBoxContainer/TargetPanel/RewardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "学识点"
+
+[node name="HSeparator2" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ResourcePanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ResourceTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 28
+text = "魔法资源"
+horizontal_alignment = 1
+
+[node name="MainResourcesContainer" type="VBoxContainer" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 47.0
+offset_right = -15.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="ActionResourcesGrid" type="GridContainer" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="FocusLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "集中力:"
+
+[node name="FocusValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "5"
+horizontal_alignment = 1
+
+[node name="EssenceLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "精华:"
+
+[node name="EssenceValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/ActionResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "3"
+horizontal_alignment = 1
+
+[node name="ResourceSeparator" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="OtherResourcesGrid" type="GridContainer" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="LoreLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/OtherResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 18
+text = "学识点:"
+
+[node name="LoreValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ResourcePanel/MainResourcesContainer/OtherResourcesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.980392, 0.866667, 0.505882, 1)
+theme_override_colors/font_outline_color = Color(0.14902, 0.215686, 0.45098, 0.498039)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 22
+text = "4"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ScorePanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ScoreTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 24
+text = "奥术收益"
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 49.0
+offset_right = -10.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="BaseScoreBox" type="Panel" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="BaseScorePanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/BaseScoreBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_red_panel")
+
+[node name="ScoreLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/BaseScoreBox"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 5.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "基础分数"
+horizontal_alignment = 1
+
+[node name="ScoreValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/BaseScoreBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.5
+offset_top = -5.0
+offset_right = 31.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_colors/font_shadow_color = Color(0.615686, 0.2, 0, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 30
+text = "50"
+horizontal_alignment = 1
+
+[node name="MultiplierBox" type="Panel" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MultiplierPanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/MultiplierBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_blue_panel")
+
+[node name="MultiplierLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/MultiplierBox"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 5.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "倍数"
+horizontal_alignment = 1
+
+[node name="MultiplierValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/ScorePanel/ScoreContainer/MultiplierBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.5
+offset_top = -5.0
+offset_right = 31.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.2, 0.4, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 30
+text = "x1"
+horizontal_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="UIContainer/SidePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="GameProgressPanel" type="Panel" parent="UIContainer/SidePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ProgressTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 57.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_colors/font_shadow_color = Color(0.0862745, 0.164706, 0.317647, 0.3)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 26
+text = "✧ 学术进度 ✧"
+horizontal_alignment = 1
+
+[node name="TitleDecoration1" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 35.0
+offset_right = 100.0
+offset_bottom = 49.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "• • • • • • • • • • • • • • • • • • •"
+horizontal_alignment = 1
+
+[node name="ProgressContainer" type="VBoxContainer" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 58.0
+offset_right = -25.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="YearSectionTitle" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 0.8)
+theme_override_font_sizes/font_size = 22
+text = "学术年度"
+horizontal_alignment = 1
+
+[node name="ProgressTable" type="GridContainer" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="YearLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.568627, 0.74902, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "学年:"
+horizontal_alignment = 2
+
+[node name="YearValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.6
+theme_override_colors/font_color = Color(1, 0.858824, 0.411765, 1)
+theme_override_colors/font_shadow_color = Color(0.6, 0.392157, 0.0392157, 0.34902)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 20
+text = "第1学年"
+
+[node name="TermLabel" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.568627, 0.74902, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "学期:"
+horizontal_alignment = 2
+
+[node name="TermValue" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel/ProgressContainer/ProgressTable"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.6
+theme_override_colors/font_color = Color(0.470588, 0.807843, 0.886275, 1)
+theme_override_colors/font_shadow_color = Color(0.0431373, 0.0901961, 0.184314, 0.25)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 20
+text = "1/4"
+
+[node name="RightDecoration" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -38.0
+offset_top = -38.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 28
+text = "✧"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeftDecoration" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -32.0
+offset_right = 31.0
+offset_bottom = -10.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopLeftDecoration" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 31.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopRightDecoration" type="Label" parent="UIContainer/SidePanel/VBoxContainer/GameProgressPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -31.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 28.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 20
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneLibraryPanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 1658.0
+offset_top = 692.0
+offset_right = 1878.0
+offset_bottom = 1032.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="RuneLibraryTitle" type="Label" parent="UIContainer/RuneLibraryPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 20
+text = "符文库"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneLibraryContainer" type="VBoxContainer" parent="UIContainer/RuneLibraryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="RuneBackTexture" type="TextureRect" parent="UIContainer/RuneLibraryPanel/RuneLibraryContainer"]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_7ipun")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CountContainer" type="HBoxContainer" parent="UIContainer/RuneLibraryPanel/RuneLibraryContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CountTextLabel" type="Label" parent="UIContainer/RuneLibraryPanel/RuneLibraryContainer/CountContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "剩余:"
+vertical_alignment = 1
+
+[node name="CountValueLabel" type="Label" parent="UIContainer/RuneLibraryPanel/RuneLibraryContainer/CountContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "52 / 52"
+vertical_alignment = 1
+
+[node name="HandArea" type="Control" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -585.0
+offset_top = -420.0
+offset_right = 615.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HandPanel" type="Panel" parent="UIContainer/HandArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 5.0
+offset_right = 20.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hand_panel")
+
+[node name="RuneIndicator" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -25.0
+offset_top = 15.0
+offset_right = 25.0
+offset_bottom = 55.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.529412, 0.678431, 0.913725, 0.258824)
+theme_override_font_sizes/font_size = 36
+text = "⚜"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HandTitle" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.670588, 0.831373, 0.976471, 1)
+theme_override_colors/font_shadow_color = Color(0.0470588, 0.0627451, 0.137255, 0.4)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 30
+text = "✦ 符文掌控台 ✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneDecoration1" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 120.0
+offset_right = 120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 72
+text = "⚝"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneDecoration2" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 0
+offset_left = 1060.0
+offset_top = 120.0
+offset_right = 1100.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.15)
+theme_override_font_sizes/font_size = 72
+text = "⚝"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneDecoration3" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 200.0
+offset_right = 240.0
+offset_bottom = 278.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.12)
+theme_override_font_sizes/font_size = 56
+text = "✧"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuneDecoration4" type="Label" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 0
+offset_left = 960.0
+offset_top = 200.0
+offset_right = 1000.0
+offset_bottom = 278.0
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.12)
+theme_override_font_sizes/font_size = 56
+text = "✧"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardContainer" type="HBoxContainer" parent="UIContainer/HandArea/HandPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 60.0
+offset_right = -40.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 35
+alignment = 1
+
+[node name="ButtonPanel" type="Panel" parent="UIContainer/HandArea/HandPanel"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ButtonDivider" type="HSeparator" parent="UIContainer/HandArea/HandPanel/ButtonPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 3.0
+offset_right = -30.0
+offset_bottom = 5.0
+grow_horizontal = 2
+theme_override_constants/separation = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_button")
+
+[node name="ButtonGrid" type="HBoxContainer" parent="UIContainer/HandArea/HandPanel/ButtonPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 8.0
+offset_right = -30.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="PlayButtonContainer" type="VBoxContainer" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.3
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/PlayButtonContainer"]
+custom_minimum_size = Vector2(240, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 0.92, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0.35, 0.25, 0.1, 0.5)
+theme_override_colors/font_color = Color(1, 0.87, 0.55, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 0.8, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
+theme_override_styles/hover = SubResource("StyleBoxFlat_gold_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_gold_button")
+text = "✦ 吟唱咒语 ✦"
+
+[node name="SortButtonContainer" type="VBoxContainer" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SortGrid" type="HBoxContainer" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/SortButtonContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="SortValueButton" type="Button" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/SortButtonContainer/SortGrid"]
+custom_minimum_size = Vector2(140, 45)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.356863, 0.454902, 0.901961, 0.3)
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "✧ 按能量排序 ✧"
+
+[node name="SortSuitButton" type="Button" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/SortButtonContainer/SortGrid"]
+custom_minimum_size = Vector2(140, 45)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.356863, 0.454902, 0.901961, 0.3)
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "✧ 按元素排序 ✧"
+
+[node name="DiscardButtonContainer" type="VBoxContainer" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.3
+alignment = 1
+
+[node name="DiscardButton" type="Button" parent="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/DiscardButtonContainer"]
+custom_minimum_size = Vector2(240, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.35, 0.45, 0.4)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
+theme_override_styles/hover = SubResource("StyleBoxFlat_light_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_light_button")
+text = "✧ 使用精华 ✧"
+
+[node name="CenterAreaIndicator" type="Label" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -120.0
+offset_right = 80.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.356863, 0.454902, 0.901961, 0.06)
+theme_override_font_sizes/font_size = 200
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArtifactPanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 15.0
+offset_right = 1420.0
+offset_bottom = 265.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ArtifactTitle" type="Label" parent="UIContainer/ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 20
+text = "传奇法器"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArtifactContainer" type="HBoxContainer" parent="UIContainer/ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 50.0
+offset_right = -25.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="ArtifactCountLabel" type="Label" parent="UIContainer/ArtifactPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -30.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0 / 6"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MagicDiscoveryPanel" type="Panel" parent="UIContainer"]
+layout_mode = 0
+offset_left = 1440.0
+offset_top = 15.0
+offset_right = 1890.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="DiscoveryTitle" type="Label" parent="UIContainer/MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.631373, 0.807843, 0.968627, 1)
+theme_override_font_sizes/font_size = 20
+text = "魔法发现"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscoveryContainer" type="HBoxContainer" parent="UIContainer/MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="DiscoveryCountLabel" type="Label" parent="UIContainer/MagicDiscoveryPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -30.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.866667, 0.933333, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0 / 3"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[connection signal="pressed" from="UIContainer/SidePanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/PlayButtonContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/SortButtonContainer/SortGrid/SortValueButton" to="." method="sort_cards_by_value"]
+[connection signal="pressed" from="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/SortButtonContainer/SortGrid/SortSuitButton" to="." method="sort_cards_by_suit"]
+[connection signal="pressed" from="UIContainer/HandArea/HandPanel/ButtonPanel/ButtonGrid/DiscardButtonContainer/DiscardButton" to="." method="_on_discard_button_pressed"]
