@@ -24,6 +24,9 @@ var top_dock
 @export var deck_widget_scene: PackedScene
 @export var top_dock_scene: PackedScene
 
+# 添加一个变量来控制打印频率
+var max_hand_size: int  # 最大手牌数量
+
 func _ready():
 	print("MainGame._ready: 初始化开始")
 	
@@ -110,12 +113,15 @@ func _ready():
 			game_mgr.game_won.connect(Callable(self, "_on_game_won"))
 		print("MainGame._ready: 连接GameManager.game_won到_on_game_won")
 
-	# 连接额外的信号（全局GameManager特有的）
+		# 连接额外的信号（全局GameManager特有的）
 		if not game_mgr.mana_changed.is_connected(Callable(self, "_on_score_changed")):
 			game_mgr.mana_changed.connect(Callable(self, "_on_score_changed"))
 		print("MainGame._ready: 连接GameManager.mana_changed到_on_score_changed")
 	else:
 		print("MainGame._ready: 错误 - 无法获取GameManager单例，信号连接失败")
+	
+	# 初始化最大手牌数量
+	max_hand_size = CardManager.MAX_HAND_SIZE
 	
 	# 开始游戏
 	_start_game()
@@ -261,7 +267,7 @@ func _on_resources_changed(focus, essence, deck_size):
 		var game_mgr = get_node_or_null("/root/GameManager")
 		if game_mgr:
 			deck_widget.update_deck_info(deck_size, game_mgr.total_runes)
-		print("MainGame._on_resources_changed: 已更新deck_widget显示")
+			print("MainGame._on_resources_changed: 已更新deck_widget显示")
 		else:
 			print("MainGame._on_resources_changed: 错误 - 无法获取GameManager单例")
 	else:
@@ -276,12 +282,12 @@ func _on_score_changed(new_score):
 		print("MainGame._on_score_changed: sidebar不存在，尝试获取")
 		sidebar = $UIContainer/Sidebar
 	
-	# 更新sidebar的分数
-	if sidebar and sidebar.has_method("set_score"):
-		print("MainGame._on_score_changed: 更新sidebar分数")
-		sidebar.set_score(new_score)
+	# 更新sidebar的总得分（学识魔力）
+	if sidebar and sidebar.has_method("set_mana"):
+		print("MainGame._on_score_changed: 更新sidebar学识魔力")
+		sidebar.set_mana(new_score)
 	else:
-		print("MainGame._on_score_changed: 错误 - 无法更新分数，sidebar为空或没有set_score方法")
+		print("MainGame._on_score_changed: 错误 - 无法更新学识魔力，sidebar为空或没有set_mana方法")
 
 # 更新牌库组件
 func update_deck_widget():
@@ -328,7 +334,7 @@ func _on_play_button_pressed():
 	# 检查卡牌管理器是否存在
 	if card_manager:
 		print("MainGame._on_play_button_pressed: 调用卡牌管理器的play_selected方法")
-		var result = card_manager.play_selected()
+		var result = await card_manager.play_selected()
 		print("MainGame._on_play_button_pressed: play_selected返回结果=%s" % str(result))
 	else:
 		print("MainGame._on_play_button_pressed: 错误 - 卡牌管理器不存在")
@@ -339,7 +345,7 @@ func _on_discard_button_pressed():
 	# 检查卡牌管理器是否存在
 	if card_manager:
 		print("MainGame._on_discard_button_pressed: 调用卡牌管理器的discard_selected方法")
-		var result = card_manager.discard_selected()
+		var result = await card_manager.discard_selected()
 		print("MainGame._on_discard_button_pressed: discard_selected返回结果=%s" % str(result))
 	else:
 		print("MainGame._on_discard_button_pressed: 错误 - 卡牌管理器不存在")

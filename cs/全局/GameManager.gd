@@ -117,9 +117,10 @@ func _ready():
 	
 	# 确保符文库已初始化
 	if all_runes.size() == 0:
+		print("GameManager._ready: 符文库为空，初始化符文库")
 		initialize_rune_library()
 	
-	print("GameManager单例已初始化")
+	print("GameManager单例已初始化，符文库大小: %d" % all_runes.size())
 
 # 重置游戏状态到初始值
 func reset_game_state():
@@ -229,12 +230,15 @@ func calculate_score(base: int, multiplier: int) -> int:
 
 # 初始化符文库（洗牌）
 func initialize_rune_library():
+	print("GameManager.initialize_rune_library: 开始初始化符文库")
 	all_runes.clear()
 	
 	# 创建52张卡牌
 	for id in range(1, 53):
 		var card = CardData.new(id)
 		all_runes.append(card)
+	
+	print("GameManager.initialize_rune_library: 已创建 %d 张卡牌" % all_runes.size())
 	
 	# 洗牌
 	shuffle_rune_library()
@@ -244,7 +248,8 @@ func initialize_rune_library():
 	emit_signal("rune_library_updated")
 	emit_signal("deck_size_changed", remaining_runes, total_runes)
 	
-	print("符文库已初始化，共%d张符文" % all_runes.size())
+	print("GameManager.initialize_rune_library: 符文库已初始化，共%d张符文" % all_runes.size())
+	return all_runes.size() > 0
 
 # 洗牌
 func shuffle_rune_library():
@@ -263,30 +268,51 @@ func shuffle_rune_library():
 
 # 从符文库抽取一张符文
 func draw_rune() -> CardData:
+	print("GameManager.draw_rune: 尝试抽取卡牌，当前remaining_runes=%d, all_runes.size()=%d" % [remaining_runes, all_runes.size()])
+	
+	# 检查牌库是否为空
 	if remaining_runes <= 0:
-		print("符文库已空，无法抽取")
+		print("GameManager.draw_rune: 符文库已空，无法抽取")
 		return null
 	
+	# 检查牌库是否初始化
 	if all_runes.size() == 0:
-		print("符文库未初始化，尝试初始化")
+		print("GameManager.draw_rune: 符文库未初始化，尝试初始化")
 		initialize_rune_library()
 		if all_runes.size() == 0:
-			print("符文库初始化失败")
+			print("GameManager.draw_rune: 符文库初始化失败")
 			return null
 	
 	# 计算要抽取的卡牌索引
-	var index = all_runes.size() - remaining_runes
-	if index < 0 or index >= all_runes.size():
-		print("错误：抽牌索引超出范围 index=%d, size=%d" % [index, all_runes.size()])
+	var card_index = all_runes.size() - remaining_runes
+	print("GameManager.draw_rune: 计算抽牌索引 card_index=%d" % card_index)
+	
+	# 安全检查索引范围
+	if card_index < 0 or card_index >= all_runes.size():
+		print("GameManager.draw_rune: 抽牌索引错误 index=%d, size=%d，尝试修正" % [card_index, all_runes.size()])
+		# 修正索引
+		if all_runes.size() > 0:
+			card_index = 0
+			print("GameManager.draw_rune: 索引已修正为0")
+		else:
+			print("GameManager.draw_rune: 无法修正索引，牌库为空")
+			return null
+	
+	# 获取卡牌
+	var card = all_runes[card_index]
+	if not card:
+		print("GameManager.draw_rune: 在索引 %d 处未找到卡牌" % card_index)
 		return null
-		
-	var card = all_runes[index]
+	
+	# 抽牌成功，减少剩余卡牌数量
 	remaining_runes -= 1
+	
+	# 发送信号
 	emit_signal("card_drawn", card)
 	emit_signal("deck_size_changed", remaining_runes, total_runes)
 	emit_signal("rune_library_updated")
 	
-	print("抽取了符文: " + card.name)
+	print("GameManager.draw_rune: 成功抽取了符文: '%s'，剩余: %d" % [card.name, remaining_runes])
 	return card
 
 # 添加卡牌到手牌

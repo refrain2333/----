@@ -397,10 +397,11 @@ func get_card_name() -> String:
 func set_draggable(draggable: bool):
 	is_draggable = draggable
 
-# 设置原始位置
+# 设置原始位置（仅用于初始定位，不会在选中逻辑中使用）
 func set_original_position(pos: Vector2):
 	original_position = pos
-	position = pos 
+	position = pos
+	print("CardView '%s': 设置初始位置为 (%s, %s)" % [name, pos.x, pos.y])
 
 # 禁用鼠标悬停移动效果
 func disable_hover_movement():
@@ -424,19 +425,18 @@ func set_selected(value):
 		
 	is_selected = value
 	
-	# 如果原始位置未缓存，先缓存
-	if not _original_position_set:
-		_cache_original_position()
-		
+	# 当选中状态改变时，只改变垂直位置，保持水平位置不变
+	var current_x = position.x
+	
 	if is_selected:
 		# 向上移动卡牌以表示选中，但保持水平位置不变
-		position = Vector2(original_position.x, original_position.y - 30)
-		print("CardView '%s': Selected. Moved to (%s, %s)" % [name, position.x, position.y])
+		position = Vector2(current_x, -30) # 固定的选中位置
+		print("CardView '%s': 选中状态，位置: (%s, %s)" % [name, position.x, position.y])
 		highlight(true)
 	else:
-		# 恢复原始位置
-		position = original_position
-		print("CardView '%s': Deselected. Restored to (%s, %s)" % [name, position.x, position.y])
+		# 恢复原始垂直位置，但保持水平位置不变
+		position = Vector2(current_x, 0) # 固定的未选中位置
+		print("CardView '%s': 未选中状态，位置: (%s, %s)" % [name, position.x, position.y])
 		highlight(false)
 	
 	emit_signal("selection_changed", self, is_selected)

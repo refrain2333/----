@@ -152,12 +152,15 @@ func update_ui():
 	var has_focus = true  # 默认假设有足够的集中力
 	var has_essence = true  # 默认假设有足够的精华
 	
-	# 如果GameManager存在，获取实际资源状态
-	if Engine.has_singleton("GameManager"):
-		has_focus = GameManager.focus_count > 0
-		has_essence = GameManager.essence_count > 0
+	# 获取GameManager单例
+	var game_mgr = get_node_or_null("/root/GameManager")
+	if game_mgr:
+		has_focus = game_mgr.focus_count > 0
+		has_essence = game_mgr.essence_count > 0
 		
-		print("HandDock.update_ui: 资源状态 - 集中力: %d, 精华: %d" % [GameManager.focus_count, GameManager.essence_count])
+		print("HandDock.update_ui: 资源状态 - 集中力: %d, 精华: %d" % [game_mgr.focus_count, game_mgr.essence_count])
+	else:
+		print("HandDock.update_ui: 警告 - 无法获取GameManager")
 	
 	# 更新按钮状态
 	if play_button:
@@ -223,8 +226,9 @@ func remove_card(card_instance):
 		card_instance.queue_free()
 		print("HandDock.remove_card: 已从场景树移除")
 		
-		# 重新排列剩余卡牌
-		call_deferred("_rearrange_cards")
+		# 立即重新排列剩余卡牌（不使用延迟调用）
+		print("HandDock.remove_card: 立即重新排列剩余卡牌")
+		_rearrange_cards()
 		
 		print("HandDock.remove_card: 完成移除")
 		return true
@@ -245,32 +249,64 @@ func _rearrange_cards():
 	
 	print("HandDock._rearrange_cards: 找到 %d 张卡牌需要重排" % cards.size())
 	
-	# 计算每张卡牌的位置
+	# 固定参数
 	var card_width = 135  # 卡牌宽度
-	var spacing = 20      # 卡牌间距
 	var container_width = card_container.size.x
-	var total_width = cards.size() * card_width + (cards.size() - 1) * spacing
-	var start_x = max(0, (container_width - total_width) / 2)
+	var unselected_y = 0  # 未选中卡牌的Y坐标
+	var selected_y = -30  # 选中卡牌的Y坐标（向上偏移30像素）
 	
-	print("HandDock._rearrange_cards: 容器宽度=%d, 总宽度=%d, 起始X=%d" % [container_width, total_width, start_x])
+	# 固定的6个位置X坐标（从左到右）
+	var fixed_positions = [
+		80,   # 位置1（最左）
+		190,  # 位置2
+		300,  # 位置3
+		410,  # 位置4
+		520,  # 位置5
+		630   # 位置6（最右）
+	]
+	
+	# 根据卡牌数量选择起始位置索引
+	var start_index = 0
+	if cards.size() <= 6:
+		# 居中处理：例如，如果有3张牌，起始索引应该是1，以使用位置2,3,4
+		start_index = int(max(0, (6 - cards.size()) / 2))
+	
+	print("HandDock._rearrange_cards: 卡牌数量=%d，起始索引=%d" % [cards.size(), start_index])
 	
 	# 设置每张卡牌的位置
 	for i in range(cards.size()):
 		var card = cards[i]
-		var target_pos = Vector2(start_x + i * (card_width + spacing), 0)
+		var position_index = start_index + i
+		
+		# 安全检查，确保索引在有效范围内
+		if position_index >= fixed_positions.size():
+			print("HandDock._rearrange_cards: 警告 - 卡牌索引超出固定位置范围，使用最后一个位置")
+			position_index = fixed_positions.size() - 1
+		
+		# 获取X坐标（固定）
+		var x_pos = fixed_positions[position_index]
+		
+		# 根据选择状态确定Y坐标
+		var y_pos = unselected_y
+		var is_selected = false
+		if card.has_method("get_selected_state"):
+			is_selected = card.get_selected_state()
+			if is_selected:
+				y_pos = selected_y
 		
 		# 设置卡牌位置
+		var target_pos = Vector2(x_pos, y_pos)
+		print("HandDock._rearrange_cards: 设置卡牌 %d 的位置为 (%d, %d), 选中状态=%s" % 
+			[i, x_pos, y_pos, "是" if is_selected else "否"])
+		
+		# 设置卡牌位置并缓存原始位置
 		card.position = target_pos
 		
-		# 缓存原始位置
-		if card.has_method("_cache_original_position"):
-			print("HandDock._rearrange_cards: 设置卡牌 %d 的原始位置为 (%d, %d)" % [i, target_pos.x, target_pos.y])
-			card._cache_original_position()
-		
-		# 如果卡牌是选中状态，更新其位置
-		if card.has_method("get_selected_state") and card.get_selected_state():
-			print("HandDock._rearrange_cards: 更新选中卡牌 %d 的位置" % i)
-			card.set_selected(true)  # 这会保持选中状态并正确设置位置
+		# 更新卡牌的原始位置（用于取消选中时恢复）
+		if card.has_method("set_original_position"):
+			# 强制设置新的原始位置为水平固定位置，垂直为未选中位置
+			card.set_original_position(Vector2(x_pos, unselected_y))
+			print("HandDock._rearrange_cards: 设置卡牌 %d 的原始位置为 (%d, %d)" % [i, x_pos, unselected_y])
 	
 	print("HandDock._rearrange_cards: 卡牌重排完成")
 
