@@ -67,11 +67,13 @@ func handle_key_input(event: InputEventKey):
 func handle_mouse_input(event: InputEventMouseButton):
 	# 发出信号
 	emit_signal("mouse_click", event)
+	print("InputRouter: 鼠标事件 button=%s pressed=%s pos=%s" % [event.button_index, event.pressed, event.global_position])
 	
 	# 处理鼠标左键点击
 	if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		# 检查是否点击了关键区域
 		_check_area_clicks(event.global_position)
+		return  # 调试：直接返回，避免后续处理
 	
 	# 处理鼠标右键点击
 	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:

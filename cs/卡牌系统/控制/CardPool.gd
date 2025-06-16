@@ -169,6 +169,8 @@ func destroy_pool() -> void:
 
 # 定期清理未使用的卡牌
 func _process(_delta: float) -> void:
+	# 禁用自动清理功能，避免卡牌被意外清理
+	pass
 	# 每30秒清理一次
-	if Engine.get_process_frames() % 1800 == 0:
-		cleanup_unused() 
+	# if Engine.get_process_frames() % 1800 == 0:
+	#    cleanup_unused() 

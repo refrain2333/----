@@ -11,6 +11,9 @@ const MIN_RUNE_COST: int = 1      # 最小符文费用
 const MAX_RUNE_COST: int = 8      # 最大符文费用
 const MAX_HAND_SIZE: int = 5      # 最大手牌数量
 const INITIAL_HAND_SIZE: int = 5  # 初始手牌数量
+const VICTORY_SCORE: int = 50     # 胜利分数要求
+const MAX_FOCUS: int = 5          # 最大集中力值
+const MAX_ESSENCE: int = 3        # 最大精华值
 
 # 游戏进度相关
 var current_level: int = 1        # 当前关卡
@@ -27,6 +30,7 @@ var max_cost: int = MAX_RUNE_COST     # 最大符文费用
 var current_turn: int = 1             # 当前回合数
 var base_score: int = 50              # 当前出牌基础分数
 var score_multiplier: int = 1         # 当前出牌倍数
+var score: int = 0                    # 当前总分数
 
 # 符文库相关
 var total_runes: int = 52             # 符文库总数
@@ -101,12 +105,20 @@ signal deck_size_changed(remaining, total)
 signal joker_added(joker_data)
 signal joker_removed(joker_data)
 signal joker_effect_applied(joker_data)
+signal score_changed(new_score)
+signal game_won()
+signal resources_changed(focus_count, essence_count, remaining_runes)
 
 func _ready():
 	# 初始化游戏状态
 	reset_game_state()
 	# 初始化小丑卡池
 	initialize_joker_pool()
+	
+	# 确保符文库已初始化
+	if all_runes.size() == 0:
+		initialize_rune_library()
+	
 	print("GameManager单例已初始化")
 
 # 重置游戏状态到初始值
@@ -121,6 +133,7 @@ func reset_game_state():
 	current_turn = 1
 	base_score = 50
 	score_multiplier = 1
+	score = 0
 	
 	# 清空卡牌相关数组
 	current_hand.clear()
@@ -246,7 +259,7 @@ func shuffle_rune_library():
 	print("洗牌后前%d张符文:" % debug_count)
 	for i in range(debug_count):
 		var card = all_runes[i]
-		print("  #%d: %s (%s, 能量值: %d)" % [i+1, card.display_name, card.element, card.power])
+		print("  #%d: %s (%s, 能量值: %d)" % [i+1, card.name, card.element, card.power])
 
 # 从符文库抽取一张符文
 func draw_rune() -> CardData:
@@ -254,12 +267,26 @@ func draw_rune() -> CardData:
 		print("符文库已空，无法抽取")
 		return null
 	
-	var card = all_runes[all_runes.size() - remaining_runes]
+	if all_runes.size() == 0:
+		print("符文库未初始化，尝试初始化")
+		initialize_rune_library()
+		if all_runes.size() == 0:
+			print("符文库初始化失败")
+			return null
+	
+	# 计算要抽取的卡牌索引
+	var index = all_runes.size() - remaining_runes
+	if index < 0 or index >= all_runes.size():
+		print("错误：抽牌索引超出范围 index=%d, size=%d" % [index, all_runes.size()])
+		return null
+		
+	var card = all_runes[index]
 	remaining_runes -= 1
 	emit_signal("card_drawn", card)
+	emit_signal("deck_size_changed", remaining_runes, total_runes)
 	emit_signal("rune_library_updated")
 	
-	print("抽取了符文: " + card.display_name)
+	print("抽取了符文: " + card.name)
 	return card
 
 # 添加卡牌到手牌
@@ -273,7 +300,7 @@ func add_card_to_hand(card: CardData) -> bool:
 	current_hand.append(card)
 	emit_signal("hand_updated")
 	
-	print("符文已添加到手牌: " + card.display_name)
+	print("符文已添加到手牌: " + card.name)
 	return true
 
 # 移除手牌中的卡牌
@@ -282,7 +309,7 @@ func remove_card_from_hand(card: CardData):
 	if index != -1:
 		current_hand.remove_at(index)
 		emit_signal("hand_updated")
-		print("符文已从手牌移除: " + card.display_name)
+		print("符文已从手牌移除: " + card.name)
 
 # 检查手牌是否已满
 func is_hand_full() -> bool:
@@ -300,12 +327,17 @@ func deal_initial_hand():
 		print("符文库为空，重新初始化...")
 		initialize_rune_library()
 	
+	# 确保remaining_runes正确设置
+	if remaining_runes != all_runes.size():
+		remaining_runes = all_runes.size()
+		print("修正remaining_runes为%d" % remaining_runes)
+	
 	# 抽取指定数量的起始手牌
 	for i in range(INITIAL_HAND_SIZE):
 		var card = draw_rune()
 		if card:
 			add_card_to_hand(card)
-			print("初始手牌 #%d: %s" % [i+1, card.display_name])
+			print("初始手牌 #%d: %s" % [i+1, card.name])
 		else:
 			print("警告：无法抽取初始手牌 #%d" % [i+1])
 	
@@ -327,7 +359,7 @@ func cast_rune(card: CardData) -> bool:
 	# 消耗集中力
 	set_focus(focus_count - 1)
 	
-	print("施放了符文: " + card.display_name)
+	print("施放了符文: " + card.name)
 	return true
 
 # 弃置手牌中的一张符文
@@ -349,7 +381,7 @@ func discard_rune(card: CardData) -> bool:
 	# 恢复集中力
 	set_focus(INITIAL_FOCUS)
 	
-	print("弃置了符文: " + card.display_name + "，恢复了集中力")
+	print("弃置了符文: " + card.name + "，恢复了集中力")
 	return true
 
 # 判断符文组合类型并计算得分
@@ -605,4 +637,57 @@ func apply_joker_effect(joker_data, context: String = ""):
 	if effect_applied:
 		emit_signal("joker_effect_applied", joker_data)
 		print("应用小丑卡效果: " + joker_data.name + " - " + joker_data.effect_description) 
+
+# 增加分数
+func add_score(amount):
+	score += amount
+	current_mana += amount  # 同时更新学识魔力
+	
+	print("GameManager.add_score: 增加分数 %d，当前分数=%d，学识魔力=%d" % [amount, score, current_mana])
+	
+	# 发送信号
+	emit_signal("score_changed", score)
+	emit_signal("mana_changed", current_mana)
+	
+	# 检查胜利条件
+	if score >= VICTORY_SCORE:
+		print("GameManager.add_score: 达成胜利条件，发送game_won信号")
+		emit_signal("game_won")
+	
+	return score
+
+# 发送资源和分数信号
+func _emit_resource_score():
+	print("GameManager._emit_resource_score: 发送资源变化信号，focus=%d, essence=%d, remaining_runes=%d" % [focus_count, essence_count, remaining_runes])
+	emit_signal("resources_changed", focus_count, essence_count, remaining_runes)
+	
+	print("GameManager._emit_resource_score: 发送分数变化信号，score=%d" % score)
+	emit_signal("score_changed", score)
+	
+	if score >= VICTORY_SCORE:
+		print("GameManager._emit_resource_score: 发送胜利信号，score=%d >= VICTORY_SCORE=%d" % [score, VICTORY_SCORE])
+		emit_signal("game_won")
+
+# ---------------- 新增：资源与分数工具函数 ----------------
+# 重置主要资源（供 MainGame 调用）
+func reset_resources():
+	set_focus(INITIAL_FOCUS)
+	set_essence(INITIAL_ESSENCE)
+	_emit_resource_score()
+
+# 消耗 1 点集中力
+func use_focus() -> bool:
+	if focus_count > 0:
+		focus_count -= 1
+		_emit_resource_score()
+		return true
+	return false
+
+# 消耗 1 点精华
+func use_essence() -> bool:
+	if essence_count > 0:
+		essence_count -= 1
+		_emit_resource_score()
+		return true
+	return false 
  

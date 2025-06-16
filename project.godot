@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameManager="*res://cs/卡牌系统/数据/GameManager.gd"
+GameManager="*res://cs/全局/GameManager.gd"
 UIRegistry="*res://cs/主场景/ui/UIRegistry.gd"
 
 [display]

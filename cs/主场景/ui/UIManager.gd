@@ -151,8 +151,41 @@ func close_settings():
 
 # 添加卡牌到手牌
 func add_card_to_hand(card_data):
-	if hand_dock and hand_dock.has_method("add_card"):
-		return hand_dock.add_card(card_data)
+	print("UIManager.add_card_to_hand: 尝试添加卡牌到手牌")
+	
+	if not hand_dock:
+		print("UIManager.add_card_to_hand: 错误 - 手牌容器为空")
+		return null
+	
+	if not card_data:
+		print("UIManager.add_card_to_hand: 错误 - 卡牌数据为空")
+		return null
+	
+	# 打印卡牌数据
+	print("UIManager.add_card_to_hand: 卡牌数据:")
+	if card_data.has("id"): print("  id: ", card_data.id)
+	if card_data.has("name"): print("  name: ", card_data.name)
+	if card_data.has("element"): print("  element: ", card_data.element)
+	if card_data.has("cost"): print("  cost: ", card_data.cost)
+	
+	# 创建卡牌实例
+	var card_instance = preload("res://cs/卡牌系统/视图/Card.tscn").instantiate()
+	print("UIManager.add_card_to_hand: 创建卡牌实例")
+	
+	# 设置卡牌数据
+	if card_instance.has_method("setup"):
+		card_instance.setup(card_data)
+		print("UIManager.add_card_to_hand: 设置卡牌数据完成")
+	else:
+		print("UIManager.add_card_to_hand: 错误 - 卡牌实例没有setup方法")
+	
+	# 添加到手牌
+	if hand_dock.add_card(card_instance):
+		print("UIManager.add_card_to_hand: 成功添加卡牌到手牌")
+		return card_instance
+	else:
+		print("UIManager.add_card_to_hand: 错误 - 添加卡牌到手牌失败")
+	
 	return null
 
 # 从手牌移除卡牌
@@ -192,6 +225,15 @@ func update_resources(mana: int, focus: int, essence: int, lore: int):
 		sidebar.set_essence(essence)
 		sidebar.set_lore(lore)
 
+# 更新资源标签
+func update_resource_labels(focus: int, essence: int, deck_size: int):
+	if sidebar:
+		sidebar.set_focus(focus)
+		sidebar.set_essence(essence)
+	
+	if deck_widget and deck_widget.has_method("update_deck_info"):
+		deck_widget.update_deck_info(deck_size, GameManager.total_runes)
+
 # 更新分数显示
 func update_score(score: int, multiplier: int = 1):
 	if sidebar:
@@ -221,4 +263,26 @@ func show_discovery_area(prompt_text: String = "选择一张卡牌添加到你�
 # 隐藏发现区域
 func hide_discovery_area():
 	if top_dock:
-		top_dock.hide_discovery() 
+		top_dock.hide_discovery()
+
+# 显示弹窗
+func show_popup(message: String, callback = null):
+	# 创建弹窗
+	var popup = AcceptDialog.new()
+	popup.dialog_text = message
+	popup.title = "通知"
+	popup.position = Vector2(get_viewport().size.x / 2 - 150, get_viewport().size.y / 2 - 50)
+	popup.size = Vector2(300, 150)
+	
+	# 如果有回调，连接信号
+	if callback:
+		popup.confirmed.connect(callback)
+	
+	# 添加到场景并显示
+	add_child(popup)
+	popup.popup_centered()
+	
+	# 3秒后自动关闭
+	await get_tree().create_timer(3.0).timeout
+	if popup and is_instance_valid(popup) and not popup.visible:
+		popup.queue_free() 

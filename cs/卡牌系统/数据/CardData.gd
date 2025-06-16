@@ -2,81 +2,106 @@ class_name CardData
 extends Resource
 
 # 卡牌基础属性
-var id: int = 0              # 卡牌ID (1-52)
+var id: String = ""         # 卡牌ID (例如 "fire_1")
+var name: String = ""       # 显示名称，如"火之一"
 var suit: String = ""        # 花色：spades（黑桃）, hearts（红桃）, clubs（梅花）, diamonds（方片）
 var value: int = 0           # 牌值：1(A)-13(K)
-var display_name: String = "" # 显示名称，如"黑桃A"
-var texture_path: String = "" # 贴图路径
-var color: String = ""       # 颜色：black（黑）或red（红）
-var element: String = ""     # 元素属性（可选，用于游戏特殊规则）
+var element: String = ""     # 元素属性（fire, water, earth, air）
 var power: int = 0           # 能量值（可用于计分）
+var cost: int = 1            # 卡牌费用
+@export var point: int = 1   # 得分值（打出时获得的分数）
 var modifiers: Array = []    # 卡牌修饰符数组
+var texture_path: String = "" # 卡牌图像路径
 
 # 构造函数
-func _init(card_id: int = 0):
-	if card_id > 0 and card_id <= 52:
+func _init(card_id = null):
+	if card_id is int and card_id > 0 and card_id <= 52:
+		_setup_from_numeric_id(card_id)
+	elif card_id is String and card_id.length() > 0:
 		id = card_id
-		_setup_from_id()
 
-# 根据ID设置卡牌属性
-func _setup_from_id():
+# 检查是否有指定属性
+func has(property: String) -> bool:
+	return property in self
+
+# 根据数字ID设置卡牌属性
+func _setup_from_numeric_id(card_id: int):
 	# 确定花色
-	if id <= 13:
+	if card_id <= 13:
 		suit = "spades"  # 黑桃
-		color = "black"
 		element = "earth"  # 可以根据游戏设计分配元素
-	elif id <= 26:
+	elif card_id <= 26:
 		suit = "hearts"  # 红桃
-		color = "red"
 		element = "fire"
-	elif id <= 39:
+	elif card_id <= 39:
 		suit = "clubs"   # 梅花
-		color = "black"
 		element = "air"
 	else:
 		suit = "diamonds" # 方片
-		color = "red"
 		element = "water"
 	
 	# 确定牌值
-	value = (id - 1) % 13 + 1
+	value = (card_id - 1) % 13 + 1
 	
 	# 设置能量值（示例：A=14, K=13, Q=12, J=11, 其他=牌面值）
 	if value == 1:  # A
 		power = 14
+		point = 5   # A牌得分高
 	elif value >= 11:  # J, Q, K
 		power = value
+		point = 3   # 人物牌得分中等
 	else:
 		power = value
+		point = 1   # 数字牌得分基础
 	
 	# 设置显示名称
-	var suit_name = ""
-	match suit:
-		"spades": suit_name = "黑桃"
-		"hearts": suit_name = "红桃"
-		"clubs": suit_name = "梅花"
-		"diamonds": suit_name = "方片"
+	var element_name = ""
+	match element:
+		"fire": element_name = "火"
+		"water": element_name = "水"
+		"earth": element_name = "土"
+		"air": element_name = "风"
 	
 	var value_name = ""
 	match value:
-		1: value_name = "A"
-		11: value_name = "J"
-		12: value_name = "Q"
-		13: value_name = "K"
-		_: value_name = str(value)
+		1: value_name = "一"
+		2: value_name = "二"
+		3: value_name = "三"
+		4: value_name = "四"
+		5: value_name = "五"
+		6: value_name = "六"
+		7: value_name = "七"
+		8: value_name = "八"
+		9: value_name = "九"
+		10: value_name = "十"
+		11: value_name = "王子"
+		12: value_name = "王后"
+		13: value_name = "国王"
 	
-	display_name = suit_name + value_name
+	name = element_name + "之" + value_name
 	
-	# 设置贴图路径
-	texture_path = "res://assets/images/pokers/" + str(id) + ".jpg"
+	# 设置ID
+	id = element + "_" + str(value)
+	
+	# 设置费用
+	cost = _calculate_cost(value)
+
+# 计算卡牌费用
+func _calculate_cost(value: int) -> int:
+	if value <= 5:
+		return 1
+	elif value <= 10:
+		return 2
+	else:
+		return 3
 
 # 获取卡牌基本信息
 func get_info() -> String:
-	return display_name + " (能量:" + str(power) + ")"
+	return name + " (能量:" + str(power) + ")"
 
 # 获取卡牌比较值（用于排序）
 func get_compare_value() -> int:
-	return id
+	return value
 
 # 判断两张牌是否同花色
 static func is_same_suit(card1: CardData, card2: CardData) -> bool:
@@ -88,7 +113,7 @@ static func is_same_value(card1: CardData, card2: CardData) -> bool:
 
 # 判断是否同色
 static func is_same_color(card1: CardData, card2: CardData) -> bool:
-	return card1.color == card2.color
+	return card1.suit == card2.suit
 	
 # 判断是否同元素
 static func is_same_element(card1: CardData, card2: CardData) -> bool:

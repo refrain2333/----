@@ -42,6 +42,7 @@ func update_ui():
 func set_mana(value: int):
 	if mana_label:
 		mana_label.text = str(value)
+		print("Sidebar.set_mana: 更新学识魔力显示为 %d" % value)
 
 # 设置集中力
 func set_focus(value: int):
@@ -62,6 +63,7 @@ func set_lore(value: int):
 func set_score(value: int):
 	if score_value:
 		score_value.text = str(value)
+		print("Sidebar.set_score: 更新分数显示为 %d" % value)
 
 # 设置倍率
 func set_multiplier(value: int):

@@ -13,9 +13,9 @@ var artifact_data = null
 
 # 法器纹理
 var artifact_textures = {
-	"crystal": preload("res://assets/images/pokers/card_back.png"),
-	"hourglass": preload("res://assets/images/pokers/card_back.png"),
-	"ring": preload("res://assets/images/pokers/card_back.png")
+	"crystal": null,
+	"hourglass": null,
+	"ring": null
 }
 
 func _ready():
@@ -24,6 +24,9 @@ func _ready():
 	
 	# 连接输入事件
 	gui_input.connect(_on_gui_input)
+	
+	# 加载法器纹理
+	_load_textures()
 
 # 设置法器数据
 func setup(data):
@@ -67,3 +70,31 @@ func set_selected(selected: bool):
 		modulate = Color(1.2, 1.2, 1.2)  # 亮起
 	else:
 		modulate = Color(1, 1, 1)  # 正常 
+
+# 加载法器纹理
+func _load_textures():
+	# 尝试加载通用法器图标
+	var default_texture = null
+	var icon_path = "res://assets/images/artifactItem/icon.png"
+	
+	if ResourceLoader.exists(icon_path):
+		default_texture = load(icon_path)
+		print("ArtifactItem: 成功加载法器图标: " + icon_path)
+	else:
+		print("ArtifactItem: 无法加载法器图标，创建纯色纹理")
+		var image = Image.create(100, 100, false, Image.FORMAT_RGB8)
+		image.fill(Color(0.2, 0.5, 0.7))
+		default_texture = ImageTexture.create_from_image(image)
+	
+	# 为每种法器类型设置默认纹理
+	artifact_textures["crystal"] = default_texture
+	artifact_textures["hourglass"] = default_texture
+	artifact_textures["ring"] = default_texture
+	
+	# 尝试加载特定类型的法器图标
+	var types = ["crystal", "hourglass", "ring"]
+	for type in types:
+		var type_path = "res://assets/images/artifactItem/" + type + ".png"
+		if ResourceLoader.exists(type_path):
+			artifact_textures[type] = load(type_path)
+			print("ArtifactItem: 成功加载特定法器图标: " + type) 

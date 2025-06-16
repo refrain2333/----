@@ -1,9 +1,6 @@
 class_name Hud
 extends Control
 
-# 信号
-signal end_turn_pressed
-
 # 节点引用
 @onready var status_label = $StatusLabel
 
@@ -20,8 +17,4 @@ func update_ui():
 # 设置状态文本
 func set_status_text(text: String):
 	if status_label:
-		status_label.text = text
-
-# 处理结束回合按钮点击
-func _on_end_turn_button_pressed():
-	emit_signal("end_turn_pressed") 
+		status_label.text = text 

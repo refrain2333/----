@@ -1,4 +1,3 @@
-class_name JokerManager
 extends Node
 
 # 小丑卡牌管理器，负责处理小丑卡牌的生成和效果

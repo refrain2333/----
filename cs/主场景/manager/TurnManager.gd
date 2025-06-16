@@ -274,18 +274,13 @@ func _check_focus_depleted():
 	if focus <= 1:
 		call_deferred("end_turn")
 
+# 连接UI信号
+func connect_ui(_hud: Node):
+	# 这里不需要连接任何信号
+	print("TurnManager: UI信号已连接")
+
 # 特效队列为空时的回调
 func _on_effect_queue_empty():
 	# 如果当前在结算阶段，则转到结束阶段
 	if current_state == TurnState.RESOLVE:
 		change_state(TurnState.END) 
-
-# 连接UI信号
-func connect_ui(hud: Node):
-	# 不再需要连接end_turn_pressed信号，因为我们已经移除了EndTurnButton
-	
-	print("TurnManager: UI信号已连接")
-
-# 处理结束回合按钮点击
-func _on_end_turn_pressed():
-	end_turn() 
