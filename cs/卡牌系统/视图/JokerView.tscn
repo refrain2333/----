@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=5 format=3 uid="uid://labiy7h764ok"]
 
-[ext_resource type="Script" path="res://cs/卡牌系统/视图/JokerView.gd" id="1_2yjpk"]
-[ext_resource type="Texture2D" path="res://assets/images/jokers/common_joker.png" id="2_7ynmr"]
+[ext_resource type="Script" uid="uid://b744pvihexqj7" path="res://cs/卡牌系统/视图/JokerView.gd" id="1_2yjpk"]
+[ext_resource type="Texture2D" uid="uid://brhp5e1hqvyrk" path="res://assets/images/jokers/common_joker.png" id="2_7ynmr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j7hn"]
 bg_color = Color(0.0392157, 0.0392157, 0.0784314, 0.752941)
@@ -112,4 +112,4 @@ autowrap_mode = 3
 [node name="Highlight" type="Sprite2D" parent="."]
 visible = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."] 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

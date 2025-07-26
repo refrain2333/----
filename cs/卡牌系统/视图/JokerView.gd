@@ -33,16 +33,25 @@ signal joker_unhovered(joker_view)
 func _ready():
 	# 初始化
 	highlight_sprite.visible = false
-	set_process_input(true)
-	
-	# 连接信号
-	gui_input.connect(_on_gui_input)
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
+	setup_input_handling()
 	
 	# 保存原始位置
 	original_position = position
 	original_z_index = z_index
+
+# 设置输入处理
+func setup_input_handling():
+	set_process_input(true)
+	
+	# 连接信号
+	if not gui_input.is_connected(_on_gui_input):
+		gui_input.connect(_on_gui_input)
+	
+	if not mouse_entered.is_connected(_on_mouse_entered):
+		mouse_entered.connect(_on_mouse_entered)
+	
+	if not mouse_exited.is_connected(_on_mouse_exited):
+		mouse_exited.connect(_on_mouse_exited)
 
 # 设置小丑卡数据并更新视图
 func setup(data):
@@ -55,39 +64,52 @@ func update_view():
 		return
 	
 	# 加载小丑卡贴图
-	var texture_path = "res://assets/images/jokers/" + joker_data.image_name + ".png"
-	var texture = load(texture_path)
-	if texture:
-		joker_texture.texture = texture
+	_update_texture()
 	
 	# 更新小丑卡信息标签
-	joker_name_label.text = joker_data.name
-	joker_effect_label.text = joker_data.effect_description
-	joker_type_label.text = get_joker_type_display(joker_data.type)
+	if joker_name_label:
+		joker_name_label.text = joker_data.item_name
 	
-	# 根据小丑类型设置颜色
-	var type_color = get_joker_type_color(joker_data.type)
-	joker_type_label.set("theme_override_colors/font_color", type_color)
+	if joker_effect_label:
+		joker_effect_label.text = joker_data.get_description()
+	
+	if joker_type_label:
+		joker_type_label.text = _get_timing_display(joker_data.trigger_event_timing)
 
-# 获取小丑卡类型显示名称
-func get_joker_type_display(type: String) -> String:
-	match type:
-		"common": return "普通"
-		"rare": return "稀有"
-		"legendary": return "传奇"
-		"negative": return "负面"
-		"special": return "特殊"
-		_: return "未知"
+# 获取触发时机对应的显示文本
+func _get_timing_display(timing: int) -> String:
+	match timing:
+		GlobalEnums.EffectTriggerTiming.ON_TURN_START:
+			return "回合开始"
+		GlobalEnums.EffectTriggerTiming.BEFORE_PLAY:
+			return "出牌时"
+		GlobalEnums.EffectTriggerTiming.ON_SCORE_CALCULATION:
+			return "计分时"
+		GlobalEnums.EffectTriggerTiming.ON_DRAW:
+			return "抽牌时"
+		GlobalEnums.EffectTriggerTiming.ON_DISCARD:
+			return "弃牌时"
+		_:
+			return "特殊"
 
-# 获取小丑卡类型颜色
-func get_joker_type_color(type: String) -> Color:
-	match type:
-		"common": return Color(0.7, 0.7, 0.7)  # 灰色
-		"rare": return Color(0.3, 0.5, 1.0)    # 蓝色
-		"legendary": return Color(1.0, 0.5, 0.0)  # 橙色
-		"negative": return Color(0.7, 0.0, 0.0)   # 红色
-		"special": return Color(0.7, 0.0, 1.0)    # 紫色
-		_: return Color(1.0, 1.0, 1.0)  # 白色
+# 更新贴图
+func _update_texture():
+	if not joker_texture:
+		return
+		
+	var texture_path = ""
+	
+	# 尝试根据ID加载贴图
+	if joker_data:
+		texture_path = "res://assets/images/jokers/" + joker_data.item_id.to_lower() + ".png"
+		
+	# 默认路径
+	if not ResourceLoader.exists(texture_path):
+		texture_path = "res://assets/images/jokers/common_joker.png"
+	
+	# 加载贴图
+	if ResourceLoader.exists(texture_path):
+		joker_texture.texture = load(texture_path)
 
 # 高亮显示
 func highlight(enable: bool = true):
@@ -97,68 +119,56 @@ func highlight(enable: bool = true):
 	else:
 		z_index = original_z_index
 
-# 处理输入事件
+# 处理GUI输入
 func _on_gui_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
 			# 发送点击信号
 			emit_signal("joker_clicked", self)
 			
-			# 不再在这里处理拖拽，而是在MainGame中通过点击信号处理选中逻辑
-			return
-	
-	# 以下代码用于未来实现拖拽功能，现在启用以解决未使用信号的警告
-	if not is_draggable:
-		return
-	
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				# 开始拖动
-				is_being_dragged = true
-				drag_offset = get_global_mouse_position() - global_position
-				original_position = global_position
-				original_parent = get_parent()
-				
-				# 提高Z顺序使卡牌显示在最上层
-				z_index = 100
-				
-				# emit_signal("joker_clicked", self) # 已在上面调用
-			else:
-				# 停止拖动
-				is_being_dragged = false
-				
-				# 发送小丑卡放下信号
-				emit_signal("joker_dropped", self, get_global_mouse_position())
-				
-				# 恢复原始Z顺序
-				z_index = original_z_index
+			# 开始拖动
+			if is_draggable:
+				start_drag(event)
+		else:
+			# 停止拖动
+			stop_drag()
+
+# 开始拖动
+func start_drag(event):
+	is_being_dragged = true
+	drag_offset = get_global_mouse_position() - global_position
+	original_position = global_position
+	z_index = 100
+
+# 停止拖动
+func stop_drag():
+	if is_being_dragged:
+		is_being_dragged = false
+		emit_signal("joker_dropped", self, get_global_mouse_position())
+		z_index = original_z_index
 
 # 每帧处理拖动
 func _process(_delta):
 	if is_being_dragged:
-		# 更新位置跟随鼠标
 		global_position = get_global_mouse_position() - drag_offset
 		emit_signal("joker_dragged", self)
 
 # 鼠标进入时
 func _on_mouse_entered():
-	if not is_being_dragged and is_draggable:
+	if not is_being_dragged and is_draggable and not is_selected:
 		# 悬停效果
 		if hover_enabled:
-			var tween = create_tween()
-			tween.tween_property(self, "position", original_position + hover_offset, 0.1)
+			position.y = original_position.y - 20 # 向上偏移
 		highlight(true)
 	
 	emit_signal("joker_hovered", self)
 
 # 鼠标离开时
 func _on_mouse_exited():
-	if not is_being_dragged and is_draggable:
+	if not is_being_dragged and is_draggable and not is_selected:
 		# 恢复原始位置
-		if hover_enabled and not is_selected: # 只有在未选中状态才恢复位置
-			var tween = create_tween()
-			tween.tween_property(self, "position", original_position, 0.1)
+		if hover_enabled:
+			position.y = original_position.y
 		highlight(false)
 	
 	emit_signal("joker_unhovered", self)
@@ -170,7 +180,7 @@ func get_joker_data():
 # 获取小丑卡名称
 func get_joker_name() -> String:
 	if joker_data:
-		return joker_data.name
+		return joker_data.item_name
 	return "未知小丑牌"
 
 # 设置是否可拖动
@@ -210,4 +220,8 @@ func set_selected(selected: bool):
 	if is_selected:
 		position.y = original_position.y - 20  # 向上移动20像素
 	else:
-		position.y = original_position.y  # 恢复原始位置 
+		position.y = original_position.y  # 恢复原始位置
+
+# 设置悬停效果
+func set_hover_enabled(enabled: bool):
+	hover_enabled = enabled

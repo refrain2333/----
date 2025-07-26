@@ -1,0 +1,131 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmg2devcrmsw0"]
+
+[ext_resource type="Script" uid="uid://b14v7hx5blt4q" path="res://cs/卡牌系统/视图/SpellView.gd" id="1_qxugh"]
+[ext_resource type="Texture2D" uid="uid://c1q7s7ss04s6s" path="res://icon.svg" id="2_tj7aw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hslp0"]
+bg_color = Color(0.294118, 0.482353, 0.792157, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3p6e"]
+bg_color = Color(0.372549, 0.372549, 0.372549, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1n0e"]
+bg_color = Color(0.811765, 0.2, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="SpellView" type="Control"]
+custom_minimum_size = Vector2(120, 160)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 120.0
+offset_bottom = 160.0
+script = ExtResource("1_qxugh")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_tj7aw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hslp0")
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "灵光一闪"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -50.0
+offset_right = -5.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 8
+text = "[主动] 抽1张牌"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="RarityIndicator" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -15.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 15.0
+grow_horizontal = 0
+color = Color(0, 0.501961, 0.952941, 1)
+
+[node name="ChargeLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -25.0
+offset_top = 5.0
+offset_right = 25.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "充能: 1"
+horizontal_alignment = 1
+
+[node name="UseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -30.0
+offset_top = -23.0
+offset_right = 30.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 10
+theme_override_styles/disabled = SubResource("StyleBoxFlat_k3p6e")
+theme_override_styles/normal = SubResource("StyleBoxFlat_m1n0e")
+text = "使用"

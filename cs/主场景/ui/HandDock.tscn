@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://qyrjutr0b5rg"]
 
-[ext_resource type="Script" uid="uid://3kxokfot7jw8" path="res://cs/主场景/ui/HandDock.gd" id="1_handdock"]
+[ext_resource type="Script" path="res://cs/主场景/ui/HandDock.gd" id="1_handdock"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hand_panel"]
 bg_color = Color(0.0705882, 0.0862745, 0.207843, 0.741176)
@@ -174,7 +174,7 @@ text = "✧"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CardContainer" type="HBoxContainer" parent="."]
+[node name="CardContainer" type="Container" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -186,8 +186,6 @@ offset_bottom = -90.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 35
-alignment = 1
 
 [node name="ButtonPanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(0, 70)

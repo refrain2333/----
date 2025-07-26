@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/SpellData.gd" id="1_e74wk"]
+
+[resource]
+script = ExtResource("1_e74wk")
+id = "SPELL_FLASH_OF_INSIGHT"
+name = "灵感闪现"
+description = "立即抽取3张牌。"
+rarity = 1
+cost = 25
+effect_type = "DRAW_CARDS"
+effect_value = 3
+spell_type = 0
+charges = 1

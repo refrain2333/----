@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5rckpgj2emrc"]
+
+[ext_resource type="Script" uid="uid://cqal3xviayenf" path="res://cs/工具/CardTextGenerator.gd" id="1_2r8lw"]
+
+[node name="CardTextGenerator" type="Node2D"]
+script = ExtResource("1_2r8lw")

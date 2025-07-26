@@ -1,0 +1,95 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxvn0ywqfqxs"]
+
+[ext_resource type="Script" uid="uid://dkk000dv1dr4s" path="res://cs/tests/卡牌相关/初始化手牌/PresetCardLoader.gd" id="1_preset_script"]
+
+[node name="PresetCardLoader" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_preset_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -250.0
+offset_right = 400.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "预制卡牌数据加载器"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftPanel" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CardListLabel" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel"]
+layout_mode = 2
+text = "可用卡牌列表:"
+horizontal_alignment = 1
+
+[node name="CardList" type="ItemList" parent="VBoxContainer/HBoxContainer/LeftPanel"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_vertical = 3
+select_mode = 1
+
+[node name="LoadButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "加载选中卡牌"
+
+[node name="RightPanel" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InfoLabel" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+text = "从预制数据文件加载卡牌"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HandLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "当前手牌:"
+horizontal_alignment = 1
+
+[node name="HandContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

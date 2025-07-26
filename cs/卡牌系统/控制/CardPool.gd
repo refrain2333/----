@@ -39,6 +39,7 @@ func _initialize_pool() -> void:
 func _create_card_instance() -> Control:
 	var card = card_scene.instantiate()
 	add_child(card)
+	_total_created += 1  # 增加创建计数
 	return card
 
 # 获取一个卡牌实例

@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqy4y4u5nnqbr"]
+
+[ext_resource type="Script" uid="uid://cb6wtb6qrlfnn" path="res://cs/tests/卡牌相关/牌库/DeckWidgetTest.gd" id="1_test_script"]
+[ext_resource type="PackedScene" uid="uid://c7aq81vj4ec5i" path="res://cs/主场景/ui/DeckWidget.tscn" id="2_deck_widget"]
+
+[node name="DeckWidgetTestScene" type="Node"]
+script = ExtResource("1_test_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.145098, 0.188235, 1)
+
+[node name="Title" type="Label" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "牌库测试场景"
+horizontal_alignment = 1
+
+[node name="Instructions" type="Label" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 70.0
+offset_bottom = 110.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 16
+text = "点击牌库图标查看所有卡牌"
+horizontal_alignment = 1
+
+[node name="DeckWidget" parent="." instance=ExtResource("2_deck_widget")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -170.0
+offset_right = 110.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2

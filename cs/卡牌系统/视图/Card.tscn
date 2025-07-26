@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://do45yglin4dbq"]
+[gd_scene load_steps=6 format=3 uid="uid://do45yglin4dbq"]
 
 [ext_resource type="Script" uid="uid://crdvo5x2wgyep" path="res://cs/卡牌系统/视图/CardView.gd" id="1_jk6ts"]
 [ext_resource type="Texture2D" uid="uid://ca3pbuhthj5ea" path="res://assets/images/pokers/1.jpg" id="2_wd3un"]
+[ext_resource type="Shader" uid="uid://cg1ht1pmwjot" path="res://assets/images/card_reinforcements/glass_material.gdshader" id="3_eykg6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h8j2d"]
 bg_color = Color(0.941176, 0.8, 0.254902, 0.501961)
@@ -17,18 +18,16 @@ corner_radius_bottom_left = 8
 shadow_color = Color(1, 0.843137, 0, 0.301961)
 shadow_size = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a06q4"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.47451)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k6h2o"]
+shader = ExtResource("3_eykg6")
+shader_parameter/transparency = 0.7
+shader_parameter/refraction = 0.05
 
 [node name="Card" type="Control"]
-custom_minimum_size = Vector2(135, 180)
+custom_minimum_size = Vector2(120, 180)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 135.0
+offset_right = 120.0
 offset_bottom = 180.0
 script = ExtResource("1_jk6ts")
 
@@ -65,54 +64,7 @@ mouse_filter = 2
 texture = ExtResource("2_wd3un")
 expand_mode = 1
 
-[node name="BackgroundPanel" type="Panel" parent="CardFront"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_a06q4")
 
-[node name="NameLabel" type="Label" parent="CardFront"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 14
-text = "黑桃A"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ElementLabel" type="Label" parent="CardFront"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -30.0
-offset_top = -20.0
-offset_right = 30.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.6, 0.4, 0.2, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 12
-text = "土"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="PowerLabel" type="Label" parent="CardFront"]
 layout_mode = 1
@@ -133,3 +85,28 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="ReinforcementEffects" type="Node2D" parent="."]
+position = Vector2(67.5, 90)
+
+[node name="Frame" type="Sprite2D" parent="ReinforcementEffects"]
+visible = false
+scale = Vector2(0.5, 0.5)
+
+[node name="WaxSeals" type="Node2D" parent="ReinforcementEffects"]
+
+[node name="Material" type="ColorRect" parent="ReinforcementEffects"]
+visible = false
+material = SubResource("ShaderMaterial_k6h2o")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -90.0
+offset_right = 67.5
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

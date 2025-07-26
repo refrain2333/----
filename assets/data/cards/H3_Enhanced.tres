@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/CardData.gd" id="1_5l3ge"]
+
+[resource]
+script = ExtResource("1_5l3ge")
+id = "H3_Enhanced"
+base_value = 5
+suit = "hearts"
+name = "强化红桃3"
+image_path = "res://assets/images/pokers/16.jpg"
+wax_seals = Array[String](["GOLDEN"])
+frame_type = "LEGENDARY"
+material_type = "CRYSTAL"

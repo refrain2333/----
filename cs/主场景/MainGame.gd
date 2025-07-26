@@ -1,14 +1,26 @@
 extends Node2D
 
+# 预加载类
+const CardEffectController = preload("res://cs/卡牌系统/控制/CardEffectManager.gd")
+const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
+const TurnManagerClass = preload("res://cs/主场景/manager/TurnManager.gd")
+const EffectOrchestratorClass = preload("res://cs/主场景/manager/EffectOrchestrator.gd")
+const InputManagerClass = preload("res://cs/主场景/manager/InputManager.gd")
+const InputRouterClass = preload("res://cs/主场景/manager/InputRouter.gd")
+const JokerManagerClass = preload("res://cs/卡牌系统/数据/管理器/JokerManager.gd")
+const DiscoveryManagerClass = preload("res://cs/卡牌系统/数据/管理器/DiscoveryManager.gd")
+const CardManagerClass = preload("res://cs/卡牌系统/数据/管理器/CardManager.gd")
+
 # 管理器引用
 var card_manager
-var turn_manager: TurnManager
-var effect_orchestrator: EffectOrchestrator
-var input_manager: InputManager
-var input_router: InputRouter
-var game_state: GameState
-var discovery_manager: DiscoveryManager
-var joker_manager: JokerManager
+var turn_manager # TurnManager类型
+var effect_orchestrator # EffectOrchestrator类型
+var input_manager # InputManager类型
+var input_router # InputRouter类型
+var game_state: int # 使用GlobalEnums.GameState枚举
+var discovery_manager # DiscoveryManager类型
+var joker_manager # JokerManager类型
+var card_effect_manager: CardEffectController  # 卡牌效果管理器引用
 
 # UI组件引用
 var hand_dock
@@ -30,6 +42,9 @@ var max_hand_size: int  # 最大手牌数量
 func _ready():
 	print("MainGame._ready: 初始化开始")
 	
+	# 初始化游戏状态
+	game_state = GlobalEnums.GameState.MAIN_MENU
+	
 	# 初始化游戏管理器
 	if get_node_or_null("/root/GameManager"):
 		print("MainGame._ready: GameManager单例已存在")
@@ -45,10 +60,41 @@ func _ready():
 	else:
 		print("MainGame._ready: 无法访问GameManager，游戏可能无法正常运行")
 	
+	# 初始化卡牌效果管理器
+	card_effect_manager = CardEffectController.new()
+	add_child(card_effect_manager)
+	print("MainGame._ready: 卡牌效果管理器已创建")
+	
 	# 初始化卡牌管理器
-	card_manager = CardManager.new(self)
+	card_manager = CardManagerClass.new(self)
 	add_child(card_manager)
+	# 确保卡牌管理器使用同一个卡牌效果管理器
+	if card_manager and card_effect_manager and card_manager.effect_manager != card_effect_manager:
+		print("MainGame._ready: 设置卡牌管理器的效果管理器引用")
+		card_manager.effect_manager = card_effect_manager
 	print("MainGame._ready: 卡牌管理器已创建")
+	
+	# 初始化效果协调器
+	# 检查Manager节点是否存在
+	var manager_node = $UIContainer/Manager
+	if not manager_node:
+		# 创建Manager节点
+		manager_node = Node.new()
+		manager_node.name = "Manager"
+		$UIContainer.add_child(manager_node)
+		print("MainGame._ready: 创建Manager节点")
+	
+	# 获取或创建效果协调器
+	effect_orchestrator = manager_node.get_node_or_null("EffectOrchestrator")
+	if not effect_orchestrator:
+		effect_orchestrator = EffectOrchestratorClass.new(self)  # 传递self作为game_scene参数
+		effect_orchestrator.name = "EffectOrchestrator"
+		manager_node.add_child(effect_orchestrator)
+		print("MainGame._ready: 效果协调器已创建")
+	
+	# 设置效果协调器
+	effect_orchestrator.setup(card_manager, card_effect_manager, get_node_or_null("/root/GameManager"), get_node_or_null("/root/EventManager"))
+	print("MainGame._ready: 效果协调器已设置")
 	
 	# 加载UI组件
 	_load_ui_components()
@@ -121,7 +167,9 @@ func _ready():
 		print("MainGame._ready: 错误 - 无法获取GameManager单例，信号连接失败")
 	
 	# 初始化最大手牌数量
-	max_hand_size = CardManager.MAX_HAND_SIZE
+	max_hand_size = 5  # 默认值，与CardManager中的默认值保持一致
+	if card_manager:
+		max_hand_size = card_manager.max_hand_size
 	
 	# 开始游戏
 	_start_game()
@@ -143,6 +191,22 @@ func _load_ui_components():
 		print("MainGame._load_ui_components: 找到HandDock组件")
 	else:
 		print("MainGame._load_ui_components: 错误 - 未找到HandDock组件")
+	
+	# 设置DeckWidget
+	if deck_widget:
+		print("MainGame._load_ui_components: 找到DeckWidget组件")
+		if card_manager:
+			deck_widget.setup(card_manager)
+			print("MainGame._load_ui_components: DeckWidget已连接到CardManager")
+			
+			# 连接DeckWidget信号
+			if not deck_widget.deck_clicked.is_connected(Callable(self, "_on_deck_clicked")):
+				deck_widget.deck_clicked.connect(Callable(self, "_on_deck_clicked"))
+				print("MainGame._load_ui_components: 已连接DeckWidget.deck_clicked信号")
+		else:
+			print("MainGame._load_ui_components: 错误 - CardManager未初始化，无法设置DeckWidget")
+	else:
+		print("MainGame._load_ui_components: 错误 - 未找到DeckWidget组件")
 	
 	print("MainGame._load_ui_components: UI组件加载完成")
 
@@ -182,6 +246,11 @@ func _start_game():
 		return
 	
 	print("MainGame._start_game: 成功获取GameManager单例")
+	
+	# 连接GameManager到EffectOrchestrator
+	if effect_orchestrator and game_mgr.has_method("connect_to_orchestrator"):
+		game_mgr.connect_to_orchestrator(effect_orchestrator)
+		print("MainGame._start_game: GameManager已连接到EffectOrchestrator")
 	
 	# 确保GameManager的符文库已初始化
 	if game_mgr.all_runes.size() == 0:
@@ -359,3 +428,10 @@ func sort_cards_by_value():
 func sort_cards_by_suit():
 	if hand_dock and hand_dock.has_method("sort_cards_by_suit"):
 		hand_dock.sort_cards_by_suit()
+
+# 处理牌库点击事件
+func _on_deck_clicked():
+	print("MainGame: 牌库被点击")
+	
+	# 这里可以添加额外逻辑，例如播放音效等
+	# 实际的弹窗逻辑已在DeckWidget中处理

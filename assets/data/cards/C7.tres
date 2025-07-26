@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/CardData.gd" id="1_tpnt6"]
+
+[resource]
+script = ExtResource("1_tpnt6")
+id = "C7"
+base_value = 7
+suit = "clubs"
+name = "梅花7"
+image_path = "res://assets/images/pokers/33.jpg"
+wax_seals = Array[String]([])
+frame_type = ""
+material_type = ""

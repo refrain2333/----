@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://cxvoaywqfqxst"]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/CardData.gd" id="1_card_data"]
+
+[resource]
+script = ExtResource("1_card_data")
+id = "S7"
+base_value = 7
+suit = "spades"
+name = "黑桃7"
+image_path = "res://assets/images/pokers/7.jpg"
+wax_seals = Array[String]([])
+frame_type = ""
+material_type = ""
+
+# 游戏特定属性
+damage = 5
+defense = 2
+cost = 3
+rarity = "common"
+description = "中等攻击卡牌，造成5点伤害"
+card_type = "attack"
+deck_count = 2
+max_in_deck = 4

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="JokerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/JokerData.gd" id="1_sjtcv"]
+
+[resource]
+script = ExtResource("1_sjtcv")
+item_id = "JOKER_PAIR_MASTER"
+item_name = "对子大师"
+description_text = "打出对子时，基础分值提高30%。"
+rarity_type = 1
+purchase_cost = 35
+effect_type_id = "CARD_TYPE_MULTIPLIER_PAIR"
+effect_value_param = 0.3
+trigger_event_timing = 3 

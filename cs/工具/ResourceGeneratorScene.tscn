@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6of51n6fui7d"]
+
+[ext_resource type="Script" uid="uid://bepb1v6k5l76n" path="res://cs/工具/ReinforcementResourceGenerator.gd" id="1_7eywn"]
+
+[node name="ResourceGeneratorScene" type="Node"]
+script = ExtResource("1_7eywn")

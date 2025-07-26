@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhtra3l4si16c"]
+
+[ext_resource type="Script" uid="uid://dykjd38kl7ho3" path="res://cs/工具/CardReinforcementTest.gd" id="1_e5fof"]
+
+[node name="CardReinforcementTest" type="Node2D"]
+script = ExtResource("1_e5fof")
+
+[node name="CardContainer" type="Node2D" parent="."]
+position = Vector2(600, 350)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ReinforcementControls" type="Control" parent="UI"]
+anchors_preset = 0
+offset_left = 830.0
+offset_top = 100.0
+offset_right = 1100.0
+offset_bottom = 600.0
+
+[node name="InfoLabel" type="RichTextLabel" parent="UI"]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = 500.0
+offset_bottom = 350.0
+theme_override_font_sizes/normal_font_size = 16
+text = "卡牌信息会显示在这里..."
+
+[node name="Title" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 20.0
+offset_right = 700.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 24
+text = "卡牌增强系统测试"
+horizontal_alignment = 1

@@ -17,8 +17,14 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameManager="*res://cs/全局/GameManager.gd"
+LogManager="*res://cs/Global/LogManager.gd"
+GameManager="*res://cs/Global/GameManager.gd"
 UIRegistry="*res://cs/主场景/ui/UIRegistry.gd"
+GlobalEnums="*res://cs/Global/GlobalEnums.gd"
+EventManager="*res://cs/Global/EventManager.gd"
+ScoreCalculator="*res://cs/Global/ScoreCalculator.gd"
+GameConfigSingleton="*res://cs/Global/GameConfigSingleton.gd"
+ArcaneSchoolManager="*res://cs/Global/ArcaneSchoolManager.gd"
 
 [display]
 

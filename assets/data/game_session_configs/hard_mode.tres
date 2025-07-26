@@ -1,0 +1,18 @@
+[gd_resource type="GameSessionConfig" format=3]
+
+[resource]
+max_play_actions_per_turn = 2
+max_discard_actions_per_turn = 1
+enable_action_limits = true
+initial_hand_size = 4
+max_hand_size = 6
+auto_refill_hand = true
+refill_delay = 0.8
+enable_turn_score_tracking = true
+score_multiplier = 0.8
+reset_turn_score_on_new_turn = true
+enable_deck_view = true
+auto_update_deck_view = true
+deck_view_update_delay = 0.2
+enable_debug_logging = false
+show_action_counts = true

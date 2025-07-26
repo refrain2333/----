@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/CardData.gd" id="1_u25n3"]
+
+[resource]
+script = ExtResource("1_u25n3")
+id = "S1"
+base_value = 1
+suit = "spades"
+name = "黑桃A"
+image_path = "res://assets/images/pokers/1.jpg"
+wax_seals = Array[String]([])
+frame_type = ""
+material_type = ""

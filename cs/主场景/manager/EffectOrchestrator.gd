@@ -4,6 +4,12 @@ extends Node
 # 信号
 signal effect_finished(effect_name)  # 特效播放完成
 signal effect_queue_empty           # 特效队列清空
+signal effect_triggered(effect_type, effect_value, source) # 效果触发信号
+signal effect_orchestrated(effect_result)
+
+# 预加载类型
+const EventManagerType = preload("res://cs/Global/EventManager.gd")
+const GlobalEnumsType = preload("res://cs/Global/GlobalEnums.gd")
 
 # 特效类型
 enum EffectType {
@@ -12,6 +18,15 @@ enum EffectType {
 	SOUND,     # 音效
 	ANIMATION  # 动画
 }
+
+# 接口常量 - Diamond设计模式关键 - 定义效果触发接口
+const EFFECT_HANDLER_INTERFACE = {
+	"handle_effect": true,  # 方法名及是否必须实现
+	"can_handle": false     # 可选实现
+}
+
+# 效果处理器注册表 (type_id -> handler)
+var effect_handlers = {}
 
 # 特效队列
 var effect_queue = []
@@ -31,11 +46,21 @@ var animation_effects = {}
 var max_concurrent_effects: int = 3  # 最大并发特效数量
 var active_effects: int = 0          # 当前活跃特效数量
 
-func _init(game_scene):
-	main_game = game_scene
+# 导入全局枚举
+const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
 
-# 初始化特效系统
-func initialize():
+# 引用其他管理器
+var card_manager: Node  # CardManager类型
+var card_effect_controller: Node  # CardEffectController类型
+var game_manager: Node  # GameManager类型
+var event_manager: Node  # EventManager类型
+
+func _init(scene = null):
+	main_game = scene
+	print("EffectOrchestrator: 初始化")
+
+# 完整初始化
+func initialize(card_mgr = null, game_mgr = null, event_mgr = null):
 	# 获取特效层
 	effect_layer = main_game.get_effect_layer()
 	
@@ -49,7 +74,144 @@ func initialize():
 	# 预加载常用特效
 	_preload_effects()
 	
+	# 存储管理器引用
+	card_manager = card_mgr
+	game_manager = game_mgr
+	event_manager = event_mgr
+	
 	print("特效系统初始化完成")
+
+# 注册效果处理器 - Diamond模式核心 - 高层组件不依赖于底层实现
+func register_effect_handler(effect_type_id: String, handler):
+	# 验证处理器接口
+	if not _validate_handler_interface(handler):
+		push_error("EffectOrchestrator: 处理器必须实现handle_effect方法")
+		return false
+		
+	effect_handlers[effect_type_id] = handler
+	print("EffectOrchestrator: 注册了效果处理器 - " + effect_type_id)
+	return true
+	
+# 验证处理器是否实现了必要接口
+func _validate_handler_interface(handler) -> bool:
+	if not handler.has_method("handle_effect"):
+		return false
+	return true
+
+# 主要效果触发函数 - 通过接口调用，而非直接实现
+func trigger_effect_logic(effect_type_id: String, effect_value, source = null, params: Dictionary = {}):
+	print("EffectOrchestrator: 触发效果 - " + effect_type_id)
+	
+	# 构建效果数据
+	var effect_data = {
+		"type": effect_type_id,
+		"value": effect_value,
+		"source": source,
+		"params": params
+	}
+	
+	# Diamond模式关键：通过抽象接口调用具体处理器
+	var result = null
+	if effect_handlers.has(effect_type_id):
+		# 首先检查处理器是否可以处理该效果
+		var handler = effect_handlers[effect_type_id]
+		
+		if handler.has_method("can_handle") and not handler.can_handle(effect_data):
+			print("EffectOrchestrator: 处理器无法处理此效果")
+			return null
+			
+		# 通过处理器处理效果
+		result = handler.handle_effect(effect_value, source, params)
+	else:
+		# 默认处理器
+		result = _default_effect_handler(effect_data)
+		
+	# 发送效果触发信号
+	emit_signal("effect_triggered", effect_type_id, effect_value, source)
+	
+	# 如果效果请求链式触发其他效果
+	if result and result is Dictionary and result.has("chain_effect"):
+		var chain = result.chain_effect
+		trigger_effect_logic(chain.type, chain.value, chain.source, chain.params if chain.has("params") else {})
+	
+	return result
+
+# 默认效果处理器 - 处理未注册的效果类型
+func _default_effect_handler(effect_data: Dictionary):
+	var effect_type = effect_data.type
+	var effect_value = effect_data.value
+	
+	print("EffectOrchestrator: 使用默认处理器处理 - " + effect_type)
+	
+	# 基于类型进行分发
+	match effect_type:
+		"DRAW_CARDS":
+			if card_manager and card_manager.has_method("draw"):
+				card_manager.draw(effect_value)
+				return {"success": true, "cards_drawn": effect_value}
+				
+		"ADD_LORE":
+			if game_manager and game_manager.has_method("add_lore"):
+				game_manager.add_lore(effect_value)
+				return {"success": true, "lore_added": effect_value}
+				
+		"INCREASE_CARD_TYPE_LEVEL":
+			if game_manager and game_manager.has_method("modify_card_type_level"):
+				game_manager.modify_card_type_level(effect_value.type_name, effect_value.amount)
+				return {"success": true}
+				
+		"ADD_TURN_BUFF":
+			if event_manager and event_manager.has_method("add_turn_buff"):
+				event_manager.add_turn_buff(effect_value)
+				return {"success": true}
+				
+		# 其他默认处理...
+	
+	# 未能处理
+	print("EffectOrchestrator: 无法处理未知效果类型 - " + effect_type)
+	return {"success": false, "error": "未知效果类型"}
+
+# 触发法器效果
+func trigger_artifact_effect(artifact_data, params: Dictionary = {}):
+	if not artifact_data:
+		return null
+		
+	return trigger_effect_logic(
+		artifact_data.effect_type_id,
+		artifact_data.effect_value_param,
+		artifact_data,
+		params
+	)
+
+# 触发法术效果
+func trigger_spell_effect(spell_data, params: Dictionary = {}):
+	if not spell_data:
+		return null
+		
+	return trigger_effect_logic(
+		spell_data.effect_type_id,
+		spell_data.effect_value_param,
+		spell_data,
+		params
+	)
+
+# 触发守护灵效果
+func trigger_joker_effect(joker_data, trigger_context: Dictionary = {}):
+	if not joker_data:
+		return null
+		
+	# 检查触发条件
+	if joker_data.has_method("should_trigger") and not joker_data.should_trigger(trigger_context):
+		return null
+		
+	return trigger_effect_logic(
+		joker_data.effect_type_id,
+		joker_data.effect_value_param,
+		joker_data,
+		trigger_context
+	)
+
+# 视觉效果方法
 
 # 创建卡牌放置特效
 func create_card_drop_effect(position: Vector2):
@@ -146,26 +308,7 @@ func create_flash_effect(node: Node2D, color: Color = Color(1,1,1), duration: fl
 	
 	return tween
 
-# 添加特效到队列
-func queue_effect(effect_name: String, effect_type: EffectType, position: Vector2, params: Dictionary = {}):
-	# 添加到队列
-	effect_queue.append({
-		"name": effect_name,
-		"type": effect_type,
-		"position": position,
-		"params": params
-	})
-	
-	# 如果当前没有播放特效，开始播放
-	if not is_playing and active_effects < max_concurrent_effects:
-		_play_next_effect()
-
-# 私有方法：预加载特效
-func _preload_effects():
-	# 暂时不载入具体的预制体，等待资源实际创建后再实现
-	pass
-
-# 私有方法：创建简单粒子
+# 创建简单粒子效果
 func _create_simple_particles() -> CPUParticles2D:
 	var particles = CPUParticles2D.new()
 	particles.amount = 20
@@ -183,6 +326,11 @@ func _create_simple_particles() -> CPUParticles2D:
 	particles.color = Color(0.8, 0.8, 1.0)
 	
 	return particles
+
+# 私有方法：预加载特效
+func _preload_effects():
+	# 暂时不载入具体的预制体，等待资源实际创建后再实现
+	pass
 
 # 私有方法：播放下一个特效
 func _play_next_effect():
@@ -383,4 +531,145 @@ func show_score(score: int):
 		emit_signal("effect_queue_empty")
 	)
 	
-	return label 
+	return label
+
+# 初始化
+func setup(cm, cec, gm = null, em = null):
+	card_manager = cm
+	card_effect_controller = cec
+	game_manager = gm
+	event_manager = em
+	
+	print("EffectOrchestrator: 初始化完成")
+	
+	# 连接信号
+	if card_manager:
+		if not card_manager.card_played.is_connected(Callable(self, "_on_card_played")):
+			card_manager.card_played.connect(Callable(self, "_on_card_played"))
+		if not card_manager.cards_played.is_connected(Callable(self, "_on_cards_played")):
+			card_manager.cards_played.connect(Callable(self, "_on_cards_played"))
+	
+	if card_effect_controller and card_effect_controller.has_signal("effect_triggered"):
+		if not card_effect_controller.effect_triggered.is_connected(Callable(self, "_on_effect_triggered")):
+			card_effect_controller.effect_triggered.connect(Callable(self, "_on_effect_triggered"))
+
+# 处理单张卡牌打出事件
+func _on_card_played(card_data):
+	print("EffectOrchestrator: 卡牌被打出 - " + card_data.card_name)
+	
+	# 基础效果处理
+	var effect_result = {
+		"card": card_data,
+		"score": card_data.base_value,
+		"effects": []
+	}
+	
+	# 应用卡牌强化效果
+	if card_effect_controller:
+		# 处理卡牌效果
+		var card_effects = card_effect_controller.process_card_effects(card_data)
+		if card_effects:
+			effect_result.effects.append_array(card_effects.effects)
+			effect_result.score += card_effects.value_change
+	
+	# 应用游戏状态效果
+	if game_manager:
+		# 添加分数
+		game_manager.add_assessment_score(effect_result.score)
+	
+	# 发送效果协调完成信号
+	emit_signal("effect_orchestrated", effect_result)
+
+# 处理多张卡牌被打出事件
+func _on_cards_played(cards, base_score):
+	print("EffectOrchestrator: 处理多张卡牌被打出 - %d张, 基础分数: %d" % [cards.size(), base_score])
+	
+	# 基础效果处理
+	var effect_result = {
+		"cards": cards,
+		"base_score": base_score,
+		"bonus_score": 0,
+		"final_score": base_score,
+		"effects": []
+	}
+	
+	# 应用每张卡牌的个体效果
+	if card_effect_controller:
+		for card in cards:
+			# 处理卡牌强化效果
+			var card_effects = card_effect_controller.process_card_effects(card)
+			if card_effects:
+				effect_result.effects.append_array(card_effects.effects)
+				effect_result.bonus_score += card_effects.value_change
+	
+	# 计算最终分数
+	effect_result.final_score = base_score + effect_result.bonus_score
+	
+	# 应用游戏状态效果
+	if game_manager:
+		# 添加分数
+		game_manager.add_assessment_score(effect_result.final_score)
+	
+	# 发送效果协调完成信号
+	emit_signal("effect_orchestrated", effect_result)
+
+# 处理效果触发事件
+func _on_effect_triggered(card_data, effect_type, effect_params):
+	print("EffectOrchestrator: 效果触发 - " + effect_type)
+	
+	# 应用效果到游戏状态
+	match effect_type:
+		"damage":
+			if game_manager and game_manager.has_method("apply_damage_to_opponent"):
+				game_manager.apply_damage_to_opponent(effect_params.value)
+		
+		"draw":
+			if card_manager and card_manager.has_method("draw"):
+				card_manager.draw(effect_params.count)
+		
+		"transform":
+			if game_manager and game_manager.has_method("transform_random_card"):
+				game_manager.transform_random_card()
+		
+		"score":
+			if game_manager and game_manager.has_method("add_score"):
+				game_manager.add_score(effect_params.value)
+		
+		"heal":
+			if game_manager and game_manager.has_method("heal_player"):
+				game_manager.heal_player(effect_params.value)
+		
+		"burn":
+			if game_manager and game_manager.has_method("apply_burn_effect_to_opponent"):
+				game_manager.apply_burn_effect_to_opponent(effect_params.turns)
+		
+		"earth":
+			if game_manager and game_manager.has_method("apply_earth_effect"):
+				game_manager.apply_earth_effect(effect_params.value)
+		
+		"enhance":
+			if game_manager and game_manager.has_method("enhance_next_card"):
+				game_manager.enhance_next_card()
+		
+		"element_boost":
+			if game_manager and game_manager.has_method("set_element_effect_multiplier"):
+				game_manager.set_element_effect_multiplier(effect_params.multiplier)
+		
+		"double":
+			if game_manager and game_manager.has_method("activate_double_effect"):
+				game_manager.activate_double_effect()
+		
+		"defense":
+			if game_manager and game_manager.has_method("add_defense"):
+				game_manager.add_defense(effect_params.value)
+		
+		"reflect":
+			if game_manager and game_manager.has_method("set_damage_reflection"):
+				game_manager.set_damage_reflection(effect_params.percent)
+		
+		# 更多效果处理...
+		_:
+			print("EffectOrchestrator: 未知效果类型 - " + effect_type)
+	
+	# 发送信号
+	emit_signal("effect_orchestrated", {"effect_type": effect_type, "params": effect_params}) 

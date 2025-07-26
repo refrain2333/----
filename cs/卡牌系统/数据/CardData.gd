@@ -1,184 +1,232 @@
 class_name CardData
 extends Resource
 
-# 卡牌基础属性
-var id: String = ""         # 卡牌ID (例如 "fire_1")
-var name: String = ""       # 显示名称，如"火之一"
-var suit: String = ""        # 花色：spades（黑桃）, hearts（红桃）, clubs（梅花）, diamonds（方片）
-var value: int = 0           # 牌值：1(A)-13(K)
-var element: String = ""     # 元素属性（fire, water, earth, air）
-var power: int = 0           # 能量值（可用于计分）
-var cost: int = 1            # 卡牌费用
-@export var point: int = 1   # 得分值（打出时获得的分数）
-var modifiers: Array = []    # 卡牌修饰符数组
-var texture_path: String = "" # 卡牌图像路径
+# 导入全局枚举
+const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
 
-# 构造函数
-func _init(card_id = null):
-	if card_id is int and card_id > 0 and card_id <= 52:
-		_setup_from_numeric_id(card_id)
-	elif card_id is String and card_id.length() > 0:
-		id = card_id
+# 卡牌基础属性（符合v1.6规范）
+@export var id: String = ""           # 唯一ID, 如 "H1", "S13"
+@export var base_value: int = 0       # 1-13 (A-K)
+@export var suit: String = ""         # "hearts", "diamonds", "clubs", "spades"
+@export var name: String = ""         # "红桃A"
+@export var image_path: String = ""   # 卡牌图片路径
 
-# 检查是否有指定属性
-func has(property: String) -> bool:
-	return property in self
+# 强化属性（符合v1.6规范）
+@export var wax_seals: Array[String] = [] # 存储各类蜡封
+@export var frame_type: String = ""       # 存储牌框类型
+@export var material_type: String = ""    # 存储材质类型
 
-# 根据数字ID设置卡牌属性
-func _setup_from_numeric_id(card_id: int):
-	# 确定花色
-	if card_id <= 13:
-		suit = "spades"  # 黑桃
-		element = "earth"  # 可以根据游戏设计分配元素
-	elif card_id <= 26:
-		suit = "hearts"  # 红桃
-		element = "fire"
-	elif card_id <= 39:
-		suit = "clubs"   # 梅花
-		element = "air"
-	else:
-		suit = "diamonds" # 方片
-		element = "water"
-	
-	# 确定牌值
-	value = (card_id - 1) % 13 + 1
-	
-	# 设置能量值（示例：A=14, K=13, Q=12, J=11, 其他=牌面值）
-	if value == 1:  # A
-		power = 14
-		point = 5   # A牌得分高
-	elif value >= 11:  # J, Q, K
-		power = value
-		point = 3   # 人物牌得分中等
-	else:
-		power = value
-		point = 1   # 数字牌得分基础
-	
-	# 设置显示名称
-	var element_name = ""
-	match element:
-		"fire": element_name = "火"
-		"water": element_name = "水"
-		"earth": element_name = "土"
-		"air": element_name = "风"
-	
-	var value_name = ""
-	match value:
-		1: value_name = "一"
-		2: value_name = "二"
-		3: value_name = "三"
-		4: value_name = "四"
-		5: value_name = "五"
-		6: value_name = "六"
-		7: value_name = "七"
-		8: value_name = "八"
-		9: value_name = "九"
-		10: value_name = "十"
-		11: value_name = "王子"
-		12: value_name = "王后"
-		13: value_name = "国王"
-	
-	name = element_name + "之" + value_name
-	
-	# 设置ID
-	id = element + "_" + str(value)
-	
-	# 设置费用
-	cost = _calculate_cost(value)
+# 游戏特定属性
+@export var damage: int = 0           # 伤害值
+@export var defense: int = 0          # 防御值
+@export var cost: int = 0             # 使用消耗
+@export var rarity: String = "common" # 稀有度
+@export var description: String = ""  # 卡牌描述
+@export var card_type: String = ""    # 卡牌类型 (attack/defense/spell/etc)
 
-# 计算卡牌费用
-func _calculate_cost(value: int) -> int:
-	if value <= 5:
-		return 1
-	elif value <= 10:
-		return 2
-	else:
-		return 3
+# 牌库配置
+@export var deck_count: int = 1       # 在牌库中的数量
+@export var max_in_deck: int = 4      # 牌库中最大数量限制
 
-# 获取卡牌基本信息
-func get_info() -> String:
-	return name + " (能量:" + str(power) + ")"
+# 用于效果扩展的字典
+var effect_data: Dictionary = {}
 
-# 获取卡牌比较值（用于排序）
-func get_compare_value() -> int:
-	return value
+# 动态属性系统
+var modifiers: Dictionary = {}  # 存储各种修正值
+var permanent_changes: Dictionary = {}  # 永久性改变
+var temporary_effects: Array[Dictionary] = []  # 临时效果
 
-# 判断两张牌是否同花色
-static func is_same_suit(card1: CardData, card2: CardData) -> bool:
-	return card1.suit == card2.suit
-
-# 判断两张牌是否同值
-static func is_same_value(card1: CardData, card2: CardData) -> bool:
-	return card1.value == card2.value
-
-# 判断是否同色
-static func is_same_color(card1: CardData, card2: CardData) -> bool:
-	return card1.suit == card2.suit
+# 获取卡牌当前修正值（考虑强化和效果）
+func get_modified_value(effect_provider = null) -> int:
+	var modified_val = base_value
 	
-# 判断是否同元素
-static func is_same_element(card1: CardData, card2: CardData) -> bool:
-	return card1.element == card2.element
-	
-# 判断是否顺子（连续的牌值）
-static func is_straight(cards: Array) -> bool:
-	if cards.size() < 2:
-		return false
+	# 基于强化的静态修饰
+	if has_frame_reinforcement():
+		match frame_type:
+			"STONE":
+				modified_val += 2
+			"SILVER": 
+				modified_val += 3
+			"GOLD":
+				modified_val += 5
 		
-	# 对牌按值排序
-	var sorted_cards = cards.duplicate()
-	sorted_cards.sort_custom(func(a, b): return a.value < b.value)
-	
-	# 检查是否连续
-	for i in range(1, sorted_cards.size()):
-		if sorted_cards[i].value != sorted_cards[i-1].value + 1:
-			return false
+	# 动态效果修饰（如果提供了效果提供者）
+	if effect_provider:
+		# 使用依赖注入模式，由外部提供效果
+		if effect_provider.has_method("get_card_value_modifier"):
+			var effect_mod = effect_provider.get_card_value_modifier(self)
+			modified_val += effect_mod
 			
-	return true
-	
-# 判断是否同花（所有牌同一花色）
-static func is_flush(cards: Array) -> bool:
-	if cards.size() < 2:
-		return false
-		
-	var first_suit = cards[0].suit
-	for card in cards:
-		if card.suit != first_suit:
-			return false
-			
-	return true
-	
-# 计算卡牌组合的能量总值
-static func calculate_total_power(cards: Array) -> int:
-	var total = 0
-	for card in cards:
-		total += card.power
-	return total 
-	
-# 添加修饰符
-func add_modifier(mod: CardModifier) -> void:
-	if not modifiers:
-		modifiers = []
-	modifiers.append(mod)
-	mod.apply(self)
+	return modified_val
 
-# 移除修饰符
-func remove_modifier(mod: CardModifier) -> bool:
-	if not modifiers:
-		return false
-	var idx = modifiers.find(mod)
+# 强化系统接口
+
+# 添加强化效果 - 统一的接口
+func add_reinforcement(type: String, effect: String) -> void:
+	match type:
+		"WAX_SEAL":
+			if not effect in wax_seals:
+				wax_seals.append(effect)
+		"FRAME":
+			frame_type = effect
+		"MATERIAL":
+			material_type = effect
+
+# 移除蜡封
+func remove_wax_seal(seal_type: String) -> bool:
+	var idx = wax_seals.find(seal_type)
 	if idx >= 0:
-		modifiers.remove_at(idx)
+		wax_seals.remove_at(idx)
 		return true
 	return false
 	
-# 获取所有修饰符
-func get_modifiers() -> Array:
-	return modifiers
+# 检查是否有特定类型的蜡封
+func has_wax_seal(seal_type: String) -> bool:
+	return seal_type in wax_seals
 
-# 克隆卡牌数据
+# 检查是否有任何蜡封
+func has_any_wax_seal() -> bool:
+	return not wax_seals.is_empty()
+
+# 获取蜡封数量
+func get_wax_seal_count() -> int:
+	return wax_seals.size()
+
+# 检查是否有牌框强化
+func has_frame_reinforcement() -> bool:
+	return frame_type != ""
+
+# 检查是否有材质强化
+func has_material_reinforcement() -> bool:
+	return material_type != ""
+
+# 效果系统接口
+
+# 设置效果数据
+func set_effect_data(key: String, value) -> void:
+	effect_data[key] = value
+
+# 获取效果数据
+func get_effect_data(key: String, default_value = null):
+	return effect_data.get(key, default_value)
+
+# 检查是否有特定效果数据
+func has_effect_data(key: String) -> bool:
+	return effect_data.has(key)
+
+# 清除效果数据
+func clear_effect_data(key: String) -> void:
+	if effect_data.has(key):
+		effect_data.erase(key)
+
+# 复制和信息接口
+
+# 深拷贝卡牌实例，用于复制牌（符合v1.6规范）
 func clone() -> CardData:
-	var c := CardData.new(id)
-	# 复制修饰符
-	if modifiers and not modifiers.is_empty():
-		c.modifiers = modifiers.duplicate()
-	return c
+	var new_card = CardData.new()
+	new_card.id = id + "_" + str(randi()) # 复制品有新ID
+	new_card.base_value = base_value
+	new_card.suit = suit
+	new_card.name = name
+	new_card.image_path = image_path
+	new_card.wax_seals = wax_seals.duplicate() # 复制数组
+	new_card.frame_type = frame_type
+	new_card.material_type = material_type
+	new_card.effect_data = effect_data.duplicate(true) # 深度复制效果数据
+	return new_card
+
+# 获取卡牌信息
+func get_info() -> String:
+	var info = name + " (值:" + str(base_value) + ")"
+
+	if has_any_wax_seal():
+		info += ", 蜡封:" + str(get_wax_seal_count())
+
+	if has_frame_reinforcement():
+		info += ", 框:" + frame_type
+
+	if has_material_reinforcement():
+		info += ", 材质:" + material_type
+
+	return info
+
+# 获取花色显示名称
+func get_suit_display_name() -> String:
+	match suit.to_lower():
+		"hearts":
+			return "红桃"
+		"diamonds":
+			return "方片"
+		"clubs":
+			return "梅花"
+		"spades":
+			return "黑桃"
+		_:
+			return "未知"
+
+# 获取值的显示名称
+func get_value_display_name() -> String:
+	match base_value:
+		1:
+			return "A"
+		11:
+			return "J"
+		12:
+			return "Q"
+		13:
+			return "K"
+		_:
+			return str(base_value)
+
+# 静态辅助方法
+# 判断是否同花色
+static func is_same_suit(card1: CardData, card2: CardData) -> bool:
+	return card1.suit == card2.suit
+
+# 判断是否同值
+static func is_same_value(card1: CardData, card2: CardData) -> bool:
+	return card1.base_value == card2.base_value
+
+# 计算总能量值
+static func calculate_total_power(cards: Array) -> int:
+	var total = 0
+	for card in cards:
+		if card is CardData:
+			total += card.base_value
+	return total
+	
+# 检查是否是顺子
+static func is_straight(cards: Array) -> bool:
+	if cards.size() < 3:
+		return false
+		
+	# 提取值并排序
+	var values = []
+	for card in cards:
+		if card is CardData:
+			values.append(card.base_value)
+	
+	values.sort()
+	
+	# 检查连续性
+	for i in range(1, values.size()):
+		if values[i] != values[i-1] + 1:
+			return false
+	
+	return true
+	
+# 检查是否同花
+static func is_flush(cards: Array) -> bool:
+	if cards.size() < 3:
+		return false
+		
+	var first_suit = ""
+	
+	for card in cards:
+		if card is CardData:
+			if first_suit == "":
+				first_suit = card.suit
+			elif card.suit != first_suit:
+				return false
+	
+	return true

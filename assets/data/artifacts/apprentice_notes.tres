@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ArtifactData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/数据/ArtifactData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = "ARTIFACT_APPRENTICE_NOTES"
+name = "学徒笔记"
+description = "每获得一张牌，额外获得5%传说点数。"
+rarity = 0
+cost = 25
+effect_type = "LORE_POINTS_PERCENT_BONUS"
+effect_value = 0.05

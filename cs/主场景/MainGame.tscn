@@ -1,17 +1,150 @@
-[gd_scene load_steps=8 format=3 uid="uid://d1blknxw1ktt6"]
+[gd_scene load_steps=9 format=3 uid="uid://d1blknxw1ktt6"]
 
 [ext_resource type="Script" uid="uid://ceyfgf0c7xugm" path="res://cs/主场景/MainGame.gd" id="1_dinpj"]
 [ext_resource type="Texture2D" uid="uid://dnee3ydo7wgrh" path="res://assets/images/background/image_fx_看图王.png" id="2_g1eqr"]
 [ext_resource type="PackedScene" uid="uid://bmujjbqtwvghq" path="res://cs/主场景/ui/Sidebar.tscn" id="3_sidebar"]
-[ext_resource type="PackedScene" uid="uid://bgvg15ksp5gc7" path="res://cs/主场景/ui/Hud.tscn" id="4_hud"]
 [ext_resource type="PackedScene" uid="uid://qyrjutr0b5rg" path="res://cs/主场景/ui/HandDock.tscn" id="5_handdock"]
 [ext_resource type="PackedScene" uid="uid://c7aq81vj4ec5i" path="res://cs/主场景/ui/DeckWidget.tscn" id="6_deckwidget"]
 [ext_resource type="PackedScene" uid="uid://bebw7yqepltjq" path="res://cs/主场景/ui/TopDock.tscn" id="7_topdock"]
 
+[sub_resource type="GDScript" id="GDScript_n4x71"]
+script/source = "class_name Hud
+extends Control
+
+# 节点引用
+@onready var status_label = $StatusLabel
+@onready var info_year_label = $InfoPanel/MarginContainer/VBoxContainer/YearLabel
+@onready var info_term_label = $InfoPanel/MarginContainer/VBoxContainer/TermLabel
+@onready var score_label = $InfoPanel/MarginContainer/VBoxContainer/ScoreLabel
+@onready var lore_label = $InfoPanel/MarginContainer/VBoxContainer/LoreLabel
+@onready var main_year_label = $YearLabel
+@onready var main_term_label = $TermLabel
+
+# 游戏管理器引用
+var game_manager
+
+func _ready():
+	# 注册到UIRegistry
+	if Engine.has_singleton(\"UIRegistry\"):
+		UIRegistry.register_ui_component(\"hud\", self)
+	
+	# 获取游戏管理器
+	game_manager = get_node_or_null(\"/root/ArcaneSchoolManager\")
+	if game_manager:
+		# 连接信号
+		game_manager.new_year_started.connect(_on_new_year_started)
+		game_manager.term_started.connect(_on_term_started)
+		game_manager.score_changed.connect(_on_score_changed)
+		game_manager.lore_changed.connect(_on_lore_changed)
+		game_manager.game_state_changed.connect(_on_game_state_changed)
+		
+		# 初始更新
+		update_ui()
+	else:
+		push_error(\"Hud: 无法获取ArcaneSchoolManager引用\")
+
+# 更新UI
+func update_ui():
+	if not game_manager:
+		return
+		
+	# 更新学年信息
+	var year = game_manager.current_year
+	update_year_label(year)
+	
+	# 更新学期信息
+	var term = game_manager.current_term
+	update_term_label(term)
+	
+	# 更新分数
+	var score = game_manager.player_score
+	update_score_label(score)
+	
+	# 更新传说点数
+	var lore = game_manager.lore_points
+	update_lore_label(lore)
+
+# 更新学年标签
+func update_year_label(year: int):
+	var year_text = \"\"
+	if year == 0:
+		year_text = \"准备开始\"
+	else:
+		year_text = \"第 %d 学年\" % year
+	
+	if info_year_label:
+		info_year_label.text = year_text
+	
+	if main_year_label:
+		main_year_label.text = year_text
+
+# 更新学期标签
+func update_term_label(term: int):
+	var term_text = \"未知学期\"
+	var global_enums = get_node_or_null(\"/root/GlobalEnums\")
+	
+	if global_enums:
+		term_text = global_enums.get_term_name(term)
+	else:
+		term_text = \"第 %d 学期\" % term
+	
+	if info_term_label:
+		info_term_label.text = term_text
+	
+	if main_term_label:
+		main_term_label.text = term_text
+
+# 更新分数标签
+func update_score_label(score: int):
+	if score_label:
+		score_label.text = \"分数: %d\" % score
+
+# 更新传说点数标签
+func update_lore_label(lore: int):
+	if lore_label:
+		lore_label.text = \"传说点数: %d\" % lore
+
+# 设置状态文本
+func set_status_text(text: String):
+	if status_label:
+		status_label.text = text 
+
+# ===== 信号处理 =====
+func _on_new_year_started(year):
+	update_year_label(year)
+	set_status_text(\"新学年开始！\")
+
+func _on_term_started(term):
+	update_term_label(term)
+	set_status_text(\"新学期开始！\")
+
+func _on_score_changed(score):
+	update_score_label(score)
+
+func _on_lore_changed(lore):
+	update_lore_label(lore)
+	
+func _on_game_state_changed(state):
+	# 完整更新所有UI
+	update_ui() "
+
+[sub_resource type="PackedScene" id="PackedScene_tomig"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("Hud", "Control", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "grow_horizontal", "grow_vertical", "script", "StatusLabel", "Label", "layout_mode", "anchors_preset", "anchor_left", "anchor_right", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "theme_override_colors/font_color", "theme_override_colors/font_shadow_color", "theme_override_constants/shadow_offset_x", "theme_override_constants/shadow_offset_y", "theme_override_constants/shadow_outline_size", "theme_override_font_sizes/font_size", "horizontal_alignment", "vertical_alignment", "InfoPanel", "PanelContainer", "layout_mode", "anchors_preset", "anchor_left", "anchor_right", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "MarginContainer", "MarginContainer", "layout_mode", "theme_override_constants/margin_left", "theme_override_constants/margin_top", "theme_override_constants/margin_right", "theme_override_constants/margin_bottom", "VBoxContainer", "VBoxContainer", "layout_mode", "YearLabel", "Label", "layout_mode", "theme_override_font_sizes/font_size", "text", "TermLabel", "Label", "layout_mode", "theme_override_font_sizes/font_size", "text", "HSeparator", "HSeparator", "layout_mode", "ScoreLabel", "Label", "layout_mode", "theme_override_colors/font_color", "theme_override_font_sizes/font_size", "text", "LoreLabel", "Label", "layout_mode", "theme_override_colors/font_color", "theme_override_font_sizes/font_size", "text", "YearLabel", "Label", "layout_mode", "anchors_preset", "offset_left", "offset_top", "offset_right", "offset_bottom", "theme_override_colors/font_color", "theme_override_constants/shadow_offset_x", "theme_override_constants/shadow_offset_y", "theme_override_font_sizes/font_size", "text", "TermLabel", "Label", "layout_mode", "anchors_preset", "offset_left", "offset_top", "offset_right", "offset_bottom", "theme_override_colors/font_color", "theme_override_constants/shadow_offset_x", "theme_override_constants/shadow_offset_y", "theme_override_font_sizes/font_size", "text"),
+"node_count": 12,
+"node_paths": [NodePath("."), NodePath("."), NodePath("./InfoPanel"), NodePath("./InfoPanel/MarginContainer"), NodePath("./InfoPanel/MarginContainer/VBoxContainer"), NodePath("./InfoPanel/MarginContainer/VBoxContainer"), NodePath("./InfoPanel/MarginContainer/VBoxContainer"), NodePath("./InfoPanel/MarginContainer/VBoxContainer"), NodePath("./InfoPanel/MarginContainer/VBoxContainer"), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 7, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 8, 6, 0, 1073741824, 0, 10, 9, -1, 17, 11, 7, 12, 8, 13, 9, 14, 10, 15, 11, 16, 12, 17, 13, 18, 14, 19, 15, 20, 16, 21, 17, 22, 18, 23, 19, 24, 20, 25, 21, 26, 22, 27, 23, 0, 1073741825, 0, 29, 28, -1, 9, 30, 24, 31, 25, 32, 26, 33, 27, 34, 28, 35, 29, 36, 30, 37, 31, 38, 32, 0, 1073741826, 0, 40, 39, -1, 5, 41, 33, 42, 34, 43, 35, 44, 36, 45, 37, 0, 1073741827, 0, 47, 46, -1, 1, 48, 38, 0, 1073741828, 0, 50, 49, -1, 3, 51, 39, 52, 40, 53, 41, 0, 1073741829, 0, 55, 54, -1, 3, 56, 42, 57, 43, 58, 44, 0, 1073741830, 0, 60, 59, -1, 1, 61, 45, 0, 1073741831, 0, 63, 62, -1, 4, 64, 46, 65, 47, 66, 48, 67, 49, 0, 1073741832, 0, 69, 68, -1, 4, 70, 50, 71, 51, 72, 52, 73, 53, 0, 1073741833, 0, 75, 74, -1, 11, 76, 54, 77, 55, 78, 56, 79, 57, 80, 58, 81, 59, 82, 60, 83, 61, 84, 62, 85, 63, 86, 64, 0, 1073741834, 0, 88, 87, -1, 11, 89, 65, 90, 66, 91, 67, 92, 68, 93, 69, 94, 70, 95, 71, 96, 72, 97, 73, 98, 74, 99, 75, 0),
+"variants": [3, 15, 1.0, 1.0, 2, 2, SubResource("GDScript_n4x71"), 1, 5, 0.5, 0.5, -200.0, 20.0, 200.0, 60.0, 2, Color(0.866667, 0.933333, 1, 1), Color(0.0470588, 0.0627451, 0.137255, 0.4), 1, 1, 1, 24, 1, 1, 1, 1, 1.0, 1.0, -250.0, 10.0, -10.0, 170.0, 0, 2, 10, 10, 10, 10, 2, 2, 18, "准备开始", 2, 18, "春季学期", 2, 2, Color(0.94902, 0.929412, 0.670588, 1), 18, "分数: 0", 2, Color(0.65098, 0.929412, 0.929412, 1), 18, "传说点数: 50", 1, 0, 20.0, 20.0, 200.0, 60.0, Color(0.94902, 0.929412, 0.670588, 1), 1, 1, 24, "第 1 学年", 1, 0, 20.0, 60.0, 200.0, 100.0, Color(0.65098, 0.929412, 0.764706, 1), 1, 1, 20, "春季学期"],
+"version": 3
+}
+
 [node name="MainGame" type="Node2D"]
 script = ExtResource("1_dinpj")
 sidebar_scene = ExtResource("3_sidebar")
-hud_scene = ExtResource("4_hud")
+hud_scene = SubResource("PackedScene_tomig")
 hand_dock_scene = ExtResource("5_handdock")
 deck_widget_scene = ExtResource("6_deckwidget")
 top_dock_scene = ExtResource("7_topdock")
@@ -70,7 +203,6 @@ grow_vertical = 1
 
 [node name="DeckWidget" parent="UIContainer" instance=ExtResource("6_deckwidget")]
 custom_minimum_size = Vector2(220, 340)
-layout_mode = 0
 anchors_preset = 0
 anchor_left = 0.0
 anchor_top = 0.0
@@ -84,7 +216,4 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="TopDock" parent="UIContainer" instance=ExtResource("7_topdock")]
-layout_mode = 1
-
-[node name="Hud" parent="UIContainer" instance=ExtResource("4_hud")]
 layout_mode = 1

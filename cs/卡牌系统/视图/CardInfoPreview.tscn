@@ -1,0 +1,243 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqm8xvn4h8y2k"]
+
+[ext_resource type="Script" path="res://cs/卡牌系统/视图/CardInfoPreview.gd" id="1_preview"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.1, 0.1, 0.15, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.4, 0.6, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+bg_color = Color(0.2, 0.2, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+
+[node name="CardInfoPreview" type="Control"]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 150.0
+mouse_filter = 2
+script = ExtResource("1_preview")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HeaderPanel" type="Panel" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header")
+
+[node name="CardNameLabel" type="Label" parent="VBoxContainer/HeaderPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "梅花A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ContentContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BasicInfoContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ValueContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/BasicInfoContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ValueLabel" type="Label" parent="VBoxContainer/ContentContainer/BasicInfoContainer/ValueContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+text = "数值："
+
+[node name="ValueText" type="Label" parent="VBoxContainer/ContentContainer/BasicInfoContainer/ValueContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "1"
+
+[node name="SuitContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/BasicInfoContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SuitLabel" type="Label" parent="VBoxContainer/ContentContainer/BasicInfoContainer/SuitContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+text = "花色："
+
+[node name="SuitText" type="Label" parent="VBoxContainer/ContentContainer/BasicInfoContainer/SuitContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "梅花"
+
+[node name="GameStatsContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="StatsTitle" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "游戏属性："
+
+[node name="DamageContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/GameStatsContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DamageLabel" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/DamageContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "伤害："
+
+[node name="DamageText" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/DamageContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "0"
+
+[node name="DefenseContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/GameStatsContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DefenseLabel" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/DefenseContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "防御："
+
+[node name="DefenseText" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/DefenseContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "0"
+
+[node name="CostContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/GameStatsContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CostLabel" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/CostContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "消耗："
+
+[node name="CostText" type="Label" parent="VBoxContainer/ContentContainer/GameStatsContainer/CostContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "0"
+
+[node name="EnhancementsContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EnhancementsTitle" type="Label" parent="VBoxContainer/ContentContainer/EnhancementsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "强化效果："
+
+[node name="WaxSealsText" type="Label" parent="VBoxContainer/ContentContainer/EnhancementsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "蜡封：无"
+autowrap_mode = 2
+
+[node name="FrameText" type="Label" parent="VBoxContainer/ContentContainer/EnhancementsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "牌框：无"
+
+[node name="MaterialText" type="Label" parent="VBoxContainer/ContentContainer/EnhancementsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 1, 0.8, 1)
+theme_override_font_sizes/font_size = 10
+text = "材质：无"
+
+[node name="RarityContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RarityLabel" type="Label" parent="VBoxContainer/ContentContainer/RarityContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "稀有度："
+
+[node name="RarityText" type="Label" parent="VBoxContainer/ContentContainer/RarityContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "普通"
+
+[node name="DescriptionContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DescriptionTitle" type="Label" parent="VBoxContainer/ContentContainer/DescriptionContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "描述："
+
+[node name="DescriptionText" type="Label" parent="VBoxContainer/ContentContainer/DescriptionContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 10
+text = "一张基础的梅花A卡牌"
+autowrap_mode = 2
