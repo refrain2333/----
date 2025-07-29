@@ -3,7 +3,7 @@ extends Node
 class_name CardManager
 
 # 导入必要的类
-const CardEffectManagerData = preload("res://cs/卡牌系统/数据/管理器/CardEffectManager.gd")
+const CardEffectManagerDataClass = preload("res://cs/卡牌系统/数据/管理器/CardEffectManager.gd")
 
 
 # 牌库相关
@@ -22,7 +22,7 @@ var score_calculator: ScoreCalculator = null
 var game_config: GameConfigResource = null
 
 # 引用效果管理器
-var effect_manager: CardEffectManagerData = null
+var effect_manager: CardEffectManagerDataClass = null
 
 # 引用游戏场景
 var game_scene = null
@@ -60,7 +60,7 @@ func _ready():
 		print("CardManager: 使用游戏场景提供的效果管理器")
 	else:
 		# 创建自己的效果管理器作为备用
-		effect_manager = CardEffectManagerData.new()
+		effect_manager = CardEffectManagerDataClass.new()
 		add_child(effect_manager)
 		print("CardManager: 没有找到共享效果管理器，创建独立实例")
 	

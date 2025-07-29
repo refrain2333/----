@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqxqhqxqhqxqh"]
+
+[ext_resource type="Script" path="res://cs/tests/卡牌相关/牌型识别测试V2/HandTypeTestV2.gd" id="1_test_v2"]
+
+[node name="HandTypeTestV2" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_test_v2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "🎯 牌型识别系统 V2.1 测试"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TestButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "🧪 测试基础功能"
+
+[node name="BenchmarkButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "⚡ 性能基准测试"
+
+[node name="ValidateButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "🔍 系统验证"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OutputLabel" type="RichTextLabel" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+scroll_active = false

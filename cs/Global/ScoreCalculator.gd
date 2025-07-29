@@ -21,25 +21,25 @@ static func calculate_combination_score(cards: Array) -> int:
 	var combination_type = get_combination_type(cards)
 	
 	# 获取牌型字符串
-	var type_string = get_type_string(combination_type)
-	
+	var combination_type_string = get_type_string(combination_type)
+
 	# 获取该牌型等级
 	var level = 1  # 默认等级1
-	if game_manager.card_type_levels.has(type_string):
-		level = game_manager.card_type_levels[type_string]
-	
+	if game_manager.card_type_levels.has(combination_type_string):
+		level = game_manager.card_type_levels[combination_type_string]
+
 	# 计算基本分数
-	var base_score = calculate_single_type(type_string, level, game_config.card_type_base_scores, 
+	var base_score = calculate_single_type(combination_type_string, level, game_config.card_type_base_scores,
 											game_config.card_type_level_multipliers)
-	
+
 	# 计算附加分（来自卡牌点数和强化）
 	var bonus_score = calculate_bonus_from_cards(cards)
-	
+
 	# 计算最终分数
 	var final_score = base_score + bonus_score
-	
-	print("ScoreCalculator: 牌型=%s, 等级=%d, 基础分=%d, 附加分=%d, 最终分数=%d" % 
-		[type_string, level, base_score, bonus_score, final_score])
+
+	print("ScoreCalculator: 牌型=%s, 等级=%d, 基础分=%d, 附加分=%d, 最终分数=%d" %
+		[combination_type_string, level, base_score, bonus_score, final_score])
 	
 	return final_score
 
@@ -62,7 +62,7 @@ static func calculate_single_type(type_name: String, level: int, base_scores: Di
 			multiplier = level_multipliers[clamped_level]
 	
 	# 计算最终分数
-	var final_score = int(base_score * multiplier)
+	var final_score = roundi(base_score * multiplier)
 	return final_score
 
 # 从卡牌计算附加分
@@ -235,7 +235,7 @@ func calculate_score(cards: Array[CardData], game_manager) -> int:
 			multiplier *= effects.score_multiplier
 	
 	# 计算最终得分
-	var final_score = int((base_score + bonus_score) * multiplier)
+	var final_score = roundi((base_score + bonus_score) * multiplier)
 	
 	# 获取牌型名称
 	var global_enums = Engine.get_singleton("GlobalEnums")
@@ -254,11 +254,11 @@ func identify_combination(cards: Array[CardData]) -> int:
 
 # 获取基础得分 (保留旧接口向后兼容)
 func get_base_score(combination_type: int, game_manager) -> int:
-	var type_string = get_type_string(combination_type)
+	var combination_type_string = get_type_string(combination_type)
 
 	# 检查game_manager是否有game_config属性
 	if game_manager and "game_config" in game_manager and game_manager.game_config:
-		return game_manager.game_config.card_type_base_scores.get(type_string, 5)
+		return game_manager.game_config.card_type_base_scores.get(combination_type_string, 5)
 	else:
 		# 使用默认得分表
 		var default_scores = {
@@ -273,16 +273,16 @@ func get_base_score(combination_type: int, game_manager) -> int:
 			"straight_flush": 50,
 			"royal_flush": 100
 		}
-		return default_scores.get(type_string, 5)
+		return default_scores.get(combination_type_string, 5)
 
 # 计算倍率（基于牌型等级和其他加成）
 func calculate_multiplier(combination_type: int, cards: Array[CardData], game_manager) -> float:
-	var type_string = get_type_string(combination_type)
+	var combination_type_string = get_type_string(combination_type)
 
 	# 获取牌型等级
 	var level = 1  # 默认等级1
-	if game_manager and "card_type_levels" in game_manager and game_manager.card_type_levels.has(type_string):
-		level = game_manager.card_type_levels[type_string]
+	if game_manager and "card_type_levels" in game_manager and game_manager.card_type_levels.has(combination_type_string):
+		level = game_manager.card_type_levels[combination_type_string]
 
 	# 获取牌型等级倍率
 	var level_multiplier = 1.0
@@ -290,7 +290,7 @@ func calculate_multiplier(combination_type: int, cards: Array[CardData], game_ma
 	var level_multipliers = default_multipliers
 
 	if game_manager and "game_config" in game_manager and game_manager.game_config:
-		level_multipliers = game_manager.game_config.card_type_level_multipliers.get(type_string, default_multipliers)
+		level_multipliers = game_manager.game_config.card_type_level_multipliers.get(combination_type_string, default_multipliers)
 	var clamped_level = clamp(level - 1, 0, 4)  # 等级1-5对应索引0-4
 	level_multiplier = level_multipliers[clamped_level]
 	

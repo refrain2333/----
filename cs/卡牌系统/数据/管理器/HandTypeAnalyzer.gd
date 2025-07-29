@@ -10,12 +10,12 @@ extends RefCounted
 ## - 遵循项目架构规范，放置在管理器目录
 
 # 导入依赖
-const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
+const HandTypeEnumsClass = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
 
 # 使用共享的枚举定义
-const HandType = HandTypeEnums.HandType
-const HAND_TYPE_NAMES = HandTypeEnums.HAND_TYPE_NAMES
-const BASE_SCORES = HandTypeEnums.BASE_SCORES
+const HandType = HandTypeEnumsClass.HandType
+const HAND_TYPE_NAMES = HandTypeEnumsClass.HAND_TYPE_NAMES
+const BASE_SCORES = HandTypeEnumsClass.BASE_SCORES
 
 ## 🎯 分析5张牌的牌型
 static func analyze_hand(cards: Array) -> Dictionary:

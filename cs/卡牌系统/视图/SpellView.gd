@@ -2,8 +2,8 @@ class_name SpellView
 extends BaseItemView
 
 # 导入必要的资源
-const ResourcePaths = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
-const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
+const ResourcePathsClass = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
+const GlobalEnumsClass = preload("res://cs/Global/GlobalEnums.gd")
 
 # 重写信号以保持命名一致性
 signal spell_clicked(spell_view)

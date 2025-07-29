@@ -620,7 +620,7 @@ func _is_card_in_array(card_data, card_array):
 	return false
 
 # 卡牌点击事件包装函数 - 处理信号参数（已弃用）
-func _on_card_clicked_wrapper(card_data: CardData, card_container: Control, extra_param = null):
+func _on_card_clicked_wrapper(card_data: CardData, card_container: Control, _extra_param = null):
 	_on_card_clicked(card_data, card_container)
 
 # 处理来自CardView的点击信号 - 修复参数匹配问题

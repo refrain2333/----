@@ -10,9 +10,11 @@ extends RefCounted
 ## - 遵循项目架构规范，放置在管理器目录
 
 # 导入依赖
-const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
-const HandTypeAnalyzer = preload("res://cs/卡牌系统/数据/管理器/HandTypeAnalyzer.gd")
-const HandTypeRankingManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
+const HandTypeEnumsClass = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
+const HandTypeAnalyzerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeAnalyzer.gd")
+const HandTypeRankingManagerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
+const PokerHandAnalyzerClass = preload("res://cs/卡牌系统/数据/管理器/PokerHandAnalyzer.gd")
+const HandResultClass = preload("res://cs/卡牌系统/数据/HandResult.gd")
 
 ## 🎯 智能分析入口
 static func find_best_hand(cards: Array) -> Dictionary:
@@ -31,7 +33,7 @@ static func find_best_hand(cards: Array) -> Dictionary:
 		combinations_tested = 1
 	elif cards.size() == 5:
 		# 正好5张牌：直接分析
-		result = HandTypeAnalyzer.analyze_hand(cards)
+		result = HandTypeAnalyzerClass.analyze_hand(cards)
 		combinations_tested = 1
 	else:
 		# 超过5张牌：找出最佳5张组合
@@ -72,71 +74,71 @@ static func _analyze_partial_hand(cards: Array) -> Dictionary:
 	
 	match cards.size():
 		1:
-			hand_type = HandTypeEnums.HandType.HIGH_CARD
+			hand_type = HandTypeEnumsClass.HandType.HIGH_CARD
 			primary_value = values[0]
 			description = "高牌: %s" % _value_to_string(primary_value)
-		
+
 		2:
 			if _has_pair_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.PAIR
+				hand_type = HandTypeEnumsClass.HandType.PAIR
 				primary_value = _get_pair_value_from_counts(value_counts)
 				description = "对子: %s" % _value_to_string(primary_value)
 			else:
-				hand_type = HandTypeEnums.HandType.HIGH_CARD
+				hand_type = HandTypeEnumsClass.HandType.HIGH_CARD
 				primary_value = values.max()
 				description = "高牌: %s" % _value_to_string(primary_value)
 		
 		3:
 			if _has_three_of_kind_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.THREE_KIND
+				hand_type = HandTypeEnumsClass.HandType.THREE_KIND
 				primary_value = _get_three_of_kind_value_from_counts(value_counts)
 				description = "三条: %s" % _value_to_string(primary_value)
 			elif _has_pair_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.PAIR
+				hand_type = HandTypeEnumsClass.HandType.PAIR
 				primary_value = _get_pair_value_from_counts(value_counts)
 				description = "对子: %s" % _value_to_string(primary_value)
 			else:
-				hand_type = HandTypeEnums.HandType.HIGH_CARD
+				hand_type = HandTypeEnumsClass.HandType.HIGH_CARD
 				primary_value = values.max()
 				description = "高牌: %s" % _value_to_string(primary_value)
 		
 		4:
 			if _has_four_of_kind_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.FOUR_KIND
+				hand_type = HandTypeEnumsClass.HandType.FOUR_KIND
 				primary_value = _get_four_of_kind_value_from_counts(value_counts)
 				description = "四条: %s" % _value_to_string(primary_value)
 			elif _has_three_of_kind_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.THREE_KIND
+				hand_type = HandTypeEnumsClass.HandType.THREE_KIND
 				primary_value = _get_three_of_kind_value_from_counts(value_counts)
 				description = "三条: %s" % _value_to_string(primary_value)
 			elif _has_two_pair_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.TWO_PAIR
+				hand_type = HandTypeEnumsClass.HandType.TWO_PAIR
 				var pairs = _get_pair_values_from_counts(value_counts)
 				primary_value = max(pairs[0], pairs[1])
 				description = "两对: %s和%s" % [_value_to_string(pairs[0]), _value_to_string(pairs[1])]
 			elif _has_pair_in_counts(value_counts):
-				hand_type = HandTypeEnums.HandType.PAIR
+				hand_type = HandTypeEnumsClass.HandType.PAIR
 				primary_value = _get_pair_value_from_counts(value_counts)
 				description = "对子: %s" % _value_to_string(primary_value)
 			else:
-				hand_type = HandTypeEnums.HandType.HIGH_CARD
+				hand_type = HandTypeEnumsClass.HandType.HIGH_CARD
 				primary_value = values.max()
 				description = "高牌: %s" % _value_to_string(primary_value)
 		
 		_:
-			hand_type = HandTypeEnums.HandType.HIGH_CARD
+			hand_type = HandTypeEnumsClass.HandType.HIGH_CARD
 			primary_value = values.max()
 			description = "高牌: %s" % _value_to_string(primary_value)
-	
+
 	return {
 		"hand_type": hand_type,
-		"hand_type_name": HandTypeEnums.HAND_TYPE_NAMES[hand_type],
+		"hand_type_name": HandTypeEnumsClass.HAND_TYPE_NAMES[hand_type],
 		"description": description,
 		"primary_value": primary_value,
 		"secondary_value": 0,
 		"kickers": [],
 		"cards": cards,
-		"base_score": HandTypeEnums.BASE_SCORES[hand_type]
+		"base_score": HandTypeEnumsClass.BASE_SCORES[hand_type]
 	}
 
 ## 🔧 找出最佳5张组合
@@ -150,16 +152,16 @@ static func _find_best_combination(cards: Array) -> Dictionary:
 		combinations_tested = combinations.size()
 		
 		for combination in combinations:
-			var result = HandTypeAnalyzer.analyze_hand(combination)
+			var result = HandTypeAnalyzerClass.analyze_hand(combination)
 			if not best_result or _is_better_hand(result, best_result):
 				best_result = result
 	else:
 		# 使用启发式算法
 		var smart_combinations = _generate_smart_combinations(cards, 5)
 		combinations_tested = smart_combinations.size()
-		
+
 		for combination in smart_combinations:
-			var result = HandTypeAnalyzer.analyze_hand(combination)
+			var result = HandTypeAnalyzerClass.analyze_hand(combination)
 			if not best_result or _is_better_hand(result, best_result):
 				best_result = result
 	
@@ -342,7 +344,7 @@ static func _value_to_string(value: int) -> String:
 ## 🔧 创建空结果
 static func _create_empty_result() -> Dictionary:
 	return {
-		"hand_type": HandTypeEnums.HandType.HIGH_CARD,
+		"hand_type": HandTypeEnumsClass.HandType.HIGH_CARD,
 		"hand_type_name": "无牌",
 		"description": "无有效卡牌",
 		"primary_value": 0,

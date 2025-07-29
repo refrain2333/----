@@ -125,8 +125,8 @@ func get_faction_name(faction: int) -> String:
 		FactionType.ARTIFICE: return "工艺派系"
 		_: return "未知派系"
 
-func get_card_type_name(type_string: String) -> String:
-	match type_string:
+func get_card_type_name(card_type_string: String) -> String:
+	match card_type_string:
 		CARD_TYPE_HIGH_CARD: return "高牌"
 		CARD_TYPE_PAIR: return "对子"
 		CARD_TYPE_TWO_PAIR: return "两对"

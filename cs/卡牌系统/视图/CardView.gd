@@ -3,8 +3,8 @@ extends Control
 # 实现 ISelectable 接口
 
 # 导入GlobalEnums和ResourcePaths
-const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
-const ResourcePaths = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
+const GlobalEnumsClass = preload("res://cs/Global/GlobalEnums.gd")
+const ResourcePathsClass = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
 
 # 卡牌数据
 var card_data: CardData = null
@@ -102,7 +102,7 @@ func update_view():
 	
 	# 如果未能加载指定贴图，使用通过ResourcePaths生成路径
 	if not texture:
-		var generated_path = ResourcePaths.get_card_image_path(card_data.id)
+		var generated_path = ResourcePathsClass.get_card_image_path(card_data.id)
 		if ResourceLoader.exists(generated_path):
 			texture = load(generated_path)
 	
@@ -132,7 +132,7 @@ func _update_reinforcement_visuals():
 	if frame_node:
 		frame_node.visible = false
 		if card_data.has_frame_reinforcement():
-			var frame_path = ResourcePaths.get_frame_path(card_data.frame_type)
+			var frame_path = ResourcePathsClass.get_frame_path(card_data.frame_type)
 			if ResourceLoader.exists(frame_path):
 				frame_node.texture = load(frame_path)
 				frame_node.visible = true
@@ -151,7 +151,7 @@ func _update_reinforcement_visuals():
 			
 			for i in range(seal_count):
 				var seal_type = card_data.wax_seals[i]
-				var texture_path = ResourcePaths.get_wax_seal_path(seal_type)
+				var texture_path = ResourcePathsClass.get_wax_seal_path(seal_type)
 				if ResourceLoader.exists(texture_path):
 					var seal_sprite = Sprite2D.new()
 					seal_sprite.texture = load(texture_path)
@@ -166,7 +166,7 @@ func _update_reinforcement_visuals():
 	if material_effect:
 		material_effect.visible = false
 		if card_data.has_material_reinforcement():
-			var shader_path = ResourcePaths.get_material_shader_path(card_data.material_type)
+			var shader_path = ResourcePathsClass.get_material_shader_path(card_data.material_type)
 			if ResourceLoader.exists(shader_path):
 				var shader_material = ShaderMaterial.new()
 				shader_material.shader = load(shader_path)

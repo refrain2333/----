@@ -1,4 +1,5 @@
-extends Node
+class_name LogManager
+extends RefCounted
 
 ## 统一日志管理系统
 ## 用于替换HandDock中分散的日志函数
@@ -10,17 +11,10 @@ enum LogLevel {
 	ERROR = 3
 }
 
-static var instance: LogManager
 static var debug_mode: bool = false
 static var current_level: LogLevel = LogLevel.INFO
 static var log_to_file: bool = false
 static var log_file_path: String = "user://game.log"
-
-## 获取单例实例
-static func get_instance() -> LogManager:
-	if not instance:
-		instance = LogManager.new()
-	return instance
 
 ## 主要日志方法
 static func log_message(component: String, message: String, level: LogLevel = LogLevel.INFO):

@@ -12,13 +12,19 @@ const GameScoreManager = preload("res://cs/卡牌系统/数据/管理器/GameSco
 const DeckViewIntegrationManager = preload("res://cs/卡牌系统/数据/管理器/DeckViewIntegrationManager.gd")
 const CardManager = preload("res://cs/卡牌系统/数据/管理器/CardManager.gd")
 
-# 导入牌型识别组件（使用迁移后的组件）
+# 导入牌型识别组件（V2.1新架构）
 const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
 const HandTypeAnalyzer = preload("res://cs/卡牌系统/数据/管理器/HandTypeAnalyzer.gd")
 const HandTypeRankingManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
 const SmartHandAnalyzer = preload("res://cs/卡牌系统/数据/管理器/SmartHandAnalyzer.gd")
 const HandTypeScoreManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeScoreManager.gd")
 const HandTypeTestCore = preload("res://cs/tests/卡牌相关/牌型识别测试/HandTypeTestCore.gd")
+
+# 导入V2.1新架构组件
+const HandTypeSystemV2 = preload("res://cs/卡牌系统/数据/管理器/HandTypeSystemV2.gd")
+const CardDataLoader = preload("res://cs/卡牌系统/数据/管理器/CardDataLoader.gd")
+const PokerHandAnalyzer = preload("res://cs/卡牌系统/数据/管理器/PokerHandAnalyzer.gd")
+const PreciseScoreCalculator = preload("res://cs/卡牌系统/数据/管理器/PreciseScoreCalculator.gd")
 
 # UI组件引用
 @onready var hand_dock = $HandDock
@@ -54,29 +60,63 @@ var test_history: Array = []
 var hand_type_test_core: HandTypeTestCore  # 核心测试模块
 var hand_ranking_system: HandTypeRankingManager  # 等级系统
 
+# V2.1新架构组件
+var v2_system_initialized: bool = false
+var v2_ranking_manager: HandTypeRankingManager
+var v2_test_results: Array = []
+
 # 牌型识别测试初始化
 func _ready():
 	print("HandTypeTest: 开始牌型识别测试初始化")
-	
-	# 1. 加载配置
+
+	# 1. 初始化V2.1系统
+	_initialize_v2_system()
+
+	# 2. 加载配置
 	_load_config()
-	
-	# 2. 创建管理器组件
+
+	# 3. 创建管理器组件
 	_create_managers()
-	
-	# 3. 初始化游戏
+
+	# 4. 初始化游戏
 	_initialize_game()
-	
-	# 4. 连接信号
+
+	# 5. 连接信号
 	_connect_signals()
 
-	# 5. 设置UI
+	# 6. 设置UI
 	_setup_ui()
 
-	# 6. 初始化牌型识别组件
+	# 7. 初始化牌型识别组件
 	_setup_hand_type_analyzer()
 
-	print("HandTypeTest: 牌型识别测试初始化完成")
+	print("HandTypeTest: 牌型识别测试初始化完成（V2.1增强版）")
+
+## 🔧 更新状态文本
+func _update_status_text(text: String):
+	if status_text:
+		status_text.text = text
+	print("状态: %s" % text)
+
+## 🎯 初始化V2.1系统
+func _initialize_v2_system():
+	print("🚀 初始化牌型识别系统 V2.1...")
+
+	# 初始化卡牌数据加载器
+	CardDataLoader.initialize()
+
+	# 创建V2.1等级管理器
+	v2_ranking_manager = HandTypeRankingManager.new()
+
+	# 验证系统完整性
+	var validation = HandTypeSystemV2.validate_system()
+	if validation.overall_status:
+		v2_system_initialized = true
+		print("✅ V2.1系统初始化成功")
+		_update_status_text("V2.1系统已就绪")
+	else:
+		print("❌ V2.1系统初始化失败: %s" % str(validation.errors))
+		_update_status_text("V2.1系统初始化失败")
 
 # 🔧 清理资源
 func _exit_tree():
@@ -108,16 +148,16 @@ func _create_managers():
 	# 🔧 2. 创建CardEffectManager（CardManager需要）
 	const CardEffectManagerData = preload("res://cs/卡牌系统/数据/管理器/CardEffectManager.gd")
 	card_effect_manager = CardEffectManagerData.new()
-	add_child(card_effect_manager)
+	add_child.call_deferred(card_effect_manager)
 
 	# 🔧 3. 创建卡牌管理器
 	card_manager = CardManager.new(self)
-	add_child(card_manager)
+	add_child.call_deferred(card_manager)
 
 	# 🔧 4. 创建TurnManager来管理HandDock
 	const PlayTurnManagerClass = preload("res://cs/主场景/game/TurnManager.gd")
 	turn_manager = PlayTurnManagerClass.new()
-	add_child(turn_manager)
+	add_child.call_deferred(turn_manager)
 
 	# 🔧 5. 设置TurnManager的外部验证器（连接到TurnActionManager）
 	if turn_manager.has_method("set_external_play_validator"):
@@ -134,20 +174,20 @@ func _create_simple_game_manager():
 	game_manager.name = "GameManager"  # 重要：使用正确的名称
 
 	# 🔧 关键：将GameManager添加到/root路径，这样HandDock才能找到它
-	get_tree().root.add_child(game_manager)
+	get_tree().root.add_child.call_deferred(game_manager)
 
 	print("SimplePlayTest: 简化GameManager已创建并添加到/root/GameManager路径")
 	
 	# 创建回合操作管理器
 	turn_action_manager = TurnActionManager.new()
-	add_child(turn_action_manager)
-	
+	add_child.call_deferred(turn_action_manager)
+
 	# 创建得分管理器
 	score_manager = GameScoreManager.new()
-	
+
 	# 创建牌库集成管理器
 	deck_integration_manager = DeckViewIntegrationManager.new()
-	add_child(deck_integration_manager)
+	add_child.call_deferred(deck_integration_manager)
 	
 	# 等待节点准备完成后配置
 	await get_tree().process_frame
@@ -173,11 +213,14 @@ func _initialize_game():
 	# 🔧 2. 设置TurnManager与所有组件的完整连接
 	_setup_turn_manager_connections()
 
-	# 🔧 3. 设置牌库集成
+	# 🔧 3. 发放初始手牌并创建视图（在牌库UI设置之前）
+	_deal_initial_hand_with_views()
+
+	# 🔧 4. 设置牌库集成（在抽牌之后，确保显示正确的牌库数量）
 	deck_integration_manager.setup(deck_widget, card_manager)
 
-	# 🔧 4. 发放初始手牌并创建视图
-	_deal_initial_hand_with_views()
+	# 🔧 重要：强制立即更新牌库显示，确保显示正确的牌库数量
+	deck_integration_manager.force_update()
 
 	# 🔧 5. 连接所有信号
 	_connect_all_signals()
@@ -520,7 +563,7 @@ func _show_controls_info():
   点击右下角牌库图标 - 查看完整牌库
 
 🔧 重构特性:
-  • 组件化架构，代码量减少80%
+  • 组件化架构，代码量减少80%%
   • 配置驱动的游戏规则
   • 可复用的管理器组件
 """ % [session_config.max_play_actions_per_turn, session_config.max_discard_actions_per_turn]
@@ -729,12 +772,8 @@ func _setup_hand_type_analyzer():
 	print("HandTypeTest: 牌型识别组件初始化完成")
 	print(hand_ranking_system.get_level_summary())
 
-# 分析手牌牌型
+# 分析手牌牌型（V2.1增强版）
 func _analyze_hand_type(cards: Array) -> Dictionary:
-	if not hand_type_test_core:
-		push_error("HandTypeTest: 牌型识别核心未初始化")
-		return _create_fallback_result(cards)
-
 	# 转换为CardData数组
 	var card_data_array = []
 	for card_view in cards:
@@ -753,26 +792,84 @@ func _analyze_hand_type(cards: Array) -> Dictionary:
 		if card_data:
 			card_data_array.append(card_data)
 
-	# 使用核心模块进行完整分析
-	var result = hand_type_test_core.analyze_hand_type(card_data_array)
+	# 使用V2.1系统进行分析（如果可用）
+	var v2_result = null
+	if v2_system_initialized and card_data_array.size() > 0:
+		v2_result = HandTypeSystemV2.analyze_and_score(card_data_array, v2_ranking_manager)
+		if v2_result.is_valid:
+			print("🎯 V2.1分析完成: %s，得分: %d分，耗时: %dms" % [
+				v2_result.hand_result.hand_type_name,
+				v2_result.score_result.final_score,
+				v2_result.total_analysis_time
+			])
+
+	# 使用V1系统作为备用（如果V2.1不可用）
+	var v1_result = null
+	if hand_type_test_core:
+		v1_result = hand_type_test_core.analyze_hand_type(card_data_array)
+		print("🔧 V1分析完成: %s，得分: %d分" % [
+			v1_result.hand_description,
+			v1_result.final_score
+		])
+
+	# 合并结果，优先使用V2.1
+	var final_result = _merge_analysis_results(v2_result, v1_result, card_data_array)
 
 	# 记录当前测试结果
-	current_test_results = result
+	current_test_results = final_result
 
-	print("🎯 牌型识别完成: %s，得分: %d分，耗时: %dms" % [
-		result.hand_description,
-		result.final_score,
-		result.analysis_time
-	])
+	return final_result
 
-	return result
+## 🔧 合并V1和V2.1分析结果
+func _merge_analysis_results(v2_result, v1_result, card_data_array: Array) -> Dictionary:
+	# 如果V2.1结果可用，优先使用
+	if v2_result and v2_result.is_valid:
+		var hand_result = v2_result.hand_result
+		var score_result = v2_result.score_result
 
-# 更新牌型识别结果显示
+		return {
+			"hand_type": hand_result.hand_type,
+			"hand_type_name": hand_result.hand_type_name,
+			"hand_description": hand_result.description,
+			"primary_value": hand_result.primary_value,
+			"secondary_value": hand_result.secondary_value,
+			"kickers": hand_result.kickers,
+			"final_score": score_result.final_score,
+			"base_score": score_result.base_score,
+			"value_score": score_result.value_score,
+			"bonus_score": score_result.bonus_score,
+			"multiplier": score_result.dynamic_multiplier,
+			"level_info": "LV%d (%.2fx)" % [score_result.hand_type_level, score_result.dynamic_multiplier],
+			"calculation_formula": score_result.calculation_formula,
+			"detailed_formula": score_result.detailed_formula,
+			"step_by_step": score_result.step_by_step,
+			"analysis_time": v2_result.total_analysis_time,
+			"combinations_tested": hand_result.combinations_tested,
+			"analysis_method": hand_result.analysis_method,
+			"cards": card_data_array,
+			"version": "V2.1",
+			"v2_available": true
+		}
+
+	# 使用V1结果作为备用
+	elif v1_result:
+		return v1_result.duplicate()
+
+	# 创建空结果
+	else:
+		return _create_fallback_result(card_data_array)
+
+# 更新牌型识别结果显示（V2.1增强版）
 func _update_hand_type_display(result: Dictionary):
 	if hand_type_label:
-		hand_type_label.text = "牌型: %s (%s)" % [
+		var version_info = ""
+		if result.get("version", "") == "V2.1":
+			version_info = " [V2.1]"
+
+		hand_type_label.text = "牌型: %s (%s)%s" % [
 			result.get("hand_type_name", "未知"),
-			result.get("level_info", "LV1")
+			result.get("level_info", "LV1"),
+			version_info
 		]
 
 	if best_cards_label:
@@ -822,25 +919,126 @@ func _update_hand_type_display(result: Dictionary):
 			best_cards_label.text += "\n弃置: %s" % discarded_text
 
 	if score_calculation_label:
-		score_calculation_label.text = "计算: %s" % result.get("detailed_formula", result.get("calculation_formula", "无"))
+		var calc_text = ""
+		if result.get("version", "") == "V2.1":
+			# V2.1显示详细的原子化公式
+			calc_text = "V2.1: %s\n详细: %s" % [
+				result.get("calculation_formula", "无"),
+				result.get("detailed_formula", "无")
+			]
+
+			# 如果有分步计算，显示第一步
+			var steps = result.get("step_by_step", [])
+			if not steps.is_empty():
+				calc_text += "\n步骤: %s..." % steps[0]
+		else:
+			# V1显示简化公式
+			calc_text = "V1: %s" % result.get("detailed_formula", result.get("calculation_formula", "无"))
+
+		score_calculation_label.text = "计算: %s" % calc_text
 
 	if performance_label:
-		performance_label.text = "性能: %dms, %d组合" % [
+		var perf_text = "性能: %dms, %d组合" % [
 			result.get("analysis_time", 0),
 			result.get("combinations_tested", 0)
 		]
 
+		if result.get("analysis_method", ""):
+			perf_text += " (%s)" % result.analysis_method
+
 		if result.get("total_cards", 0) > 5:
-			performance_label.text += " (从%d张中选择)" % result.total_cards
+			perf_text += " (从%d张中选择)" % result.total_cards
 
-# 运行完整测试套件
+		performance_label.text = perf_text
+
+# 运行完整测试套件（V2.1增强版）
 func _run_test_suite():
-	print("HandTypeTest: 开始运行完整测试套件")
+	print("HandTypeTest: 开始运行完整测试套件（V2.1增强版）")
 
-	if not hand_type_test_core:
-		_update_status("牌型识别核心未初始化，无法运行测试套件")
-		return
+	var test_results = []
+	var total_start_time = Time.get_ticks_msec()
 
+	# V2.1系统测试
+	if v2_system_initialized:
+		print("🚀 运行V2.1系统测试...")
+		_run_v2_test_suite()
+
+	# V1系统测试（备用）
+	if hand_type_test_core:
+		print("🔧 运行V1系统测试...")
+		_run_v1_test_suite()
+
+	var total_time = Time.get_ticks_msec() - total_start_time
+	_update_status_text("测试套件完成，耗时: %dms" % total_time)
+
+## 🎯 运行V2.1测试套件
+func _run_v2_test_suite():
+	# 测试1：基础功能测试
+	print("🧪 V2.1测试1: 基础功能测试")
+	_run_v2_basic_tests()
+
+	# 测试2：性能基准测试
+	print("🧪 V2.1测试2: 性能基准测试")
+	_run_v2_performance_tests()
+
+	# 测试3：当前手牌分析
+	if hand_dock and hand_dock.has_method("get_all_cards"):
+		var all_cards = hand_dock.get_all_cards()
+		if not all_cards.is_empty():
+			print("🧪 V2.1测试3: 当前手牌分析")
+			var result = _analyze_hand_type(all_cards)
+			_update_hand_type_display(result)
+
+## 🔧 运行V2.1基础功能测试
+func _run_v2_basic_tests():
+	# 获取测试手牌
+	var test_hands = CardDataLoader.create_test_hands()
+	var test_count = 0
+	var success_count = 0
+
+	for hand_type in test_hands:
+		var cards = test_hands[hand_type]
+		if cards.size() >= 5:
+			test_count += 1
+			var result = HandTypeSystemV2.analyze_and_score(cards, v2_ranking_manager)
+
+			if result.is_valid:
+				success_count += 1
+				print("  ✅ %s: %s, 得分: %d" % [
+					hand_type,
+					result.hand_result.hand_type_name,
+					result.score_result.final_score
+				])
+			else:
+				print("  ❌ %s: 分析失败" % hand_type)
+
+	print("  📊 基础测试结果: %d/%d 通过" % [success_count, test_count])
+
+## 🔧 运行V2.1性能测试
+func _run_v2_performance_tests():
+	var test_sizes = [10, 50, 100]
+
+	for size in test_sizes:
+		var start_time = Time.get_ticks_msec()
+		var success_count = 0
+
+		for i in range(size):
+			var cards = CardDataLoader.get_random_cards(5)
+			if cards.size() == 5:
+				var result = HandTypeSystemV2.analyze_and_score(cards, v2_ranking_manager)
+				if result.is_valid:
+					success_count += 1
+
+		var end_time = Time.get_ticks_msec()
+		var total_time = end_time - start_time
+		var avg_time = float(total_time) / size
+
+		print("  📊 %d次测试: 总耗时%dms, 平均%.2fms, 成功率%.1f%%" % [
+			size, total_time, avg_time, float(success_count) / size * 100.0
+		])
+
+## 🔧 运行V1测试套件
+func _run_v1_test_suite():
 	var test_results = []
 	var total_start_time = Time.get_ticks_msec()
 

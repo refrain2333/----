@@ -10,12 +10,12 @@ extends RefCounted
 ## - 遵循项目架构规范，放置在管理器目录
 
 # 导入依赖
-const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
+const HandTypeEnumsClass = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
 
 # 使用共享的枚举和配置
-const HandType = HandTypeEnums.HandType
-const HAND_TYPE_NAMES = HandTypeEnums.HAND_TYPE_NAMES
-const LEVEL_MULTIPLIERS = HandTypeEnums.LEVEL_MULTIPLIERS
+const HandType = HandTypeEnumsClass.HandType
+const HAND_TYPE_NAMES = HandTypeEnumsClass.HAND_TYPE_NAMES
+const LEVEL_MULTIPLIERS = HandTypeEnumsClass.LEVEL_MULTIPLIERS
 
 # 当前等级设置（默认全部LV1）
 var current_levels: Dictionary = {}
@@ -42,11 +42,11 @@ func get_hand_type_level(hand_type: HandType) -> int:
 
 ## 🎯 设置牌型等级
 func set_hand_type_level(hand_type: HandType, level: int) -> bool:
-	if not HandTypeEnums.is_valid_level(level):
+	if not HandTypeEnumsClass.is_valid_level(level):
 		push_error("HandTypeRankingManager: 无效等级 %d，必须在1-5之间" % level)
 		return false
-	
-	if not HandTypeEnums.is_valid_hand_type(hand_type):
+
+	if not HandTypeEnumsClass.is_valid_hand_type(hand_type):
 		push_error("HandTypeRankingManager: 无效牌型 %d" % hand_type)
 		return false
 	
@@ -82,16 +82,16 @@ func level_up_hand_type(hand_type: HandType) -> bool:
 ## 🎯 获取动态倍率
 func get_multiplier(hand_type: HandType) -> float:
 	var level = get_hand_type_level(hand_type)
-	return HandTypeEnums.calculate_dynamic_multiplier(hand_type, level)
+	return HandTypeEnumsClass.calculate_dynamic_multiplier(hand_type, level)
 
 ## 🎯 获取基础倍率（LV1倍率）
 func get_base_multiplier(hand_type: HandType) -> float:
-	var config = HandTypeEnums.get_level_multiplier_config(hand_type)
+	var config = HandTypeEnumsClass.get_level_multiplier_config(hand_type)
 	return config[0]
 
 ## 🎯 批量设置所有牌型等级
 func set_all_levels(level: int) -> bool:
-	if not HandTypeEnums.is_valid_level(level):
+	if not HandTypeEnumsClass.is_valid_level(level):
 		push_error("HandTypeRankingManager: 无效等级 %d" % level)
 		return false
 	
@@ -148,7 +148,7 @@ func import_levels(data: Dictionary) -> bool:
 	for hand_type in imported_levels.keys():
 		if LEVEL_MULTIPLIERS.has(hand_type):
 			var level = imported_levels[hand_type]
-			if HandTypeEnums.is_valid_level(level):
+			if HandTypeEnumsClass.is_valid_level(level):
 				current_levels[hand_type] = level
 				valid_count += 1
 	
@@ -169,13 +169,13 @@ static func get_level_options() -> Array:
 
 ## 🎯 获取等级描述
 func get_level_description(hand_type: HandType, level: int) -> String:
-	if not HandTypeEnums.is_valid_level(level):
+	if not HandTypeEnumsClass.is_valid_level(level):
 		return "无效等级"
-	
-	if not HandTypeEnums.is_valid_hand_type(hand_type):
+
+	if not HandTypeEnumsClass.is_valid_hand_type(hand_type):
 		return "无效牌型"
-	
-	var multiplier = HandTypeEnums.calculate_dynamic_multiplier(hand_type, level)
+
+	var multiplier = HandTypeEnumsClass.calculate_dynamic_multiplier(hand_type, level)
 	return "LV%d (%.1fx倍率)" % [level, multiplier]
 
 ## 🎯 获取系统统计信息
@@ -221,7 +221,7 @@ func get_statistics() -> Dictionary:
 
 ## 🎯 静态方法：获取基础分数
 static func get_base_score(hand_type: HandType) -> int:
-	return HandTypeEnums.get_base_score(hand_type)
+	return HandTypeEnumsClass.get_base_score(hand_type)
 
 ## 🎯 静态方法：比较两个牌型
 static func compare_hands(hand1: Dictionary, hand2: Dictionary) -> int:
@@ -250,7 +250,7 @@ static func compare_hands(hand1: Dictionary, hand2: Dictionary) -> int:
 ## 🎯 获取牌型强度排名
 func get_hand_type_strength_ranking() -> Array:
 	var ranking = []
-	var all_types = HandTypeEnums.get_all_hand_types()
+	var all_types = HandTypeEnumsClass.get_all_hand_types()
 	
 	for hand_type in all_types:
 		var level = get_hand_type_level(hand_type)

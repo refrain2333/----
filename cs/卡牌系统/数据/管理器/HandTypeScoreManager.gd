@@ -10,25 +10,25 @@ extends RefCounted
 ## - 遵循项目架构规范，放置在管理器目录
 
 # 导入依赖
-const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
-const SmartHandAnalyzer = preload("res://cs/卡牌系统/数据/管理器/SmartHandAnalyzer.gd")
-const HandTypeRankingManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
+const HandTypeEnumsClass = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
+const SmartHandAnalyzerClass = preload("res://cs/卡牌系统/数据/管理器/SmartHandAnalyzer.gd")
+const HandTypeRankingManagerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
 
 # 信号
 signal score_calculated(result: Dictionary)
 signal batch_calculation_completed(results: Array)
 
 ## 🎯 计算扑克牌型得分
-static func calculate_poker_hand_score(cards: Array, ranking_manager: HandTypeRankingManager = null) -> Dictionary:
+static func calculate_poker_hand_score(cards: Array, ranking_manager: HandTypeRankingManagerClass = null) -> Dictionary:
 	if cards.is_empty():
 		return _create_empty_score_result()
-	
+
 	# 使用智能分析器获取最佳牌型
-	var hand_analysis = SmartHandAnalyzer.find_best_hand(cards)
-	
+	var hand_analysis = SmartHandAnalyzerClass.find_best_hand(cards)
+
 	# 创建默认等级系统（如果未提供）
 	if not ranking_manager:
-		ranking_manager = HandTypeRankingManager.new()
+		ranking_manager = HandTypeRankingManagerClass.new()
 	
 	# 计算各部分得分
 	var fixed_base_score = hand_analysis.base_score
@@ -37,7 +37,7 @@ static func calculate_poker_hand_score(cards: Array, ranking_manager: HandTypeRa
 	var dynamic_multiplier = ranking_manager.get_multiplier(hand_analysis.hand_type)
 	
 	# 应用得分公式：最终得分 = ((固定基础分 + 动态等级分) + 附加分) × 动态倍率
-	var final_score = int(((fixed_base_score + dynamic_rank_score) + bonus_score) * dynamic_multiplier)
+	var final_score = roundi(((fixed_base_score + dynamic_rank_score) + bonus_score) * dynamic_multiplier)
 	
 	# 构建详细的计算公式字符串
 	var calculation_formula = "((%d + %d) + %d) × %.1f = %d" % [
@@ -80,62 +80,62 @@ static func _calculate_dynamic_rank_score(hand_analysis: Dictionary) -> int:
 	var kickers = hand_analysis.get("kickers", [])
 	
 	match hand_type:
-		HandTypeEnums.HandType.HIGH_CARD:
+		HandTypeEnumsClass.HandType.HIGH_CARD:
 			# 最高牌价值 × 2
 			return primary_value * 2
-		
-		HandTypeEnums.HandType.PAIR:
+
+		HandTypeEnumsClass.HandType.PAIR:
 			# 对子价值 × 4 + 踢脚牌总和
 			var kicker_sum = 0
 			for kicker in kickers:
 				kicker_sum += kicker
 			return primary_value * 4 + kicker_sum
-		
-		HandTypeEnums.HandType.TWO_PAIR:
+
+		HandTypeEnumsClass.HandType.TWO_PAIR:
 			# 大对子 × 6 + 小对子 × 4 + 踢脚牌
 			var kicker_sum = 0
 			for kicker in kickers:
 				kicker_sum += kicker
 			return primary_value * 6 + secondary_value * 4 + kicker_sum
 		
-		HandTypeEnums.HandType.THREE_KIND:
+		HandTypeEnumsClass.HandType.THREE_KIND:
 			# 三条价值 × 8 + 踢脚牌总和
 			var kicker_sum = 0
 			for kicker in kickers:
 				kicker_sum += kicker
 			return primary_value * 8 + kicker_sum
-		
-		HandTypeEnums.HandType.STRAIGHT:
+
+		HandTypeEnumsClass.HandType.STRAIGHT:
 			# 所有卡牌价值总和（A特殊处理）
 			return _calculate_straight_score(hand_analysis.cards)
-		
-		HandTypeEnums.HandType.FLUSH:
+
+		HandTypeEnumsClass.HandType.FLUSH:
 			# 所有卡牌价值总和 × 1.2
 			var total_value = 0
 			for card in hand_analysis.cards:
 				total_value += card.base_value
-			return int(total_value * 1.2)
-		
-		HandTypeEnums.HandType.FULL_HOUSE:
+			return roundi(total_value * 1.2)
+
+		HandTypeEnumsClass.HandType.FULL_HOUSE:
 			# 三条 × 10 + 对子 × 6
 			return primary_value * 10 + secondary_value * 6
 		
-		HandTypeEnums.HandType.FOUR_KIND:
+		HandTypeEnumsClass.HandType.FOUR_KIND:
 			# 四条价值 × 15 + 踢脚牌
 			var kicker_sum = 0
 			for kicker in kickers:
 				kicker_sum += kicker
 			return primary_value * 15 + kicker_sum
-		
-		HandTypeEnums.HandType.STRAIGHT_FLUSH:
+
+		HandTypeEnumsClass.HandType.STRAIGHT_FLUSH:
 			# 顺子分数 × 2
 			return _calculate_straight_score(hand_analysis.cards) * 2
-		
-		HandTypeEnums.HandType.ROYAL_FLUSH:
+
+		HandTypeEnumsClass.HandType.ROYAL_FLUSH:
 			# 固定200分（传奇牌型特殊处理）
 			return 200
-		
-		HandTypeEnums.HandType.FIVE_KIND:
+
+		HandTypeEnumsClass.HandType.FIVE_KIND:
 			# 五条价值 × 20
 			return primary_value * 20
 		
@@ -202,16 +202,16 @@ static func _calculate_bonus_from_cards(cards: Array) -> int:
 static func calculate_quick_score(cards: Array) -> int:
 	if cards.is_empty():
 		return 0
-	
-	var hand_analysis = SmartHandAnalyzer.find_best_hand(cards)
-	var ranking_manager = HandTypeRankingManager.new()
+
+	var hand_analysis = SmartHandAnalyzerClass.find_best_hand(cards)
+	var ranking_manager = HandTypeRankingManagerClass.new()
 	
 	var fixed_base_score = hand_analysis.base_score
 	var dynamic_rank_score = _calculate_dynamic_rank_score(hand_analysis)
 	var bonus_score = _calculate_bonus_from_cards(hand_analysis.best_hand_cards)
 	var dynamic_multiplier = ranking_manager.get_multiplier(hand_analysis.hand_type)
 	
-	return int(((fixed_base_score + dynamic_rank_score) + bonus_score) * dynamic_multiplier)
+	return roundi(((fixed_base_score + dynamic_rank_score) + bonus_score) * dynamic_multiplier)
 
 ## 🎯 批量计算得分
 static func calculate_batch_scores(card_combinations: Array, ranking_manager: HandTypeRankingManager = null) -> Array:
@@ -288,7 +288,7 @@ static func get_score_statistics(score_results: Array) -> Dictionary:
 ## 🔧 创建空得分结果
 static func _create_empty_score_result() -> Dictionary:
 	return {
-		"hand_analysis": SmartHandAnalyzer._create_empty_result(),
+		"hand_analysis": SmartHandAnalyzerClass._create_empty_result(),
 		"fixed_base_score": 0,
 		"dynamic_rank_score": 0,
 		"bonus_score": 0,

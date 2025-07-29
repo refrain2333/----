@@ -9,15 +9,15 @@ extends RefCounted
 ## - 性能测试和验证测试
 
 # 导入依赖（使用迁移后的组件）
-const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
-const HandTypeScoreManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeScoreManager.gd")
-const HandTypeRankingManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
+const HandTypeEnumsClass = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
+const HandTypeScoreManagerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeScoreManager.gd")
+const HandTypeRankingManagerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
 
-var ranking_system: HandTypeRankingManager
+var ranking_system: HandTypeRankingManagerClass
 
 ## 🎯 初始化
 func _init():
-	ranking_system = HandTypeRankingManager.new()
+	ranking_system = HandTypeRankingManagerClass.new()
 	print("HandTypeTestCore: 核心测试模块初始化完成")
 
 ## 🎯 分析手牌牌型（主要接口）
@@ -28,7 +28,7 @@ func analyze_hand_type(cards: Array) -> Dictionary:
 		return _create_empty_test_result()
 	
 	# 使用得分计算器进行完整分析
-	var score_result = HandTypeScoreManager.calculate_poker_hand_score(cards, ranking_system)
+	var score_result = HandTypeScoreManagerClass.calculate_poker_hand_score(cards, ranking_system)
 	var hand_analysis = score_result.hand_analysis
 	
 	var end_time = Time.get_ticks_msec()
@@ -265,7 +265,7 @@ func _format_cards_description(cards: Array) -> String:
 ## 🔧 创建空测试结果
 func _create_empty_test_result() -> Dictionary:
 	return {
-		"hand_type": HandTypeEnums.HandType.HIGH_CARD,
+		"hand_type": HandTypeEnumsClass.HandType.HIGH_CARD,
 		"hand_type_name": "无牌",
 		"hand_description": "无有效卡牌",
 		"best_hand_cards": [],

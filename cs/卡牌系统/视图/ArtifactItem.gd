@@ -2,7 +2,7 @@ class_name ArtifactItem
 extends Control
 
 # 导入ResourcePaths
-const ResourcePaths = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
+const ResourcePathsClass = preload("res://cs/卡牌系统/视图/ResourcePaths.gd")
 
 # 信号
 signal artifact_clicked(artifact_item)

@@ -148,11 +148,14 @@ func _initialize_game():
 	# 🔧 2. 设置TurnManager与所有组件的完整连接
 	_setup_turn_manager_connections()
 
-	# 🔧 3. 设置牌库集成
+	# 🔧 3. 发放初始手牌并创建视图（在牌库UI设置之前）
+	_deal_initial_hand_with_views()
+
+	# 🔧 4. 设置牌库集成（在抽牌之后，确保显示正确的牌库数量）
 	deck_integration_manager.setup(deck_widget, card_manager)
 
-	# 🔧 4. 发放初始手牌并创建视图
-	_deal_initial_hand_with_views()
+	# 🔧 重要：强制立即更新牌库显示，确保显示正确的牌库数量
+	deck_integration_manager.force_update()
 
 	# 🔧 5. 连接所有信号
 	_connect_all_signals()
@@ -470,7 +473,7 @@ func _show_controls_info():
   点击右下角牌库图标 - 查看完整牌库
 
 🔧 重构特性:
-  • 组件化架构，代码量减少80%
+  • 组件化架构，代码量减少80%%
   • 配置驱动的游戏规则
   • 可复用的管理器组件
 """ % [session_config.max_play_actions_per_turn, session_config.max_discard_actions_per_turn]

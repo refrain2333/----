@@ -522,7 +522,7 @@ func _on_enhanced_card_hover(card_container: Control, glow_effect: Panel, is_hov
 		tween.tween_callback(func(): glow_effect.visible = false)
 
 # 卡牌点击效果
-func _on_card_clicked(card_container: Control, card_data: CardData, event: InputEvent):
+func _on_card_clicked(card_container: Control, _card_data: CardData, event: InputEvent):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# 创建点击波纹效果
 		var ripple = Panel.new()
