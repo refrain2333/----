@@ -65,7 +65,8 @@ static func analyze(cards: Array) -> HandResultClass:
 		if result != null:
 			# 设置分析元数据
 			result.set_analysis_metadata(1, "direct")
-			result.set_cards_info(cards, result.kickers, cards)
+			# 只设置all_cards，保留评估器设置的contributing_cards
+			result.all_cards = cards.duplicate()
 			return result
 	
 	# 如果没有匹配的牌型，返回空结果
@@ -134,11 +135,21 @@ static func _is_straight(values: Array) -> Dictionary:
 static func _evaluate_royal_flush(data: Dictionary) -> HandResultClass:
 	if not data.is_flush or not data.straight_info.is_straight:
 		return null
-	
-	# 检查是否为10-J-Q-K-A
+
+	# 检查是否为10-J-Q-K-A（A=14）
 	var values = data.values.duplicate()
 	values.sort()
-	if values == [1, 10, 11, 12, 13]:  # A作为14时会被转换
+
+	# 将A=1转换为A=14进行皇家同花顺检查
+	var converted_values = []
+	for value in values:
+		if value == 1:
+			converted_values.append(14)  # A转换为14
+		else:
+			converted_values.append(value)
+	converted_values.sort()
+
+	if converted_values == [10, 11, 12, 13, 14]:  # 10-J-Q-K-A
 		var result = HandResultClass.new()
 		result.set_hand_type_info(
 			HandTypeEnumsClass.HandType.ROYAL_FLUSH,
@@ -146,8 +157,9 @@ static func _evaluate_royal_flush(data: Dictionary) -> HandResultClass:
 			"10-J-Q-K-A同花顺"
 		)
 		result.set_core_values(14)  # A作为最高牌
+		result.set_cards_info(data.cards, [], data.cards)
 		return result
-	
+
 	return null
 
 ## 🎯 五条评估器
@@ -169,7 +181,7 @@ static func _evaluate_five_kind(data: Dictionary) -> HandResultClass:
 static func _evaluate_straight_flush(data: Dictionary) -> HandResultClass:
 	if not data.is_flush or not data.straight_info.is_straight:
 		return null
-	
+
 	var result = HandResultClass.new()
 	result.set_hand_type_info(
 		HandTypeEnumsClass.HandType.STRAIGHT_FLUSH,
@@ -177,6 +189,7 @@ static func _evaluate_straight_flush(data: Dictionary) -> HandResultClass:
 		"同花顺至%s" % _value_to_string(data.straight_info.high_value)
 	)
 	result.set_core_values(data.straight_info.high_value)
+	result.set_cards_info(data.cards, [], data.cards)
 	return result
 
 ## 🎯 四条评估器
@@ -239,6 +252,7 @@ static func _evaluate_flush(data: Dictionary) -> HandResultClass:
 	)
 	result.set_core_values(data.values[0])
 	result.kickers = data.values.slice(1)  # 其余4张作为踢脚牌
+	result.set_cards_info(data.cards, result.kickers, data.cards)
 	return result
 
 ## 🎯 顺子评估器
@@ -253,6 +267,7 @@ static func _evaluate_straight(data: Dictionary) -> HandResultClass:
 		"顺子至%s" % _value_to_string(data.straight_info.high_value)
 	)
 	result.set_core_values(data.straight_info.high_value)
+	result.set_cards_info(data.cards, [], data.cards)
 	return result
 
 ## 🎯 三条评估器
@@ -270,6 +285,12 @@ static func _evaluate_three_kind(data: Dictionary) -> HandResultClass:
 		kickers.sort()
 		kickers.reverse()  # 从大到小排序
 
+		# 找出构成三条的卡牌
+		var contributing_cards = []
+		for card in data.cards:
+			if card.base_value == three_value:
+				contributing_cards.append(card)
+
 		var result = HandResultClass.new()
 		result.set_hand_type_info(
 			HandTypeEnumsClass.HandType.THREE_KIND,
@@ -278,6 +299,7 @@ static func _evaluate_three_kind(data: Dictionary) -> HandResultClass:
 		)
 		result.set_core_values(three_value)
 		result.kickers = kickers
+		result.contributing_cards = contributing_cards
 		return result
 
 	return null
@@ -297,6 +319,12 @@ static func _evaluate_two_pair(data: Dictionary) -> HandResultClass:
 		pairs.sort()
 		pairs.reverse()  # 从大到小排序
 
+		# 找出构成两对的卡牌
+		var contributing_cards = []
+		for card in data.cards:
+			if pairs.has(card.base_value):
+				contributing_cards.append(card)
+
 		var result = HandResultClass.new()
 		result.set_hand_type_info(
 			HandTypeEnumsClass.HandType.TWO_PAIR,
@@ -305,6 +333,7 @@ static func _evaluate_two_pair(data: Dictionary) -> HandResultClass:
 		)
 		result.set_core_values(pairs[0], pairs[1])
 		result.kickers = [kicker]
+		result.contributing_cards = contributing_cards
 		return result
 
 	return null
@@ -324,6 +353,12 @@ static func _evaluate_pair(data: Dictionary) -> HandResultClass:
 		kickers.sort()
 		kickers.reverse()  # 从大到小排序
 
+		# 找出构成对子的卡牌
+		var contributing_cards = []
+		for card in data.cards:
+			if card.base_value == pair_value:
+				contributing_cards.append(card)
+
 		var result = HandResultClass.new()
 		result.set_hand_type_info(
 			HandTypeEnumsClass.HandType.PAIR,
@@ -332,12 +367,25 @@ static func _evaluate_pair(data: Dictionary) -> HandResultClass:
 		)
 		result.set_core_values(pair_value)
 		result.kickers = kickers
+		result.contributing_cards = contributing_cards
 		return result
 
 	return null
 
 ## 🎯 高牌评估器
 static func _evaluate_high_card(data: Dictionary) -> HandResultClass:
+	# 找出最高牌
+	var high_value = data.values[0]
+	var contributing_cards = []
+
+	# 只找第一张最高牌作为构成牌型的核心卡牌
+	for card in data.cards:
+		if card.base_value == high_value:
+			contributing_cards.append(card)
+			break  # 只取第一张最高牌
+
+	print("PokerHandAnalyzer: 高牌评估器 - 最高牌值: %d, contributing_cards数量: %d" % [high_value, contributing_cards.size()])
+
 	var result = HandResultClass.new()
 	result.set_hand_type_info(
 		HandTypeEnumsClass.HandType.HIGH_CARD,
@@ -346,6 +394,7 @@ static func _evaluate_high_card(data: Dictionary) -> HandResultClass:
 	)
 	result.set_core_values(data.values[0])
 	result.kickers = data.values.slice(1)  # 其余4张作为踢脚牌
+	result.contributing_cards = contributing_cards
 	return result
 
 ## 🎯 数值转字符串

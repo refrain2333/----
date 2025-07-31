@@ -26,30 +26,40 @@ const CardDataLoader = preload("res://cs/卡牌系统/数据/管理器/CardDataL
 const PokerHandAnalyzer = preload("res://cs/卡牌系统/数据/管理器/PokerHandAnalyzer.gd")
 const PreciseScoreCalculator = preload("res://cs/卡牌系统/数据/管理器/PreciseScoreCalculator.gd")
 
-# UI组件引用
-@onready var hand_dock = $HandDock
-@onready var deck_widget = $DeckWidget
-@onready var turn_info_label: Label = $TopInfoPanel/VBox/TurnInfoLabel
-@onready var score_label: Label = $TopInfoPanel/VBox/ScoreLabel
-@onready var start_turn_button: Button = $ControlPanel/VBox/StartTurnButton
-@onready var next_turn_button: Button = $ControlPanel/VBox/NextTurnButton
-@onready var status_text: Label = $StatusPanel/VBox/StatusText
-@onready var actions_label: Label = $TopInfoPanel/VBox/ActionsLabel
+# UI组件引用 - 使用安全的get_node_or_null方式
+var hand_dock = null
+var deck_widget = null
+var turn_info_label: Label = null
+var score_label: Label = null
+var start_turn_button: Button = null
+var next_turn_button: Button = null
+var replace_card_button: Button = null
+var status_text: Label = null
+var actions_label: Label = null
 
-# 牌型识别专用UI组件
-@onready var hand_type_result_panel: Panel = $HandTypeResultPanel
-@onready var hand_type_label: Label = $HandTypeResultPanel/VBox/HandTypeLabel
-@onready var best_cards_label: Label = $HandTypeResultPanel/VBox/BestCardsLabel
-@onready var score_calculation_label: Label = $HandTypeResultPanel/VBox/ScoreCalculationLabel
-@onready var performance_label: Label = $HandTypeResultPanel/VBox/PerformanceLabel
-@onready var test_suite_button: Button = $ControlPanel/VBox/TestSuiteButton
+# 牌型识别专用UI组件（状态分离版）
+var hand_type_result_panel: Panel = null
+var hand_type_label: Label = null
+var best_cards_label: Label = null
+
+# 实时状态组件（显示详细计算过程）
+var status_panel: Panel = null
+var test_suite_button: Button = null
+
+# 卡牌可视化显示容器（动态创建）
+var cards_display_container: HBoxContainer = null
+
+# 卡牌替换功能相关变量
+var replacement_mode_active: bool = false
+var selected_card_to_replace: CardData = null
+var available_replacement_cards: Array = []
 
 # 🔧 完整组件系统 - 确保功能完全
-var session_config: GameSessionConfig
-var turn_action_manager: TurnActionManager
-var score_manager: GameScoreManager
-var deck_integration_manager: DeckViewIntegrationManager
-var card_manager: CardManager
+var session_config  # 避免与const GameSessionConfig冲突
+var turn_action_manager  # 避免与const TurnActionManager冲突
+var score_manager  # 避免与const GameScoreManager冲突
+var deck_integration_manager  # 避免与const DeckViewIntegrationManager冲突
+var card_manager  # 避免与const CardManager冲突
 var card_effect_manager  # CardManager需要这个引用
 var turn_manager  # TurnManager用于管理HandDock
 var game_manager  # 模拟GameManager来提供资源管理
@@ -57,40 +67,89 @@ var game_manager  # 模拟GameManager来提供资源管理
 # 牌型识别专用变量
 var current_test_results: Dictionary = {}
 var test_history: Array = []
-var hand_type_test_core: HandTypeTestCore  # 核心测试模块
-var hand_ranking_system: HandTypeRankingManager  # 等级系统
+var hand_type_test_core  # 核心测试模块，避免与const HandTypeTestCore冲突
+var hand_ranking_system  # 等级系统，避免与const HandTypeRankingManager冲突
 
 # V2.1新架构组件
 var v2_system_initialized: bool = false
-var v2_ranking_manager: HandTypeRankingManager
+var v2_ranking_manager  # 避免与const HandTypeRankingManager冲突
 var v2_test_results: Array = []
+
+# 卡牌替换功能状态
+var is_replacing_card: bool = false
+var replacement_target_card: CardData = null
+var deck_view_dialog: Window = null
+
+# CardManager需要的属性
+var effect_orchestrator = null
 
 # 牌型识别测试初始化
 func _ready():
 	print("HandTypeTest: 开始牌型识别测试初始化")
 
+	# 0. 安全初始化UI组件引用
+	_initialize_ui_references()
+
 	# 1. 初始化V2.1系统
+	print("HandTypeTest: 步骤1 - 初始化V2.1系统")
 	_initialize_v2_system()
 
 	# 2. 加载配置
+	print("HandTypeTest: 步骤2 - 加载配置")
 	_load_config()
 
 	# 3. 创建管理器组件
+	print("HandTypeTest: 步骤3 - 创建管理器组件")
 	_create_managers()
 
+	# 等待管理器创建完成
+	await get_tree().process_frame
+
 	# 4. 初始化游戏
+	print("HandTypeTest: 步骤4 - 初始化游戏")
 	_initialize_game()
 
 	# 5. 连接信号
+	print("HandTypeTest: 步骤5 - 连接信号")
 	_connect_signals()
 
 	# 6. 设置UI
+	print("HandTypeTest: 步骤6 - 设置UI")
 	_setup_ui()
 
 	# 7. 初始化牌型识别组件
+	print("HandTypeTest: 步骤7 - 初始化牌型识别组件")
 	_setup_hand_type_analyzer()
 
+	# 8. 初始化卡牌可视化显示容器
+	print("HandTypeTest: 步骤8 - 初始化卡牌可视化显示容器")
+	_setup_cards_display_container()
+
 	print("HandTypeTest: 牌型识别测试初始化完成（V2.1增强版）")
+
+## 🔧 安全初始化UI组件引用
+func _initialize_ui_references():
+	print("HandTypeTest: 初始化UI组件引用...")
+
+	# 安全获取UI组件引用
+	hand_dock = get_node_or_null("HandDock")
+	deck_widget = get_node_or_null("DeckWidget")
+	turn_info_label = get_node_or_null("TopInfoPanel/VBox/TurnInfoLabel")
+	score_label = get_node_or_null("TopInfoPanel/VBox/ScoreLabel")
+	start_turn_button = get_node_or_null("ControlPanel/VBox/StartTurnButton")
+	next_turn_button = get_node_or_null("ControlPanel/VBox/NextTurnButton")
+	replace_card_button = get_node_or_null("ControlPanel/VBox/ReplaceCardButton")
+	status_text = get_node_or_null("StatusPanel/VBox/StatusText")
+	actions_label = get_node_or_null("TopInfoPanel/VBox/ActionsLabel")
+	hand_type_result_panel = get_node_or_null("HandTypeResultPanel")
+	hand_type_label = get_node_or_null("HandTypeResultPanel/HandTypeLabel")
+	best_cards_label = get_node_or_null("HandTypeResultPanel/BestCardsLabel")
+	status_panel = get_node_or_null("StatusPanel")
+	test_suite_button = get_node_or_null("ControlPanel/VBox/TestSuiteButton")
+
+	# 报告UI组件状态
+	print("HandTypeTest: UI组件状态 - HandDock: %s, DeckWidget: %s" % [hand_dock != null, deck_widget != null])
+	print("HandTypeTest: UI组件状态 - StatusText: %s, TestButton: %s" % [status_text != null, test_suite_button != null])
 
 ## 🔧 更新状态文本
 func _update_status_text(text: String):
@@ -135,7 +194,7 @@ func _load_config():
 		session_config = load(config_path)
 	else:
 		session_config = GameSessionConfig.create_default()
-	
+
 	print("SimplePlayTest: 配置加载完成 - %s" % session_config.get_config_summary())
 
 # 🔧 步骤2：创建完整的管理器组件系统
@@ -214,13 +273,17 @@ func _initialize_game():
 	_setup_turn_manager_connections()
 
 	# 🔧 3. 发放初始手牌并创建视图（在牌库UI设置之前）
+	print("HandTypeTest: 准备调用 _deal_initial_hand_with_views()")
 	_deal_initial_hand_with_views()
+	print("HandTypeTest: 初始手牌发放完成")
 
 	# 🔧 4. 设置牌库集成（在抽牌之后，确保显示正确的牌库数量）
-	deck_integration_manager.setup(deck_widget, card_manager)
-
-	# 🔧 重要：强制立即更新牌库显示，确保显示正确的牌库数量
-	deck_integration_manager.force_update()
+	if deck_widget:
+		deck_integration_manager.setup(deck_widget, card_manager)
+		# 🔧 重要：强制立即更新牌库显示，确保显示正确的牌库数量
+		deck_integration_manager.force_update()
+	else:
+		print("HandTypeTest: 跳过牌库集成设置 - DeckWidget不存在")
 
 	# 🔧 5. 连接所有信号
 	_connect_all_signals()
@@ -293,15 +356,8 @@ func _deal_initial_hand_with_views():
 	var drawn_cards = card_manager.draw(initial_hand_size)
 	print("SimplePlayTest: 通过CardManager发放初始手牌: %d张" % drawn_cards.size())
 
-	# 为初始手牌创建视图并添加到HandDock
-	if turn_manager and turn_manager.has_method("_create_card_views_for_drawn_cards") and drawn_cards.size() > 0:
-		turn_manager._create_card_views_for_drawn_cards(drawn_cards)
-		print("SimplePlayTest: 通过TurnManager为初始手牌创建视图")
-
-		# 让TurnManager进入出牌阶段，使卡牌可以被选择
-		if turn_manager.has_method("_change_phase"):
-			turn_manager._change_phase(1)  # 1 = PLAY_PHASE
-			print("SimplePlayTest: TurnManager已进入出牌阶段")
+	# 手牌变化会自动触发HandDock的更新，不需要手动创建视图
+	print("SimplePlayTest: 初始手牌发放完成，HandDock会自动更新视图")
 
 # 🔧 连接所有必要的信号
 func _connect_all_signals():
@@ -318,14 +374,18 @@ func _connect_all_signals():
 		print("SimplePlayTest: TurnManager.cards_played已连接到得分管理器")
 
 	# 连接HandDock的弃牌信号
-	if hand_dock.has_signal("discard_button_pressed"):
+	if hand_dock and hand_dock.has_signal("discard_button_pressed"):
 		hand_dock.discard_button_pressed.connect(_on_discard_button_pressed)
 		print("SimplePlayTest: HandDock.discard_button_pressed已连接")
+	else:
+		print("SimplePlayTest: 跳过HandDock信号连接 - HandDock不存在")
 
 	# 🔧 重要：连接卡牌选择变化信号以实时更新按钮状态
-	if hand_dock.has_signal("card_selection_changed"):
+	if hand_dock and hand_dock.has_signal("card_selection_changed"):
 		hand_dock.card_selection_changed.connect(_on_card_selection_changed)
 		print("SimplePlayTest: HandDock.card_selection_changed已连接")
+	else:
+		print("SimplePlayTest: 跳过卡牌选择信号连接 - HandDock不存在")
 
 	# 连接操作管理器信号
 	if turn_action_manager.has_signal("action_performed"):
@@ -345,16 +405,7 @@ func _on_cards_played_to_action_manager(played_cards: Array, score: int):
 	# 🎯 记录测试历史
 	test_history.append(analysis_result)
 
-	# 🎯 显示详细的牌型识别结果
-	var status_message = "🎯 牌型识别完成！\n"
-	status_message += "牌型: %s (%s)\n" % [analysis_result.hand_type_name, analysis_result.get("level_info", "LV1")]
-	status_message += "得分: %d分\n" % analysis_result.get("final_score", 0)
-	status_message += "分析耗时: %dms" % analysis_result.get("analysis_time", 0)
-
-	if analysis_result.get("discarded_cards", []).size() > 0:
-		status_message += "\n弃置了 %d 张卡牌" % analysis_result.discarded_cards.size()
-
-	_update_status(status_message)
+	# 状态显示已由_update_hand_type_display()处理，无需重复更新
 
 	print("HandTypeTest: 🎯 牌型识别完成 - %s，得分: %d分" % [analysis_result.hand_type_name, analysis_result.get("final_score", 0)])
 
@@ -528,9 +579,15 @@ func _debug_turn_manager_state():
 func _connect_signals():
 	print("SimplePlayTest: 连接信号")
 	
-	# 连接按钮信号
-	start_turn_button.pressed.connect(_on_start_turn_pressed)
-	next_turn_button.pressed.connect(_on_next_turn_pressed)
+	# 连接按钮信号（如果存在）
+	if start_turn_button:
+		start_turn_button.pressed.connect(_on_start_turn_pressed)
+	if next_turn_button:
+		next_turn_button.pressed.connect(_on_next_turn_pressed)
+	if replace_card_button:
+		replace_card_button.pressed.connect(_on_replace_card_pressed)
+	if test_suite_button:
+		test_suite_button.pressed.connect(_run_test_suite)
 	
 	# 连接管理器信号
 	turn_action_manager.action_performed.connect(_on_action_performed)
@@ -584,13 +641,89 @@ func _on_next_turn_pressed():
 		score_manager.reset_turn_score()
 	_update_display()
 
+## 🔄 卡牌替换功能实现
+func _on_replace_card_pressed():
+	print("HandTypeTest: 🔄 开始卡牌替换模式")
+
+	if is_replacing_card:
+		# 取消替换模式
+		_cancel_card_replacement()
+		return
+
+	# 进入替换模式
+	is_replacing_card = true
+	replace_card_button.text = "❌ 取消替换"
+	_update_status("🔄 替换模式：请右键点击要替换的手牌")
+
+	# 连接手牌的右键点击事件
+	print("HandTypeTest: 🔧 准备设置右键监听器")
+	_setup_card_replacement_listeners()
+	print("HandTypeTest: 🔧 右键监听器设置完成")
+
+func _cancel_card_replacement():
+	print("HandTypeTest: ❌ 取消卡牌替换模式")
+
+	is_replacing_card = false
+	replacement_target_card = null
+	replace_card_button.text = "🔄 替换卡牌 (T)"
+	_update_status("替换模式已取消")
+
+	# 断开手牌的右键点击事件
+	_cleanup_card_replacement_listeners()
+
+func _setup_card_replacement_listeners():
+	# 为所有手牌添加右键点击监听
+	print("HandTypeTest: 🔧 检查hand_dock引用，hand_dock存在: %s" % (hand_dock != null))
+	if hand_dock:
+		# 通过position_to_card获取所有卡牌视图
+		if hand_dock.has_method("get") and "position_to_card" in hand_dock:
+			var card_views = hand_dock.position_to_card.values()
+			print("HandTypeTest: 🔧 设置右键监听，找到 %d 张卡牌" % card_views.size())
+			for card_view in card_views:
+				if card_view and card_view.has_signal("card_right_clicked"):
+					if not card_view.card_right_clicked.is_connected(_on_card_right_clicked):
+						card_view.card_right_clicked.connect(_on_card_right_clicked)
+						print("HandTypeTest: ✅ 已连接卡牌右键信号: %s" % card_view.card_data.name)
+					else:
+						print("HandTypeTest: ⚠️ 卡牌右键信号已连接: %s" % card_view.card_data.name)
+				else:
+					print("HandTypeTest: ❌ 卡牌没有card_right_clicked信号")
+		else:
+			print("HandTypeTest: ❌ hand_dock没有position_to_card属性")
+	else:
+		print("HandTypeTest: ❌ hand_dock引用为null")
+
+func _cleanup_card_replacement_listeners():
+	# 移除所有手牌的右键点击监听
+	if hand_dock and "position_to_card" in hand_dock:
+		var card_views = hand_dock.position_to_card.values()
+		for card_view in card_views:
+			if card_view and card_view.has_signal("card_right_clicked"):
+				if card_view.card_right_clicked.is_connected(_on_card_right_clicked):
+					card_view.card_right_clicked.disconnect(_on_card_right_clicked)
+
+func _on_card_right_clicked(card_view):
+	print("HandTypeTest: 🔧 _on_card_right_clicked被调用，is_replacing_card: %s" % is_replacing_card)
+
+	if not is_replacing_card:
+		print("HandTypeTest: ⚠️ 不在替换模式，忽略右键点击")
+		return
+
+	print("HandTypeTest: 🎯 选择要替换的卡牌: %s" % card_view.card_data.name)
+
+	replacement_target_card = card_view.card_data
+	_update_status("已选择卡牌：%s，正在打开牌库选择器..." % replacement_target_card.name)
+
+	# 打开牌库查看器进行卡牌选择
+	_open_deck_viewer_for_replacement()
+
 # 🔧 管理器信号处理
 func _on_action_performed(action_type: String, remaining_count: int, total_limit: int):
 	print("SimplePlayTest: 操作执行 - %s，剩余: %d/%d" % [action_type, remaining_count, total_limit])
 	_update_display()
 
 func _on_action_limit_reached(action_type: String, current_count: int):
-	var action_name = "出牌" if action_type == TurnActionManager.ACTION_PLAY else "弃牌"
+	var action_name = "出牌" if action_type == "play" else "弃牌"
 	_update_status("本回合%s次数已用完 (%d次)" % [action_name, current_count])
 
 func _on_score_changed(turn_score: int, total_score: int, source: String):
@@ -599,6 +732,14 @@ func _on_score_changed(turn_score: int, total_score: int, source: String):
 
 func _on_hand_changed(hand_cards: Array):
 	print("SimplePlayTest: 手牌变化，当前手牌数量: %d" % hand_cards.size())
+
+	# 🔧 重要：检查是否是卡牌替换导致的手牌变化
+	if is_replacing_card:
+		print("SimplePlayTest: 🔄 检测到卡牌替换导致的手牌变化，跳过出牌逻辑")
+		_update_display()
+		return
+
+	# 🔧 正常的手牌变化处理
 	_update_display()
 
 func _on_cards_played(played_cards: Array):
@@ -620,16 +761,7 @@ func _on_cards_played(played_cards: Array):
 	var final_score = analysis_result.get("final_score", 0)
 	score_manager.add_score(final_score, "hand_type_play")
 
-	# 🎯 显示详细的牌型识别结果
-	var status_message = "🎯 牌型识别完成！\n"
-	status_message += "牌型: %s (%s)\n" % [analysis_result.hand_type_name, analysis_result.get("level_info", "LV1")]
-	status_message += "得分: %d分\n" % final_score
-	status_message += "分析耗时: %dms" % analysis_result.get("analysis_time", 0)
-
-	if analysis_result.get("discarded_cards", []).size() > 0:
-		status_message += "\n弃置了 %d 张卡牌" % analysis_result.discarded_cards.size()
-
-	_update_status(status_message)
+	# 状态显示已由_update_hand_type_display()处理，无需重复更新
 
 	print("HandTypeTest: 🎯 牌型识别完成 - %s，得分: %d分" % [analysis_result.hand_type_name, final_score])
 
@@ -672,6 +804,8 @@ func _input(event):
 				_on_start_turn_pressed()
 			KEY_N:
 				_on_next_turn_pressed()
+			KEY_T:
+				_on_replace_card_pressed()
 			KEY_1:
 				_try_play_cards()
 			KEY_2:
@@ -709,16 +843,7 @@ func _try_play_cards():
 	else:
 		_update_status("出牌功能不可用")
 
-	# 🎯 显示详细的牌型识别结果
-	var status_message = "🎯 出牌完成！\n"
-	status_message += "牌型: %s (%s)\n" % [analysis_result.hand_type_name, analysis_result.level_info]
-	status_message += "得分: %d分\n" % analysis_result.final_score
-	status_message += "分析耗时: %dms" % analysis_result.analysis_time
-
-	if analysis_result.discarded_cards.size() > 0:
-		status_message += "\n弃置了 %d 张卡牌" % analysis_result.discarded_cards.size()
-
-	_update_status(status_message)
+	# 状态显示已由_update_hand_type_display()处理，无需重复更新
 
 # 🔧 简化的弃牌逻辑
 func _try_discard_cards():
@@ -848,7 +973,9 @@ func _merge_analysis_results(v2_result, v1_result, card_data_array: Array) -> Di
 			"analysis_method": hand_result.analysis_method,
 			"cards": card_data_array,
 			"version": "V2.1",
-			"v2_available": true
+			"v2_available": true,
+			"hand_result": hand_result,  # 添加原始HandResult对象
+			"score_result": score_result  # 添加原始ScoreResult对象
 		}
 
 	# 使用V1结果作为备用
@@ -859,8 +986,319 @@ func _merge_analysis_results(v2_result, v1_result, card_data_array: Array) -> Di
 	else:
 		return _create_fallback_result(card_data_array)
 
-# 更新牌型识别结果显示（V2.1增强版）
+## 🔄 卡牌替换功能 - 使用现有牌库显示器
+func _open_deck_viewer_for_replacement():
+	print("HandTypeTest: 📚 打开牌库选择界面")
+
+	# 获取所有可用卡牌
+	var all_cards = _get_all_available_cards()
+
+	if all_cards.is_empty():
+		_update_status("❌ 没有可用的替换卡牌")
+		_cancel_card_replacement()
+		return
+
+	print("HandTypeTest: 📦 找到 %d 张可用卡牌，使用现有牌库显示器" % all_cards.size())
+	_update_status("请在牌库中点击要替换成的卡牌...")
+
+	# 使用现有的牌库显示器
+	_open_existing_deck_viewer_for_selection(all_cards)
+
+func _get_all_available_cards() -> Array:
+	# 获取所有标准卡牌和变体卡牌
+	var all_cards = []
+
+	# 从CardDataLoader获取所有卡牌（使用静态方法）
+	all_cards = CardDataLoader.get_all_cards_including_variants()
+
+	print("HandTypeTest: 📦 获取到 %d 张可用卡牌" % all_cards.size())
+	return all_cards
+
+## 使用现有牌库显示器进行卡牌选择
+func _open_existing_deck_viewer_for_selection(available_cards: Array):
+	print("HandTypeTest: 使用现有牌库显示器")
+
+	# 直接使用deck_widget引用
+	if deck_widget and deck_widget.has_method("_on_deck_button_pressed"):
+		print("HandTypeTest: 找到DeckWidget，准备打开牌库显示器")
+
+		# 设置替换模式标志
+		replacement_mode_active = true
+
+		# 临时保存可用卡牌列表
+		available_replacement_cards = available_cards
+
+		# 触发DeckWidget的牌库显示
+		deck_widget._on_deck_button_pressed()
+
+		# 连接牌库对话框的卡牌点击事件
+		_connect_deck_dialog_events()
+
+		print("HandTypeTest: 牌库显示器已打开，等待用户选择")
+	else:
+		print("HandTypeTest: 未找到DeckWidget或方法，回退到简化选择")
+		_fallback_card_selection(available_cards)
+
+## 回退的卡牌选择方法
+func _fallback_card_selection(available_cards: Array):
+	print("HandTypeTest: 使用回退选择方法（等待用户手动选择）")
+
+	if available_cards.is_empty():
+		_cancel_card_replacement()
+		return
+
+	# 不自动选择，而是等待用户操作
+	print("HandTypeTest: 等待用户手动选择替换卡牌")
+	_update_status("请手动选择要替换成的卡牌（当前为回退模式）")
+
+	# 保存可用卡牌列表，等待用户选择
+	available_replacement_cards = available_cards
+
+## 连接牌库对话框的卡牌点击事件
+func _connect_deck_dialog_events():
+	print("HandTypeTest: 尝试连接牌库对话框事件")
+
+	# 等待一帧，确保对话框已创建
+	await get_tree().process_frame
+
+	# 查找当前打开的牌库对话框
+	var deck_dialog = _find_deck_dialog()
+	if deck_dialog:
+		print("HandTypeTest: 找到牌库对话框，准备重写卡牌点击处理")
+		_override_deck_dialog_card_clicks(deck_dialog)
+	else:
+		print("HandTypeTest: 未找到牌库对话框")
+
+## 查找当前打开的牌库对话框
+func _find_deck_dialog():
+	# 在场景树中查找DeckViewDialog
+	var root = get_tree().current_scene
+	if not root:
+		return null
+
+	# 递归查找对话框
+	return _find_dialog_recursive(root)
+
+## 递归查找对话框
+func _find_dialog_recursive(node):
+	# 检查是否是牌库对话框
+	if node.get_script() and (
+		"DeckViewDialog" in str(node.get_script().get_global_name()) or
+		"DeckViewDialog" in str(node.get_script().resource_path)
+	):
+		return node
+
+	# 递归查找子节点
+	for child in node.get_children():
+		var result = _find_dialog_recursive(child)
+		if result:
+			return result
+
+	return null
+
+## 重写牌库对话框的卡牌点击处理
+func _override_deck_dialog_card_clicks(dialog):
+	print("HandTypeTest: 开始重写牌库对话框的卡牌点击处理")
+
+	# 查找对话框中的所有CardView实例
+	var card_views = _find_all_card_views(dialog)
+	print("HandTypeTest: 找到 %d 个CardView实例" % card_views.size())
+
+	# 为每个CardView连接自定义点击处理
+	for card_view in card_views:
+		if card_view.has_signal("card_clicked"):
+			# 断开原有连接（如果有的话）
+			if card_view.card_clicked.is_connected(_on_deck_card_clicked_for_replacement):
+				card_view.card_clicked.disconnect(_on_deck_card_clicked_for_replacement)
+
+			# 连接新的处理函数
+			card_view.card_clicked.connect(_on_deck_card_clicked_for_replacement)
+			print("HandTypeTest: 已连接CardView点击事件: %s" % card_view.get_card_data().name)
+
+## 查找所有CardView实例
+func _find_all_card_views(node):
+	var card_views = []
+
+	# 检查当前节点是否是CardView
+	if node.get_script() and "CardView" in str(node.get_script().get_global_name()):
+		card_views.append(node)
+
+	# 递归查找子节点
+	for child in node.get_children():
+		card_views.append_array(_find_all_card_views(child))
+
+	return card_views
+
+## 处理牌库中卡牌的点击事件（用于替换）
+func _on_deck_card_clicked_for_replacement(card_view):
+	if not replacement_mode_active:
+		return
+
+	var selected_card = card_view.get_card_data()
+	print("HandTypeTest: 用户在牌库中选择了卡牌: %s" % selected_card.name)
+
+	# 关闭牌库对话框
+	_close_deck_dialog()
+
+	# 执行替换，
+	_on_replacement_card_selected(selected_card)
+
+## 关闭牌库对话框
+func _close_deck_dialog():
+	var deck_dialog = _find_deck_dialog()
+	if deck_dialog:
+		deck_dialog.queue_free()
+		print("HandTypeTest: 牌库对话框已关闭")
+
+func _on_replacement_card_selected(selected_card: CardData):
+	print("HandTypeTest: ✅ 选择了替换卡牌: %s" % selected_card.name)
+
+	if not replacement_target_card:
+		_update_status("错误：未找到要替换的目标卡牌")
+		return
+
+	# 执行卡牌替换
+	_perform_card_replacement(replacement_target_card, selected_card)
+
+	# 退出替换模式
+	_cancel_card_replacement()
+
+func _perform_card_replacement(old_card: CardData, new_card: CardData):
+	print("HandTypeTest: 🔄 执行卡牌替换: %s -> %s" % [old_card.name, new_card.name])
+
+	# 🔧 设置替换标志，防止触发出牌逻辑
+	is_replacing_card = true
+	print("HandTypeTest: 🔧 设置is_replacing_card = true，防止触发出牌逻辑")
+
+	# 在CardManager中替换卡牌
+	if card_manager and card_manager.has_method("replace_card_in_hand"):
+		print("HandTypeTest: 🔧 调用CardManager.replace_card_in_hand")
+		var success = card_manager.replace_card_in_hand(old_card, new_card)
+		if success:
+			print("HandTypeTest: ✅ CardManager替换成功")
+			_update_status("✅ 卡牌替换成功: %s -> %s" % [old_card.name, new_card.name])
+
+			# 立即更新牌型识别结果
+			call_deferred("_trigger_hand_analysis")
+		else:
+			print("HandTypeTest: ❌ CardManager替换失败")
+			_update_status("❌ 卡牌替换失败")
+	else:
+		print("HandTypeTest: ⚠️ CardManager不支持替换，使用备用方案")
+		# 备用方案：通过HandDock直接替换
+		_replace_card_via_hand_dock(old_card, new_card)
+
+	# 🔧 延迟重置替换标志
+	call_deferred("_reset_replacement_flag")
+
+func _replace_card_via_hand_dock(old_card: CardData, new_card: CardData):
+	print("HandTypeTest: 🔄 通过HandDock替换卡牌")
+
+	if not hand_dock:
+		_update_status("❌ HandDock不可用")
+		return
+
+	# 找到旧卡牌的位置
+	var card_views = hand_dock.get_card_views() if hand_dock.has_method("get_card_views") else []
+	var target_index = -1
+
+	for i in range(card_views.size()):
+		var card_view = card_views[i]
+		if card_view and card_view.card_data == old_card:
+			target_index = i
+			break
+
+	if target_index == -1:
+		_update_status("❌ 未找到要替换的卡牌")
+		return
+
+	# 替换卡牌数据
+	if hand_dock.has_method("replace_card_at_index"):
+		hand_dock.replace_card_at_index(target_index, new_card)
+		_update_status("✅ 卡牌替换成功: %s -> %s" % [old_card.name, new_card.name])
+
+		# 立即更新牌型识别结果
+		call_deferred("_trigger_hand_analysis")
+	else:
+		_update_status("❌ HandDock不支持卡牌替换")
+
+## 🔧 重置替换标志
+func _reset_replacement_flag():
+	is_replacing_card = false
+	print("HandTypeTest: 🔧 重置is_replacing_card = false")
+
+func _trigger_hand_analysis():
+	# 触发牌型识别分析
+	print("HandTypeTest: 🎯 触发牌型识别分析")
+
+	# 获取当前手牌
+	var current_hand = []
+	if card_manager and card_manager.has_method("get_hand"):
+		current_hand = card_manager.get_hand()
+	elif hand_dock and hand_dock.has_method("get_card_data_array"):
+		current_hand = hand_dock.get_card_data_array()
+
+	if current_hand.size() > 0:
+		# 执行牌型识别
+		var result = _analyze_hand_type(current_hand)
+		_update_hand_type_display(result)
+
+# 简化版本不需要牌库查看器相关函数
+
+# 🎯 初始化卡牌可视化显示容器（固定定位版）
+func _setup_cards_display_container():
+	if not hand_type_result_panel:
+		print("HandTypeTest: 警告 - hand_type_result_panel未找到，无法创建卡牌显示容器")
+		return
+
+	# 获取专门的卡牌显示区域
+	var cards_display_area = hand_type_result_panel.get_node("CardsDisplayArea")
+	if not cards_display_area:
+		print("HandTypeTest: 警告 - CardsDisplayArea未找到")
+		return
+
+	# 🎯 在固定区域内创建卡牌显示布局
+	_create_fixed_cards_layout(cards_display_area)
+
+	print("HandTypeTest: 固定定位卡牌显示容器创建成功")
+
+# 🎨 创建优化的卡牌显示布局（扩展版）
+func _create_fixed_cards_layout(display_area: Control):
+	# 创建标题标签（固定在顶部）
+	var cards_title_label = Label.new()
+	cards_title_label.name = "CardsTitleLabel"
+	cards_title_label.text = "构成卡牌:"
+	cards_title_label.position = Vector2(10, 5)
+	cards_title_label.size = Vector2(320, 20)
+	cards_title_label.add_theme_font_size_override("font_size", 11)
+	cards_title_label.add_theme_color_override("font_color", Color(0.7, 0.8, 0.9, 1.0))
+	cards_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	# 创建卡牌显示容器（大幅扩展空间）
+	cards_display_container = HBoxContainer.new()
+	cards_display_container.name = "CardsDisplayContainer"
+	cards_display_container.position = Vector2(10, 30)
+	cards_display_container.size = Vector2(320, 55)  # 大幅增加高度到55px
+	cards_display_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	cards_display_container.add_theme_constant_override("separation", 8)  # 增加卡牌间距到8px
+
+	# 添加到显示区域
+	display_area.add_child(cards_title_label)
+	display_area.add_child(cards_display_container)
+
+# 🧹 清理卡牌显示容器
+func _clear_cards_display():
+	if cards_display_container:
+		# 清理所有子节点
+		for child in cards_display_container.get_children():
+			child.queue_free()
+		cards_display_container.get_children().clear()
+
+# 更新牌型识别结果显示（V2.1增强版 - 显示具体卡牌）
 func _update_hand_type_display(result: Dictionary):
+	print("HandTypeTest: _update_hand_type_display被调用，结果版本: %s" % result.get("version", "未知"))
+	# 首先清理之前的卡牌显示
+	_clear_cards_display()
 	if hand_type_label:
 		var version_info = ""
 		if result.get("version", "") == "V2.1":
@@ -873,32 +1311,21 @@ func _update_hand_type_display(result: Dictionary):
 		]
 
 	if best_cards_label:
-		var cards_text = ""
-		for card in result.get("best_hand_cards", []):
-			# 使用CardData的基本属性来构建显示名称
-			var suit_name = ""
-			match card.suit:
-				"hearts": suit_name = "红桃"
-				"diamonds": suit_name = "方片"
-				"clubs": suit_name = "梅花"
-				"spades": suit_name = "黑桃"
-				_: suit_name = card.suit
-
-			var value_name = ""
-			match card.base_value:
-				1: value_name = "A"
-				11: value_name = "J"
-				12: value_name = "Q"
-				13: value_name = "K"
-				_: value_name = str(card.base_value)
-
-			cards_text += "%s%s " % [suit_name, value_name]
-		best_cards_label.text = "最佳组合: %s" % cards_text
-
-		# 显示弃置卡牌
-		if result.get("discarded_cards", []).size() > 0:
-			var discarded_text = ""
-			for card in result.discarded_cards:
+		# V2.1增强显示：使用HandResult的格式化方法
+		if result.get("version", "") == "V2.1" and result.has("hand_result"):
+			var hand_result = result.hand_result
+			if hand_result and hand_result.has_method("format_display"):
+				# 使用HandResult的增强格式化显示
+				var formatted_display = hand_result.format_display()
+				best_cards_label.text = formatted_display
+			else:
+				# 备用显示方式
+				best_cards_label.text = "V2.1结果: %s" % result.get("hand_type_name", "未知")
+		else:
+			# V1兼容显示
+			var cards_text = ""
+			for card in result.get("best_hand_cards", []):
+				# 使用CardData的基本属性来构建显示名称
 				var suit_name = ""
 				match card.suit:
 					"hearts": suit_name = "红桃"
@@ -915,41 +1342,179 @@ func _update_hand_type_display(result: Dictionary):
 					13: value_name = "K"
 					_: value_name = str(card.base_value)
 
-				discarded_text += "%s%s " % [suit_name, value_name]
-			best_cards_label.text += "\n弃置: %s" % discarded_text
+				cards_text += "%s%s " % [suit_name, value_name]
+			best_cards_label.text = "最佳组合: %s" % cards_text
 
-	if score_calculation_label:
-		var calc_text = ""
-		if result.get("version", "") == "V2.1":
-			# V2.1显示详细的原子化公式
-			calc_text = "V2.1: %s\n详细: %s" % [
-				result.get("calculation_formula", "无"),
-				result.get("detailed_formula", "无")
-			]
+			# 显示弃置卡牌
+			if result.get("discarded_cards", []).size() > 0:
+				var discarded_text = ""
+				for card in result.discarded_cards:
+					var suit_name = ""
+					match card.suit:
+						"hearts": suit_name = "红桃"
+						"diamonds": suit_name = "方片"
+						"clubs": suit_name = "梅花"
+						"spades": suit_name = "黑桃"
+						_: suit_name = card.suit
 
-			# 如果有分步计算，显示第一步
-			var steps = result.get("step_by_step", [])
-			if not steps.is_empty():
-				calc_text += "\n步骤: %s..." % steps[0]
-		else:
-			# V1显示简化公式
-			calc_text = "V1: %s" % result.get("detailed_formula", result.get("calculation_formula", "无"))
+					var value_name = ""
+					match card.base_value:
+						1: value_name = "A"
+						11: value_name = "J"
+						12: value_name = "Q"
+						13: value_name = "K"
+						_: value_name = str(card.base_value)
 
-		score_calculation_label.text = "计算: %s" % calc_text
+					discarded_text += "%s%s " % [suit_name, value_name]
+				best_cards_label.text += "\n弃置: %s" % discarded_text
 
-	if performance_label:
-		var perf_text = "性能: %dms, %d组合" % [
-			result.get("analysis_time", 0),
-			result.get("combinations_tested", 0)
+	# 准备详细计算过程信息
+	var calc_text = ""
+	if result.get("version", "") == "V2.1":
+		# V2.1显示详细的原子化公式
+		calc_text = "V2.1: %s\n详细: %s" % [
+			result.get("calculation_formula", "无"),
+			result.get("detailed_formula", "无")
 		]
 
-		if result.get("analysis_method", ""):
-			perf_text += " (%s)" % result.analysis_method
+		# 如果有分步计算，显示第一步
+		var steps = result.get("step_by_step", [])
+		if not steps.is_empty():
+			calc_text += "\n步骤: %s..." % steps[0]
+	else:
+		# V1显示简化公式
+		calc_text = "V1: %s" % result.get("detailed_formula", result.get("calculation_formula", "无"))
 
-		if result.get("total_cards", 0) > 5:
-			perf_text += " (从%d张中选择)" % result.total_cards
+	print("HandTypeTest: 计算过程文本生成完成，长度: %d字符" % calc_text.length())
+	print("HandTypeTest: 计算过程内容: %s" % calc_text)
 
-		performance_label.text = perf_text
+	# 将详细计算过程显示在实时状态组件中
+	print("HandTypeTest: 准备更新status_text，status_text存在: %s" % (status_text != null))
+	if status_text:
+		var status_info = "🎯 牌型识别结果\n"
+		status_info += "牌型: %s\n" % result.get("hand_type_name", "未知")
+		status_info += "得分: %s\n" % result.get("final_score", 0)
+		status_info += "计算过程: %s" % calc_text
+
+		status_text.text = status_info
+		print("HandTypeTest: status_text已更新，内容长度: %d字符" % status_info.length())
+	else:
+		print("HandTypeTest: 错误 - status_text为null，无法更新状态信息")
+
+	# 计算过程已移至实时状态组件
+
+	# 🎯 显示构成牌型的卡牌（可视化增强）
+	_display_contributing_cards(result)
+
+# 🎯 显示构成牌型的卡牌
+func _display_contributing_cards(result: Dictionary):
+	if not cards_display_container:
+		print("HandTypeTest: 警告 - 卡牌显示容器未初始化")
+		return
+
+	print("HandTypeTest: 开始显示构成牌型的卡牌，结果版本: %s" % result.get("version", "未知"))
+
+	var contributing_cards = []
+
+	# 从结果中提取构成牌型的卡牌
+	if result.get("version", "") == "V2.1" and result.has("hand_result"):
+		var hand_result = result.hand_result
+		print("HandTypeTest: V2.1结果，hand_result存在: %s" % (hand_result != null))
+		if hand_result and hand_result.contributing_cards:
+			contributing_cards = hand_result.contributing_cards
+			print("HandTypeTest: 找到V2.1 contributing_cards: %d张" % contributing_cards.size())
+		else:
+			print("HandTypeTest: V2.1 hand_result中没有contributing_cards或为空")
+	else:
+		# V1兼容：使用best_hand_cards
+		contributing_cards = result.get("best_hand_cards", [])
+		print("HandTypeTest: 使用V1兼容模式，best_hand_cards: %d张" % contributing_cards.size())
+
+	if contributing_cards.is_empty():
+		print("HandTypeTest: 没有找到构成牌型的卡牌")
+		return
+
+	print("HandTypeTest: 显示 %d 张构成牌型的卡牌" % contributing_cards.size())
+
+	# 为每张卡牌创建真实的CardView
+	var created_count = 0
+	for card_data in contributing_cards:
+		if card_data:
+			var card_view = _create_mini_card_view(card_data)
+			if card_view:
+				cards_display_container.add_child(card_view)
+				created_count += 1
+			else:
+				print("HandTypeTest: 警告 - 无法为卡牌 %s 创建视图" % card_data.name)
+
+	print("HandTypeTest: 成功创建 %d/%d 张卡牌视图" % [created_count, contributing_cards.size()])
+
+# 🎯 创建真实卡牌视图（使用HandDock的卡牌渲染系统）
+func _create_mini_card_view(card_data: CardData) -> Control:
+	if not card_data:
+		print("HandTypeTest: 警告 - 卡牌数据为空")
+		return null
+
+	# 使用与HandDock相同的Card场景
+	var card_scene = preload("res://cs/卡牌系统/视图/Card.tscn")
+	if not card_scene:
+		print("HandTypeTest: 错误 - 无法加载Card场景")
+		return null
+
+	# 创建卡牌实例
+	var card_instance = card_scene.instantiate()
+	if not card_instance:
+		print("HandTypeTest: 错误 - 无法实例化Card场景")
+		return null
+
+	# 设置卡牌数据（使用与HandDock相同的方法）
+	if card_instance.has_method("setup"):
+		card_instance.setup(card_data)
+	elif card_instance.has_method("set_card_data"):
+		card_instance.set_card_data(card_data)
+	else:
+		print("HandTypeTest: 警告 - Card实例没有setup或set_card_data方法")
+		card_instance.queue_free()
+		return null
+
+	# 🎨 设置扩展的卡牌显示效果（适配90px高度区域）
+	card_instance.scale = Vector2(0.35, 0.35)  # 进一步增大到35%，充分利用空间
+	card_instance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	card_instance.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	# 添加清晰的视觉效果
+	card_instance.modulate = Color(1.0, 1.0, 1.0, 1.0)  # 完全不透明，确保最佳清晰度
+
+	# 禁用交互功能（这些卡牌仅用于显示）
+	if card_instance.has_method("set_draggable"):
+		card_instance.set_draggable(false)
+	if card_instance.has_method("set_selectable"):
+		card_instance.set_selectable(false)
+
+	# 设置鼠标过滤器为忽略，避免干扰
+	card_instance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	print("HandTypeTest: 成功创建真实卡牌视图: %s" % card_data.name)
+	return card_instance
+
+# 🎯 获取花色符号
+func _get_suit_symbol(suit: String) -> String:
+	match suit.to_lower():
+		"hearts": return "♥"
+		"diamonds": return "♦"
+		"clubs": return "♣"
+		"spades": return "♠"
+		_: return "?"
+
+# 🎯 获取数值符号
+func _get_value_symbol(value: int) -> String:
+	match value:
+		1: return "A"
+		11: return "J"
+		12: return "Q"
+		13: return "K"
+		14: return "A"  # 高位A
+		_: return str(value)
 
 # 运行完整测试套件（V2.1增强版）
 func _run_test_suite():

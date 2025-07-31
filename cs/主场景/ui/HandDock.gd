@@ -177,6 +177,14 @@ func set_turn_manager(tm):
 		if turn_manager.has_signal("cards_deselected"):
 			turn_manager.cards_deselected.connect(_on_turn_manager_cards_deselected)
 
+		# 🔧 重要：连接CardManager的hand_changed信号以支持卡牌替换
+		if turn_manager.has_method("get_card_manager"):
+			var card_manager = turn_manager.get_card_manager()
+			if card_manager and card_manager.has_signal("hand_changed"):
+				if not card_manager.hand_changed.is_connected(_on_card_manager_hand_changed):
+					card_manager.hand_changed.connect(_on_card_manager_hand_changed)
+					LogManager.info("HandDock", "已连接CardManager.hand_changed信号")
+
 		LogManager.info("HandDock", "TurnManager引用设置完成")
 
 ## 连接单张卡牌信号
@@ -1117,6 +1125,53 @@ func _on_turn_manager_cards_selected(selected_card_data_list: Array):
 
 func _on_turn_manager_cards_deselected(deselected_card_data_list: Array):
 	LogManager.debug("HandDock", "收到TurnManager卡牌取消选择信号，数量: %d" % deselected_card_data_list.size())
+
+## 🔧 处理CardManager的手牌变化信号（支持卡牌替换）
+func _on_card_manager_hand_changed(hand_cards: Array):
+	LogManager.info("HandDock", "收到CardManager手牌变化信号，当前手牌数量: %d" % hand_cards.size())
+
+	# 同步HandDock的视图与CardManager的数据
+	_sync_hand_with_card_manager(hand_cards)
+
+## 🔧 同步HandDock视图与CardManager数据
+func _sync_hand_with_card_manager(hand_cards: Array):
+	LogManager.debug("HandDock", "开始同步HandDock视图与CardManager数据")
+
+	# 清除当前所有卡牌视图
+	_clear_all_cards()
+
+	# 为新的手牌数据创建视图
+	if hand_cards.size() > 0:
+		_create_views_for_hand_cards(hand_cards)
+
+	LogManager.info("HandDock", "HandDock视图同步完成，当前显示 %d 张卡牌" % hand_cards.size())
+
+## 🔧 清除所有卡牌视图
+func _clear_all_cards():
+	# 清除映射
+	for card_instance in position_to_card.values():
+		if card_instance and is_instance_valid(card_instance):
+			card_instance.queue_free()
+
+	position_to_card.clear()
+	card_to_position.clear()
+
+	# 清除选择状态
+	selection_manager.clear_selection()
+
+## 🔧 为手牌数据创建视图
+func _create_views_for_hand_cards(hand_cards: Array):
+	var target_hand_size = hand_cards.size()
+
+	for i in range(hand_cards.size()):
+		var card_data = hand_cards[i]
+		if card_data:
+			# 创建卡牌视图
+			var card_instance = _create_card_view(card_data)
+			if card_instance:
+				# 放置到正确位置
+				_place_card_at_position(card_instance, i, target_hand_size)
+
 ## 公共接口方法
 
 ## 获取选中的卡牌
@@ -1318,3 +1373,114 @@ func print_diagnosis():
 
 	print("=== 诊断完成 ===")
 	return report
+
+## 🔄 卡牌替换功能
+# 替换指定位置的卡牌
+func replace_card_at_index(index: int, new_card_data: CardData) -> bool:
+	"""
+	替换指定位置的卡牌
+
+	参数:
+	- index: 要替换的卡牌位置索引
+	- new_card_data: 新的卡牌数据
+
+	返回:
+	- bool: 替换是否成功
+	"""
+	if not new_card_data:
+		LogManager.error("HandDock", "新卡牌数据无效")
+		return false
+
+	# 检查索引是否有效
+	if not position_to_card.has(index):
+		LogManager.error("HandDock", "位置 %d 没有卡牌可以替换" % index)
+		return false
+
+	var old_card = position_to_card[index]
+	if not old_card:
+		LogManager.error("HandDock", "位置 %d 的卡牌实例无效" % index)
+		return false
+
+	LogManager.info("HandDock", "开始替换位置 %d 的卡牌: %s -> %s" % [
+		index,
+		old_card.card_data.name if old_card.card_data else "Unknown",
+		new_card_data.name
+	])
+
+	# 保存旧卡牌的位置信息
+	var old_position = old_card.position
+	var was_selected = old_card in selection_manager.selected_cards
+
+	# 移除旧卡牌
+	_remove_card_from_position(old_card)
+
+	# 创建新卡牌视图
+	var new_card_instance = _create_card_view(new_card_data)
+	if not new_card_instance:
+		LogManager.error("HandDock", "无法创建新卡牌视图")
+		return false
+
+	# 将新卡牌放置到相同位置
+	_place_card_at_position_internal(new_card_instance, index, old_position)
+
+	# 如果旧卡牌被选中，选中新卡牌
+	if was_selected:
+		if new_card_instance.has_method("set_selected"):
+			new_card_instance.set_selected(true)
+		selection_manager.update_selection(new_card_instance, true)
+
+	LogManager.info("HandDock", "成功替换位置 %d 的卡牌" % index)
+
+	# 发出卡牌变化信号
+	emit_signal("hand_composition_changed")
+
+	return true
+
+# 内部方法：在指定位置放置卡牌（不进行额外检查）
+func _place_card_at_position_internal(card_instance, position_index: int, target_pos: Vector2):
+	"""
+	内部方法：直接在指定位置放置卡牌
+
+	参数:
+	- card_instance: 卡牌实例
+	- position_index: 位置索引
+	- target_pos: 目标位置坐标
+	"""
+	# 添加到容器
+	if not card_instance.is_inside_tree():
+		card_container.add_child(card_instance)
+
+	card_instance.position = target_pos
+
+	# 更新卡牌的original_position
+	_update_card_original_position(card_instance, target_pos)
+
+	# 更新映射
+	position_to_card[position_index] = card_instance
+	card_to_position[card_instance] = position_index
+
+	# 连接信号
+	_connect_card_signals(card_instance)
+
+	LogManager.debug("HandDock", "卡牌已放置在位置 %d: %s" % [position_index, card_instance.card_data.name])
+
+# 获取所有卡牌的CardData数组
+func get_card_data_array() -> Array:
+	"""
+	获取当前所有卡牌的CardData数组
+
+	返回:
+	- Array: CardData数组
+	"""
+	var card_data_array = []
+
+	# 按位置顺序收集卡牌数据
+	var positions = position_to_card.keys()
+	positions.sort()
+
+	for pos in positions:
+		var card_instance = position_to_card[pos]
+		if card_instance and card_instance.card_data:
+			card_data_array.append(card_instance.card_data)
+
+	return card_data_array

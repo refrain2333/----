@@ -21,8 +21,8 @@ var base_draw_count: int = 1
 var score_calculator: ScoreCalculator = null
 var game_config: GameConfigResource = null
 
-# 引用效果管理器
-var effect_manager: CardEffectManagerDataClass = null
+# 引用效果管理器 - 修复类型声明，使用Node类型以兼容不同的效果管理器实现
+var effect_manager: Node = null
 
 # 引用游戏场景
 var game_scene = null
@@ -53,17 +53,17 @@ func _init(scene):
 func _ready():
 	# 获取单例引用
 	score_calculator = get_node("/root/ScoreCalculator")
-	
+
 	# 使用游戏场景中的CardEffectManager引用
-	if game_scene and game_scene.card_effect_manager:
+	if game_scene and game_scene.has_method("get") and game_scene.card_effect_manager:
 		effect_manager = game_scene.card_effect_manager
-		print("CardManager: 使用游戏场景提供的效果管理器")
+		print("CardManager: 使用游戏场景提供的效果管理器 (类型: %s)" % effect_manager.get_class())
 	else:
 		# 创建自己的效果管理器作为备用
 		effect_manager = CardEffectManagerDataClass.new()
 		add_child(effect_manager)
 		print("CardManager: 没有找到共享效果管理器，创建独立实例")
-	
+
 	# 加载所有卡牌资源
 	_load_all_card_resources()
 
@@ -535,4 +535,89 @@ func reinforce_card_in_deck(card_id: String, reinforcement_type: String, reinfor
 # 重置牌库（用于新游戏或测试）
 func reset_deck():
 	initialize_deck()
-	emit_signal("deck_updated") 
+	emit_signal("deck_updated")
+
+## 🔄 卡牌替换功能
+# 替换手牌中的卡牌
+func replace_card_in_hand(old_card: CardData, new_card: CardData) -> bool:
+	"""
+	在手牌中替换指定的卡牌
+
+	参数:
+	- old_card: 要被替换的卡牌
+	- new_card: 新的替换卡牌
+
+	返回:
+	- bool: 替换是否成功
+	"""
+	if not old_card or not new_card:
+		push_error("CardManager: 替换卡牌参数无效")
+		return false
+
+	# 查找旧卡牌在手牌中的位置
+	var card_index = -1
+	for i in range(hand.size()):
+		if hand[i] == old_card:
+			card_index = i
+			break
+
+	if card_index == -1:
+		push_error("CardManager: 在手牌中找不到要替换的卡牌: %s" % old_card.name)
+		return false
+
+	# 执行替换
+	hand[card_index] = new_card
+
+	# 发出信号通知手牌变化
+	emit_signal("hand_changed", hand)
+
+	print("CardManager: 成功替换卡牌 %s -> %s" % [old_card.name, new_card.name])
+	return true
+
+# 根据卡牌ID替换手牌中的卡牌
+func replace_card_in_hand_by_id(old_card_id: String, new_card: CardData) -> bool:
+	"""
+	根据卡牌ID在手牌中替换卡牌
+
+	参数:
+	- old_card_id: 要被替换的卡牌ID
+	- new_card: 新的替换卡牌
+
+	返回:
+	- bool: 替换是否成功
+	"""
+	if old_card_id.is_empty() or not new_card:
+		push_error("CardManager: 替换卡牌参数无效")
+		return false
+
+	# 查找旧卡牌在手牌中的位置
+	var card_index = -1
+	for i in range(hand.size()):
+		if hand[i].id == old_card_id:
+			card_index = i
+			break
+
+	if card_index == -1:
+		push_error("CardManager: 在手牌中找不到ID为 %s 的卡牌" % old_card_id)
+		return false
+
+	var old_card = hand[card_index]
+
+	# 执行替换
+	hand[card_index] = new_card
+
+	# 发出信号通知手牌变化
+	emit_signal("hand_changed", hand)
+
+	print("CardManager: 成功替换卡牌 %s -> %s" % [old_card.name, new_card.name])
+	return true
+
+# 获取手牌的副本（用于外部访问）
+func get_hand() -> Array:
+	"""
+	获取当前手牌的副本
+
+	返回:
+	- Array: 手牌卡牌数组的副本
+	"""
+	return hand.duplicate()

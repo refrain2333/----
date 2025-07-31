@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://726jbposvl1p"]
+[gd_scene load_steps=5 format=3 uid="uid://bx8k9m2n5p7q2"]
 
-[ext_resource type="Script" uid="uid://chmap6c4gcewb" path="res://cs/tests/卡牌相关/牌型识别测试/HandTypeTest.gd" id="1_handtypetest"]
+[ext_resource type="Script" path="res://cs/tests/卡牌相关/牌型识别测试/MinimalTest.gd" id="1_minimaltest"]
 [ext_resource type="PackedScene" uid="uid://qyrjutr0b5rg" path="res://cs/主场景/ui/HandDock.tscn" id="2_handdock"]
 [ext_resource type="PackedScene" uid="uid://c7aq81vj4ec5i" path="res://cs/主场景/ui/DeckWidget.tscn" id="3_deckwidget"]
 
@@ -26,7 +26,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_handtypetest")
+script = ExtResource("1_minimaltest")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -65,7 +65,7 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.670588, 0.831373, 0.976471, 1)
 theme_override_font_sizes/font_size = 20
-text = "✦ 出牌系统测试 ✦"
+text = "✦ 出牌系统测试 - 调试版 ✦"
 horizontal_alignment = 1
 
 [node name="HSeparator1" type="HSeparator" parent="TopInfoPanel/VBox"]

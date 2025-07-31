@@ -42,6 +42,7 @@ var preview_enabled: bool = true
 
 # 信号
 signal card_clicked(card_view)
+signal card_right_clicked(card_view)
 signal card_dragged(card_view)
 signal card_dropped(card_view, drop_position)
 signal card_hovered(card_view)
@@ -231,11 +232,16 @@ func _on_mouse_exited():
 
 # 统一的GUI输入处理
 func _handle_gui_input(event):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		print("CardView._handle_gui_input: 卡牌被点击 %s，当前选择状态: %s" % [get_card_name(), is_selected])
-		emit_signal("card_clicked", self)
-		# 注意：不在这里调用toggle_selected()，让HandDock通过TurnManager来管理选择状态
-		get_viewport().set_input_as_handled()
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			print("CardView._handle_gui_input: 卡牌被点击 %s，当前选择状态: %s" % [get_card_name(), is_selected])
+			emit_signal("card_clicked", self)
+			# 注意：不在这里调用toggle_selected()，让HandDock通过TurnManager来管理选择状态
+			get_viewport().set_input_as_handled()
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			print("CardView._handle_gui_input: 卡牌被右键点击 %s" % get_card_name())
+			emit_signal("card_right_clicked", self)
+			get_viewport().set_input_as_handled()
 
 # 获取卡牌值
 func get_card_power() -> int:

@@ -64,100 +64,137 @@ static func calculate_score(hand_result: HandResultClass, ranking_manager: HandT
 	
 	return result
 
-## 🎯 计算牌面价值分（核心逻辑）
+## 🎯 计算牌面价值分（核心逻辑）- 符合12345.md文档规范
 static func _calculate_value_score(hand_result: HandResultClass) -> int:
 	var hand_type = hand_result.hand_type
 	var primary = hand_result.primary_value
 	var secondary = hand_result.secondary_value
-	
+
 	match hand_type:
 		HandTypeEnumsClass.HandType.HIGH_CARD:
 			# 最高牌价值 × 2
 			return primary * 2
-		
+
 		HandTypeEnumsClass.HandType.PAIR:
 			# 对子价值 × 4
 			return primary * 4
-		
+
 		HandTypeEnumsClass.HandType.TWO_PAIR:
 			# 大对子 × 6 + 小对子 × 4
 			return primary * 6 + secondary * 4
-		
+
 		HandTypeEnumsClass.HandType.THREE_KIND:
 			# 三条价值 × 8
 			return primary * 8
-		
+
 		HandTypeEnumsClass.HandType.STRAIGHT:
-			# 所有5张牌价值总和（简化为顺子最高牌值 × 5）
-			return primary * 5
-		
+			# 文档要求：所有5张牌价值总和
+			return _calculate_all_cards_sum(hand_result)
+
 		HandTypeEnumsClass.HandType.FLUSH:
-			# 所有5张牌价值总和 × 1.2（简化为最高牌值 × 6）
-			return roundi(primary * 6.0)
-		
+			# 文档要求：(所有5张牌价值总和) × 1.2
+			var cards_sum = _calculate_all_cards_sum(hand_result)
+			return roundi(float(cards_sum) * 1.2)
+
 		HandTypeEnumsClass.HandType.FULL_HOUSE:
 			# 三条 × 10 + 对子 × 6
 			return primary * 10 + secondary * 6
-		
+
 		HandTypeEnumsClass.HandType.FOUR_KIND:
 			# 四条价值 × 15
 			return primary * 15
-		
+
 		HandTypeEnumsClass.HandType.STRAIGHT_FLUSH:
-			# 顺子分数 × 2
-			return primary * 10
-		
+			# 文档要求：(所有5张牌价值总和) × 2
+			var cards_sum = _calculate_all_cards_sum(hand_result)
+			return cards_sum * 2
+
 		HandTypeEnumsClass.HandType.ROYAL_FLUSH:
 			# 固定值 200
 			return 200
-		
+
 		HandTypeEnumsClass.HandType.FIVE_KIND:
 			# 五条价值 × 20
 			return primary * 20
-		
+
 		_:
 			return 0
 
-## 🎯 获取牌面价值计算说明
+## 🔧 计算所有卡牌价值总和（用于顺子、同花、同花顺）
+static func _calculate_all_cards_sum(hand_result: HandResultClass) -> int:
+	var total_sum = 0
+
+	# 使用contributing_cards计算总和
+	for card in hand_result.contributing_cards:
+		if card and card.has_method("get") and card.get("base_value"):
+			var card_value = card.base_value
+			# 特殊处理A-2-3-4-5顺子中的A值
+			if _is_wheel_straight(hand_result) and card_value == 1:
+				total_sum += 1  # A在轮子顺子中计为1
+			elif card_value == 1:
+				total_sum += 14  # 其他情况A计为14
+			else:
+				total_sum += card_value
+		elif card and typeof(card) == TYPE_INT:
+			# 如果直接存储的是数值
+			total_sum += card
+
+	# 如果contributing_cards为空或无效，使用primary_value作为备用
+	if total_sum == 0:
+		total_sum = hand_result.primary_value * 5  # 假设5张牌的平均值
+
+	return total_sum
+
+## 🔧 检查是否为A-2-3-4-5顺子（轮子）
+static func _is_wheel_straight(hand_result: HandResultClass) -> bool:
+	# 检查是否为顺子且最高牌值为5
+	if hand_result.hand_type == HandTypeEnumsClass.HandType.STRAIGHT or hand_result.hand_type == HandTypeEnumsClass.HandType.STRAIGHT_FLUSH:
+		return hand_result.primary_value == 5
+	return false
+
+## 🎯 获取牌面价值计算说明（符合12345.md文档）
 static func _get_value_calculation_explanation(hand_result: HandResultClass) -> String:
 	var hand_type = hand_result.hand_type
 	var primary = hand_result.primary_value
 	var secondary = hand_result.secondary_value
-	
+
 	match hand_type:
 		HandTypeEnumsClass.HandType.HIGH_CARD:
 			return "%s×2" % _value_to_string(primary)
-		
+
 		HandTypeEnumsClass.HandType.PAIR:
 			return "%s×4" % _value_to_string(primary)
-		
+
 		HandTypeEnumsClass.HandType.TWO_PAIR:
 			return "%s×6 + %s×4" % [_value_to_string(primary), _value_to_string(secondary)]
-		
+
 		HandTypeEnumsClass.HandType.THREE_KIND:
 			return "%s×8" % _value_to_string(primary)
-		
+
 		HandTypeEnumsClass.HandType.STRAIGHT:
-			return "%s×5" % _value_to_string(primary)
-		
+			var cards_sum = _calculate_all_cards_sum(hand_result)
+			return "所有5张牌总和=%d" % cards_sum
+
 		HandTypeEnumsClass.HandType.FLUSH:
-			return "%s×6" % _value_to_string(primary)
-		
+			var cards_sum = _calculate_all_cards_sum(hand_result)
+			return "(所有5张牌总和=%d)×1.2" % cards_sum
+
 		HandTypeEnumsClass.HandType.FULL_HOUSE:
 			return "%s×10 + %s×6" % [_value_to_string(primary), _value_to_string(secondary)]
-		
+
 		HandTypeEnumsClass.HandType.FOUR_KIND:
 			return "%s×15" % _value_to_string(primary)
-		
+
 		HandTypeEnumsClass.HandType.STRAIGHT_FLUSH:
-			return "%s×10" % _value_to_string(primary)
-		
+			var cards_sum = _calculate_all_cards_sum(hand_result)
+			return "(所有5张牌总和=%d)×2" % cards_sum
+
 		HandTypeEnumsClass.HandType.ROYAL_FLUSH:
 			return "固定200分"
-		
+
 		HandTypeEnumsClass.HandType.FIVE_KIND:
 			return "%s×20" % _value_to_string(primary)
-		
+
 		_:
 			return "未知计算"
 

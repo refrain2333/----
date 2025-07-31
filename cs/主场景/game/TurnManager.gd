@@ -281,21 +281,13 @@ func play_selected_cards() -> bool:
 	# 发送出牌信号
 	emit_signal("cards_played", played_cards_copy, score)
 
-	# 使用新的智能卡牌替换系统
-	if hand_dock and hand_dock.has_method("remove_selected_cards_and_refill"):
-		hand_dock.remove_selected_cards_and_refill()
-	else:
-		# 回退到原有逻辑
-		if hand_dock and hand_dock.has_method("remove_played_cards"):
-			hand_dock.remove_played_cards(played_cards_copy)
+	# 清空选择状态
+	selected_cards.clear()
+	if hand_dock and hand_dock.has_method("clear_selection"):
+		hand_dock.clear_selection()
 
-		# 清空选择
-		selected_cards.clear()
-		if hand_dock and hand_dock.has_method("clear_selection"):
-			hand_dock.clear_selection()
-
-		# 自动补牌
-		_auto_refill_hand()
+	# 自动补牌到目标手牌数量
+	_auto_refill_hand()
 
 	# 检查是否应该继续留在出牌阶段
 	# 只有在特定条件下才结束回合（比如达到出牌次数限制）
@@ -361,9 +353,8 @@ func _auto_refill_hand():
 		var drawn_cards = card_manager.draw(cards_to_draw)
 		print("TurnManager: 实际抽取了 %d 张卡牌" % drawn_cards.size())
 
-		# 如果有HandDock，需要为新抽取的卡牌创建视图
-		if hand_dock and drawn_cards.size() > 0:
-			_create_card_views_for_drawn_cards(drawn_cards)
+		# HandDock会通过hand_changed信号自动同步，无需手动创建视图
+		print("TurnManager: HandDock将通过信号自动更新视图")
 	else:
 		print("TurnManager: 手牌已满，无需补牌 (当前: %d)" % current_hand_size)
 
@@ -387,13 +378,15 @@ func _create_card_views_for_drawn_cards(drawn_cards: Array):
 		print("TurnManager: 创建新卡牌视图 %s" % card_data.name)
 
 	# 批量添加到HandDock（避免频繁重排）
-	if hand_dock.has_method("add_cards_batch"):
+	if hand_dock and hand_dock.has_method("add_cards_batch"):
 		print("TurnManager: 使用批量添加方法")
 		hand_dock.add_cards_batch(card_views)
-	else:
+	elif hand_dock:
 		print("TurnManager: 回退到逐个添加")
 		for card_view in card_views:
 			hand_dock.add_card(card_view)
+	else:
+		print("TurnManager: 跳过卡牌视图添加 - HandDock不存在")
 
 # 消耗集中力
 func _consume_concentration(amount: int):
@@ -551,3 +544,7 @@ func request_cards_for_hand(count: int) -> Array:
 
 	LogManager.info("TurnManager", "成功提供%d张卡牌给HandDock" % new_cards.size())
 	return new_cards
+
+# 🔧 获取CardManager引用（用于HandDock连接信号）
+func get_card_manager() -> CardManager:
+	return card_manager

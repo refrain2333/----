@@ -42,7 +42,10 @@ static func find_best_hand(cards: Array) -> HandResultClass:
 	# 设置分析元数据
 	if result:
 		result.set_analysis_metadata(combinations_tested, analysis_method)
-		result.set_cards_info(result.contributing_cards, result.kickers, cards)
+		print("SmartHandAnalyzerV2: 调用set_cards_info前 - contributing_cards数量: %d" % result.contributing_cards.size())
+		# 只设置all_cards，保留已经正确设置的contributing_cards和kickers
+		result.all_cards = cards.duplicate()
+		print("SmartHandAnalyzerV2: 调用set_cards_info后 - contributing_cards数量: %d" % result.contributing_cards.size())
 	
 	return result
 
@@ -78,7 +81,9 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				"高牌: %s" % _value_to_string(values[0])
 			)
 			result.set_core_values(values[0])
-		
+			# 设置构成牌型的卡牌（只有最高牌）
+			result.contributing_cards = [cards[0]]
+
 		2:
 			if _has_pair_in_counts(value_counts):
 				var pair_value = _get_pair_value_from_counts(value_counts)
@@ -88,6 +93,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 					"对子: %s" % _value_to_string(pair_value)
 				)
 				result.set_core_values(pair_value)
+				# 设置构成对子的卡牌
+				var pair_cards = []
+				for card in cards:
+					if card.base_value == pair_value:
+						pair_cards.append(card)
+				result.contributing_cards = pair_cards
 			else:
 				result.set_hand_type_info(
 					HandTypeEnumsClass.HandType.HIGH_CARD,
@@ -96,6 +107,13 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(values[0])
 				result.kickers = [values[1]]
+				# 设置构成牌型的卡牌（只有最高牌）
+				var high_card = null
+				for card in cards:
+					if card.base_value == values[0]:
+						high_card = card
+						break
+				result.contributing_cards = [high_card] if high_card else []
 		
 		3:
 			if _has_three_of_kind_in_counts(value_counts):
@@ -106,6 +124,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 					"三条: %s" % _value_to_string(three_value)
 				)
 				result.set_core_values(three_value)
+				# 设置构成三条的卡牌
+				var three_cards = []
+				for card in cards:
+					if card.base_value == three_value:
+						three_cards.append(card)
+				result.contributing_cards = three_cards
 			elif _has_pair_in_counts(value_counts):
 				var pair_value = _get_pair_value_from_counts(value_counts)
 				result.set_hand_type_info(
@@ -115,6 +139,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(pair_value)
 				result.kickers = _get_kickers_from_counts(value_counts, [pair_value])
+				# 设置构成对子的卡牌
+				var pair_cards = []
+				for card in cards:
+					if card.base_value == pair_value:
+						pair_cards.append(card)
+				result.contributing_cards = pair_cards
 			else:
 				result.set_hand_type_info(
 					HandTypeEnumsClass.HandType.HIGH_CARD,
@@ -123,6 +153,13 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(values[0])
 				result.kickers = values.slice(1)
+				# 设置构成牌型的卡牌（只有最高牌）
+				var high_card = null
+				for card in cards:
+					if card.base_value == values[0]:
+						high_card = card
+						break
+				result.contributing_cards = [high_card] if high_card else []
 		
 		4:
 			if _has_four_of_kind_in_counts(value_counts):
@@ -134,6 +171,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(four_value)
 				result.kickers = _get_kickers_from_counts(value_counts, [four_value])
+				# 设置构成四条的卡牌
+				var four_cards = []
+				for card in cards:
+					if card.base_value == four_value:
+						four_cards.append(card)
+				result.contributing_cards = four_cards
 			elif _has_three_of_kind_in_counts(value_counts):
 				var three_value = _get_three_of_kind_value_from_counts(value_counts)
 				result.set_hand_type_info(
@@ -143,6 +186,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(three_value)
 				result.kickers = _get_kickers_from_counts(value_counts, [three_value])
+				# 设置构成三条的卡牌
+				var three_cards = []
+				for card in cards:
+					if card.base_value == three_value:
+						three_cards.append(card)
+				result.contributing_cards = three_cards
 			elif _has_two_pair_in_counts(value_counts):
 				var pairs = _get_pair_values_from_counts(value_counts)
 				pairs.sort()
@@ -153,6 +202,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 					"两对: %s和%s" % [_value_to_string(pairs[0]), _value_to_string(pairs[1])]
 				)
 				result.set_core_values(pairs[0], pairs[1])
+				# 设置构成两对的卡牌
+				var two_pair_cards = []
+				for card in cards:
+					if card.base_value == pairs[0] or card.base_value == pairs[1]:
+						two_pair_cards.append(card)
+				result.contributing_cards = two_pair_cards
 			elif _has_pair_in_counts(value_counts):
 				var pair_value = _get_pair_value_from_counts(value_counts)
 				result.set_hand_type_info(
@@ -162,6 +217,12 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(pair_value)
 				result.kickers = _get_kickers_from_counts(value_counts, [pair_value])
+				# 设置构成对子的卡牌
+				var pair_cards = []
+				for card in cards:
+					if card.base_value == pair_value:
+						pair_cards.append(card)
+				result.contributing_cards = pair_cards
 			else:
 				result.set_hand_type_info(
 					HandTypeEnumsClass.HandType.HIGH_CARD,
@@ -170,7 +231,14 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 				)
 				result.set_core_values(values[0])
 				result.kickers = values.slice(1)
-		
+				# 设置构成牌型的卡牌（只有最高牌）
+				var high_card = null
+				for card in cards:
+					if card.base_value == values[0]:
+						high_card = card
+						break
+				result.contributing_cards = [high_card] if high_card else []
+
 		_:
 			result.set_hand_type_info(
 				HandTypeEnumsClass.HandType.HIGH_CARD,
@@ -179,8 +247,16 @@ static func _analyze_partial_hand(cards: Array) -> HandResultClass:
 			)
 			result.set_core_values(values[0])
 			result.kickers = values.slice(1)
-	
-	result.contributing_cards = cards.duplicate()
+			# 设置构成牌型的卡牌（只有最高牌）
+			var high_card = null
+			for card in cards:
+				if card.base_value == values[0]:
+					high_card = card
+					break
+			result.contributing_cards = [high_card] if high_card else []
+
+	# 不要覆盖已经设置的contributing_cards
+	# result.contributing_cards = cards.duplicate()  # 这行代码会覆盖之前的设置！
 	return result
 
 ## 🔧 寻找最佳5张牌组合

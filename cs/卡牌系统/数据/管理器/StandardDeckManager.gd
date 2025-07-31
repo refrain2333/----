@@ -392,21 +392,21 @@ static func get_available_values() -> Array:
 # ========================================
 
 ## 🎯 复制标准卡牌（预留接口）
-static func duplicate_standard_card(card: CardData, modifications: Dictionary = {}) -> CardData:
+static func duplicate_standard_card(_card: CardData, _modifications: Dictionary = {}) -> CardData:
 	# TODO: 实现卡牌复制逻辑
 	# 可以修改属性如：强化类型、数值调整、特殊效果等
 	push_warning("卡牌复制功能尚未实现")
 	return null
 
 ## 🎯 创建变体卡牌（预留接口）
-static func create_variant_card(base_card: CardData, variant_type: String, properties: Dictionary = {}) -> CardData:
+static func create_variant_card(_base_card: CardData, _variant_type: String, _properties: Dictionary = {}) -> CardData:
 	# TODO: 实现变体卡牌创建
 	# 支持类型：enhanced, weakened, special, etc.
 	push_warning("变体卡牌创建功能尚未实现")
 	return null
 
 ## 🎯 注册自定义卡牌（预留接口）
-static func register_custom_card(card: CardData, category: String = "custom"):
+static func register_custom_card(_card: CardData, _category: String = "custom"):
 	# TODO: 实现自定义卡牌注册
 	# 允许运行时添加新卡牌到指定分类
 	push_warning("自定义卡牌注册功能尚未实现")

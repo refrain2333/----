@@ -4,10 +4,10 @@
 
 [resource]
 script = ExtResource("1_card_data")
-id = "S7"
+id = "S7_Special"
 base_value = 7
 suit = "spades"
-name = "黑桃7"
+name = "特殊黑桃7"
 image_path = "res://assets/images/pokers/7.jpg"
 wax_seals = Array[String]([])
 frame_type = ""
