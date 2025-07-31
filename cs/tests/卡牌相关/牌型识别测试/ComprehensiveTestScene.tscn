@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://slbkyq6bekah"]
 
-[ext_resource type="Script" path="res://cs/tests/卡牌相关/牌型识别测试/ComprehensiveTestScript.gd" id="1_comprehensive"]
+[ext_resource type="Script" uid="uid://ddowiehx0jo8s" path="res://cs/tests/卡牌相关/牌型识别测试/ComprehensiveTestScript.gd" id="1_comprehensive"]
 
 [node name="ComprehensiveTestScene" type="Node"]
 script = ExtResource("1_comprehensive")

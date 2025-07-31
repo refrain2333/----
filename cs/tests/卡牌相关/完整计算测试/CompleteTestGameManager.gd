@@ -1,7 +1,7 @@
-class_name SimpleTestGameManager
+class_name CompleteTestGameManager
 extends Node
 
-## 🎯 简单游戏管理器 - 用于出牌系统测试
+## 🎯 完整计算测试游戏管理器 - 用于完整计算测试系统
 ##
 ## 提供基础的游戏管理功能，模拟完整的GameManager行为
 

@@ -1,9 +1,9 @@
 extends Control
 
-## 🎯 牌型识别功能测试
+## 🎯 完整计算测试
 ##
-## 基于出牌系统测试，专门用于测试牌型识别功能
-## 包含完整的牌型分析、等级系统、结果显示等功能
+## 基于原有牌型识别测试，专门用于测试包含守护灵、法术、法器的完整计算功能
+## 包含完整的牌型分析、等级系统、能力系统、结果显示等功能
 
 # 导入组件类
 const GameSessionConfig = preload("res://cs/卡牌系统/数据/管理器/GameSessionConfig.gd")
@@ -12,17 +12,23 @@ const GameScoreManager = preload("res://cs/卡牌系统/数据/管理器/GameSco
 const DeckViewIntegrationManager = preload("res://cs/卡牌系统/数据/管理器/DeckViewIntegrationManager.gd")
 const CardManager = preload("res://cs/卡牌系统/数据/管理器/CardManager.gd")
 
-# 导入牌型识别组件（V2.1新架构）
+# 导入牌型识别组件（V2.3新架构）
 const HandTypeEnums = preload("res://cs/卡牌系统/数据/HandTypeEnums.gd")
 const HandTypeAnalyzer = preload("res://cs/卡牌系统/数据/管理器/HandTypeAnalyzer.gd")
 const HandTypeRankingManager = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
 const HandTypeSystemV2 = preload("res://cs/卡牌系统/数据/管理器/HandTypeSystemV2.gd")
+const CompleteHandTypeTestCore = preload("res://cs/tests/卡牌相关/完整计算测试/CompleteHandTypeTestCore.gd")
 
-# 导入V2.1新架构组件
-const HandTypeSystemV2 = preload("res://cs/卡牌系统/数据/管理器/HandTypeSystemV2.gd")
+# 导入V2.3新架构组件
 const CardDataLoader = preload("res://cs/卡牌系统/数据/管理器/CardDataLoader.gd")
 const PokerHandAnalyzer = preload("res://cs/卡牌系统/数据/管理器/PokerHandAnalyzer.gd")
 const PreciseScoreCalculator = preload("res://cs/卡牌系统/数据/管理器/PreciseScoreCalculator.gd")
+
+# 导入能力系统组件
+const JokerDataClass = preload("res://cs/卡牌系统/数据/JokerData.gd")
+const SpellDataClass = preload("res://cs/卡牌系统/数据/SpellData.gd")
+const ArtifactDataClass = preload("res://cs/卡牌系统/数据/ArtifactData.gd")
+const GlobalEnums = preload("res://cs/Global/GlobalEnums.gd")
 
 # UI组件引用 - 使用安全的get_node_or_null方式
 var hand_dock = null
@@ -62,9 +68,10 @@ var card_effect_manager  # CardManager需要这个引用
 var turn_manager  # TurnManager用于管理HandDock
 var game_manager  # 模拟GameManager来提供资源管理
 
-# 牌型识别专用变量
+# 完整计算测试专用变量
 var current_test_results: Dictionary = {}
 var test_history: Array = []
+var calc_test_core  # 核心测试模块，避免与const CompleteHandTypeTestCore冲突
 var hand_ranking_system  # 等级系统，避免与const HandTypeRankingManager冲突
 
 # V2.3新架构组件
@@ -80,53 +87,62 @@ var deck_view_dialog: Window = null
 # CardManager需要的属性
 var effect_orchestrator = null
 
-# 牌型识别测试初始化
+# 能力系统状态
+var active_jokers: Array[JokerDataClass] = []
+var equipped_artifacts: Array[ArtifactDataClass] = []
+var spell_inventory: Array[SpellDataClass] = []
+
+# 完整计算测试初始化
 func _ready():
-	print("HandTypeTest: 开始牌型识别测试初始化")
+	print("CompleteCalcTest: 开始完整计算测试初始化")
 
 	# 0. 安全初始化UI组件引用
 	_initialize_ui_references()
 
-	# 1. 初始化V2.1系统
-	print("HandTypeTest: 步骤1 - 初始化V2.1系统")
+	# 1. 初始化V2.3系统
+	print("CompleteCalcTest: 步骤1 - 初始化V2.3系统")
 	_initialize_v2_system()
 
 	# 2. 加载配置
-	print("HandTypeTest: 步骤2 - 加载配置")
+	print("CompleteCalcTest: 步骤2 - 加载配置")
 	_load_config()
 
 	# 3. 创建管理器组件
-	print("HandTypeTest: 步骤3 - 创建管理器组件")
+	print("CompleteCalcTest: 步骤3 - 创建管理器组件")
 	_create_managers()
 
 	# 等待管理器创建完成
 	await get_tree().process_frame
 
 	# 4. 初始化游戏
-	print("HandTypeTest: 步骤4 - 初始化游戏")
+	print("CompleteCalcTest: 步骤4 - 初始化游戏")
 	_initialize_game()
 
 	# 5. 连接信号
-	print("HandTypeTest: 步骤5 - 连接信号")
+	print("CompleteCalcTest: 步骤5 - 连接信号")
 	_connect_signals()
 
 	# 6. 设置UI
-	print("HandTypeTest: 步骤6 - 设置UI")
+	print("CompleteCalcTest: 步骤6 - 设置UI")
 	_setup_ui()
 
-	# 7. 初始化牌型识别组件
-	print("HandTypeTest: 步骤7 - 初始化牌型识别组件")
-	_setup_hand_type_analyzer()
+	# 7. 初始化完整计算组件
+	print("CompleteCalcTest: 步骤7 - 初始化完整计算组件")
+	_setup_complete_calc_analyzer()
 
 	# 8. 初始化卡牌可视化显示容器
-	print("HandTypeTest: 步骤8 - 初始化卡牌可视化显示容器")
+	print("CompleteCalcTest: 步骤8 - 初始化卡牌可视化显示容器")
 	_setup_cards_display_container()
 
-	print("HandTypeTest: 牌型识别测试初始化完成（V2.1增强版）")
+	# 9. 初始化能力系统
+	print("CompleteCalcTest: 步骤9 - 初始化能力系统")
+	_initialize_ability_system()
+
+	print("CompleteCalcTest: 完整计算测试初始化完成（V2.3增强版）")
 
 ## 🔧 安全初始化UI组件引用
 func _initialize_ui_references():
-	print("HandTypeTest: 初始化UI组件引用...")
+	print("CompleteCalcTest: 初始化UI组件引用...")
 
 	# 安全获取UI组件引用
 	hand_dock = get_node_or_null("HandDock")
@@ -145,8 +161,8 @@ func _initialize_ui_references():
 	test_suite_button = get_node_or_null("ControlPanel/VBox/TestSuiteButton")
 
 	# 报告UI组件状态
-	print("HandTypeTest: UI组件状态 - HandDock: %s, DeckWidget: %s" % [hand_dock != null, deck_widget != null])
-	print("HandTypeTest: UI组件状态 - StatusText: %s, TestButton: %s" % [status_text != null, test_suite_button != null])
+	print("CompleteCalcTest: UI组件状态 - HandDock: %s, DeckWidget: %s" % [hand_dock != null, deck_widget != null])
+	print("CompleteCalcTest: UI组件状态 - StatusText: %s, TestButton: %s" % [status_text != null, test_suite_button != null])
 
 ## 🔧 更新状态文本
 func _update_status_text(text: String):
@@ -154,25 +170,25 @@ func _update_status_text(text: String):
 		status_text.text = text
 	print("状态: %s" % text)
 
-## 🎯 初始化V2.1系统
+## 🎯 初始化V2.3系统
 func _initialize_v2_system():
-	print("🚀 初始化牌型识别系统 V2.1...")
+	print("🚀 初始化完整计算系统 V2.3...")
 
 	# 初始化卡牌数据加载器
 	CardDataLoader.initialize()
 
-	# 创建V2.1等级管理器
+	# 创建V2.3等级管理器
 	v2_ranking_manager = HandTypeRankingManager.new()
 
 	# 验证系统完整性
 	var validation = HandTypeSystemV2.validate_system()
 	if validation.overall_status:
 		v2_system_initialized = true
-		print("✅ V2.1系统初始化成功")
-		_update_status_text("V2.1系统已就绪")
+		print("✅ V2.3系统初始化成功")
+		_update_status_text("V2.3系统已就绪")
 	else:
-		print("❌ V2.1系统初始化失败: %s" % str(validation.errors))
-		_update_status_text("V2.1系统初始化失败")
+		print("❌ V2.3系统初始化失败: %s" % str(validation.errors))
+		_update_status_text("V2.3系统初始化失败")
 
 # 🔧 清理资源
 func _exit_tree():
@@ -917,12 +933,13 @@ func _try_discard_cards():
 
 ## 🎯 牌型识别专用函数
 
-# 初始化牌型识别组件
-func _setup_hand_type_analyzer():
-	print("HandTypeTest: 初始化牌型识别组件")
+# 初始化完整计算组件
+func _setup_complete_calc_analyzer():
+	print("CompleteCalcTest: 初始化完整计算组件")
 
 	# 创建核心组件
 	hand_ranking_system = HandTypeRankingManager.new()
+	calc_test_core = CompleteHandTypeTestCore.new()
 
 	# 设置一些牌型为高等级进行测试
 	hand_ranking_system.set_hand_type_level(HandTypeEnums.HandType.PAIR, 3)  # 一对LV3
@@ -936,7 +953,7 @@ func _setup_hand_type_analyzer():
 	print("HandTypeTest: 牌型识别组件初始化完成")
 	print(hand_ranking_system.get_level_summary())
 
-# 分析手牌牌型（V2.1增强版）
+# 分析手牌牌型（V2.3增强版）
 func _analyze_hand_type(cards: Array) -> Dictionary:
 	# 转换为CardData数组
 	var card_data_array = []
@@ -956,7 +973,7 @@ func _analyze_hand_type(cards: Array) -> Dictionary:
 		if card_data:
 			card_data_array.append(card_data)
 
-	# 使用V2.3系统进行分析（如果可用）
+	# 使用V2.3系统进行分析
 	var v2_result = null
 	if v2_system_initialized and card_data_array.size() > 0:
 		# 使用V2.3接口，支持最终倍率参数
@@ -1347,7 +1364,7 @@ func _clear_cards_display():
 			child.queue_free()
 		cards_display_container.get_children().clear()
 
-# 更新牌型识别结果显示（V2.1增强版 - 显示具体卡牌）
+# 更新牌型识别结果显示（V2.3增强版 - 显示具体卡牌）
 func _update_hand_type_display(result: Dictionary):
 	print("HandTypeTest: _update_hand_type_display被调用，结果版本: %s" % result.get("version", "未知"))
 	# 首先清理之前的卡牌显示
@@ -1569,9 +1586,9 @@ func _get_value_symbol(value: int) -> String:
 		14: return "A"  # 高位A
 		_: return str(value)
 
-# 运行完整测试套件（V2.1增强版）
+# 运行完整测试套件（V2.3增强版）
 func _run_test_suite():
-	print("HandTypeTest: 开始运行完整测试套件（V2.1增强版）")
+	print("HandTypeTest: 开始运行完整测试套件（V2.3增强版）")
 
 	var test_results = []
 	var total_start_time = Time.get_ticks_msec()
@@ -1650,59 +1667,7 @@ func _run_v2_performance_tests():
 			size, total_time, avg_time, float(success_count) / size * 100.0
 		])
 
-## 🔧 运行V1测试套件
-func _run_v1_test_suite():
-	var test_results = []
-	var total_start_time = Time.get_ticks_msec()
 
-	# 测试1：当前手牌分析
-	if hand_dock and hand_dock.has_method("get_all_cards"):
-		var all_cards = hand_dock.get_all_cards()
-		if not all_cards.is_empty():
-			print("🧪 测试1: 当前手牌分析")
-			var result = _analyze_hand_type(all_cards)
-			_update_hand_type_display(result)
-			test_results.append(result)
-			test_history.append(result)
-
-	# 测试2：性能测试
-	if hand_dock and hand_dock.has_method("get_all_cards"):
-		var cards = hand_dock.get_all_cards()
-		if cards.size() >= 5:
-			print("🧪 测试2: 性能测试")
-			var card_data_array = []
-			for card_view in cards:
-				var card_data = card_view.get_card_data() if card_view.has_method("get_card_data") else card_view
-				if card_data:
-					card_data_array.append(card_data)
-
-			var performance_result = hand_type_test_core.performance_test(card_data_array.slice(0, 5), "手牌性能测试")
-			print("性能测试结果: %s，平均耗时: %.1fμs" % [performance_result.performance_rating, performance_result.average_time_us])
-
-	# 测试3：等级系统测试
-	print("🧪 测试3: 等级系统测试")
-	var original_level = hand_ranking_system.get_hand_type_level(HandTypeEnums.HandType.PAIR)
-	hand_ranking_system.set_hand_type_level(HandTypeEnums.HandType.PAIR, 5)  # 临时设为LV5
-
-	if hand_dock and hand_dock.has_method("get_all_cards"):
-		var cards = hand_dock.get_all_cards()
-		if not cards.is_empty():
-			var high_level_result = _analyze_hand_type(cards)
-			print("LV5测试结果: %s，得分: %d" % [high_level_result.hand_type_name, high_level_result.final_score])
-
-	# 恢复原等级
-	hand_ranking_system.set_hand_type_level(HandTypeEnums.HandType.PAIR, original_level)
-
-	var total_end_time = Time.get_ticks_msec()
-	var total_time = total_end_time - total_start_time
-
-	var status_message = "🎯 测试套件完成！\n"
-	status_message += "总耗时: %dms\n" % total_time
-	status_message += "测试数量: %d个\n" % test_results.size()
-	status_message += "历史记录: %d条" % test_history.size()
-
-	_update_status(status_message)
-	print("HandTypeTest: 测试套件运行完成，总耗时: %dms" % total_time)
 
 # 重写出牌函数，添加牌型识别
 func _on_play_cards_with_analysis():
@@ -1755,3 +1720,21 @@ func _create_fallback_result(cards: Array) -> Dictionary:
 		"analysis_details": "使用简化分析（核心模块未初始化）",
 		"debug_info": {"fallback": true}
 	}
+
+## 🎭 初始化能力系统
+func _initialize_ability_system():
+	print("CompleteCalcTest: 初始化能力系统")
+
+	# 初始化守护灵系统
+	active_jokers.clear()
+	print("CompleteCalcTest: 守护灵系统已初始化，当前守护灵数量: %d" % active_jokers.size())
+
+	# 初始化法器系统
+	equipped_artifacts.clear()
+	print("CompleteCalcTest: 法器系统已初始化，当前法器数量: %d" % equipped_artifacts.size())
+
+	# 初始化法术系统
+	spell_inventory.clear()
+	print("CompleteCalcTest: 法术系统已初始化，当前法术数量: %d" % spell_inventory.size())
+
+	print("CompleteCalcTest: 能力系统初始化完成")
