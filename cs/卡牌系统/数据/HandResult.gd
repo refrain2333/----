@@ -15,8 +15,8 @@ var hand_type_name: String = ""              # 牌型中文名称
 var description: String = ""                 # 牌型描述
 
 ## 核心牌值（用于计分）
-var primary_value: int = 0      # 主要牌值 (e.g., 对子/三条的值)
-var secondary_value: int = 0    # 次要牌值 (e.g., 两对/葫芦的次级值)
+var primary_value: float = 0.0      # 主要牌值 (e.g., 对子/三条的值)
+var secondary_value: float = 0.0    # 次要牌值 (e.g., 两对/葫芦的次级值)
 
 ## 卡牌组织
 var contributing_cards: Array = []  # 构成牌型的核心卡牌
@@ -40,7 +40,7 @@ func set_hand_type_info(type: HandTypeEnumsClass.HandType, name: String, desc: S
 	description = desc
 
 ## 🎯 设置核心牌值
-func set_core_values(primary: int, secondary: int = 0):
+func set_core_values(primary: float, secondary: float = 0.0):
 	primary_value = primary
 	secondary_value = secondary
 

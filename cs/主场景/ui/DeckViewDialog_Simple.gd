@@ -290,8 +290,8 @@ func _update_ui():
 	var all_stats = _calculate_stats(all_cards_data)
 	var current_stats = _calculate_stats(current_deck_data)
 	
-	# 填充"全部牌"标签页
-	_populate_simple_cards_view(all_cards_container, cards_by_suit, played_cards_data, all_stats)
+	# 填充"全部牌"标签页 - 不显示已打出状态，显示真正的全部卡牌
+	_populate_simple_cards_view(all_cards_container, cards_by_suit, [], all_stats)
 	
 	# 按花色分组当前牌库卡牌
 	var current_cards_by_suit = {

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_kfspf")
 id = "D1"
-base_value = 1
+base_value = 14
 suit = "diamonds"
 name = "方片A"
 image_path = "res://assets/images/pokers/40.jpg"

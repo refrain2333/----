@@ -15,22 +15,22 @@ const HandTypeRankingManagerClass = preload("res://cs/卡牌系统/数据/管理
 const HandResultClass = preload("res://cs/卡牌系统/数据/HandResult.gd")
 const ScoreResultClass = preload("res://cs/卡牌系统/数据/ScoreResult.gd")
 
-## 🎯 完整分析接口（牌型识别 + 得分计算）
-static func analyze_and_score(cards: Array, ranking_manager: HandTypeRankingManagerClass = null, bonus_score: int = 0) -> Dictionary:
+## 🎯 完整分析接口（牌型识别 + 得分计算 - V2.3版本）
+static func analyze_and_score(cards: Array, ranking_manager: HandTypeRankingManagerClass = null, bonus_score: int = 0, final_multiplier: float = 1.0) -> Dictionary:
 	var start_time = Time.get_ticks_msec()
-	
+
 	# 1. 牌型识别
 	var hand_result = SmartHandAnalyzerV2Class.find_best_hand(cards)
-	
+
 	# 2. 得分计算
 	if not ranking_manager:
 		ranking_manager = HandTypeRankingManagerClass.new()
-	
-	var score_result = PreciseScoreCalculatorClass.calculate_score(hand_result, ranking_manager, bonus_score)
-	
+
+	var score_result = PreciseScoreCalculatorClass.calculate_score(hand_result, ranking_manager, bonus_score, final_multiplier)
+
 	var end_time = Time.get_ticks_msec()
 	var total_time = end_time - start_time
-	
+
 	# 3. 返回完整结果
 	return {
 		"hand_result": hand_result,
@@ -43,17 +43,17 @@ static func analyze_and_score(cards: Array, ranking_manager: HandTypeRankingMana
 static func analyze_hand_type(cards: Array) -> HandResultClass:
 	return SmartHandAnalyzerV2Class.find_best_hand(cards)
 
-## 🎯 仅得分计算接口
-static func calculate_score(hand_result: HandResultClass, ranking_manager: HandTypeRankingManagerClass = null, bonus_score: int = 0) -> ScoreResultClass:
+## 🎯 仅得分计算接口 (V2.3版本)
+static func calculate_score(hand_result: HandResultClass, ranking_manager: HandTypeRankingManagerClass = null, bonus_score: int = 0, final_multiplier: float = 1.0) -> ScoreResultClass:
 	if not ranking_manager:
 		ranking_manager = HandTypeRankingManagerClass.new()
-	
-	return PreciseScoreCalculatorClass.calculate_score(hand_result, ranking_manager, bonus_score)
 
-## 🎯 快速得分接口（用于简单场景）
-static func quick_score(cards: Array, level: int = 1, bonus_score: int = 0) -> int:
+	return PreciseScoreCalculatorClass.calculate_score(hand_result, ranking_manager, bonus_score, final_multiplier)
+
+## 🎯 快速得分接口（V2.3简化场景）
+static func quick_score(cards: Array, level: int = 1, bonus_score: int = 0, final_multiplier: float = 1.0) -> int:
 	var hand_result = SmartHandAnalyzerV2Class.find_best_hand(cards)
-	return PreciseScoreCalculatorClass.quick_calculate(hand_result, level, bonus_score)
+	return PreciseScoreCalculatorClass.quick_calculate(hand_result, level, bonus_score, final_multiplier)
 
 ## 🎯 批量分析接口（用于测试和验证）
 static func batch_analyze(card_sets: Array, ranking_manager: HandTypeRankingManagerClass = null) -> Array:

@@ -42,35 +42,35 @@ const HAND_TYPE_NAMES = {
 	HandType.FIVE_KIND: "五条"
 }
 
-# 牌型基础分值
+# 牌型基础分值 (V2.3 平衡调整版)
 const BASE_SCORES = {
-	HandType.HIGH_CARD: 1,
-	HandType.PAIR: 2,
-	HandType.TWO_PAIR: 3,
-	HandType.THREE_KIND: 5,
-	HandType.STRAIGHT: 8,
-	HandType.FLUSH: 13,
-	HandType.FULL_HOUSE: 21,
-	HandType.FOUR_KIND: 34,
-	HandType.STRAIGHT_FLUSH: 55,
-	HandType.ROYAL_FLUSH: 89,
-	HandType.FIVE_KIND: 144
+	HandType.HIGH_CARD: 10,
+	HandType.PAIR: 25,
+	HandType.TWO_PAIR: 50,
+	HandType.THREE_KIND: 80,
+	HandType.STRAIGHT: 120,
+	HandType.FLUSH: 150,
+	HandType.FULL_HOUSE: 250,
+	HandType.FOUR_KIND: 500,
+	HandType.STRAIGHT_FLUSH: 1000,
+	HandType.ROYAL_FLUSH: 2000,
+	HandType.FIVE_KIND: 3000
 }
 
-# 等级倍率配置（按照规范文档）
+# 等级倍率配置 (V2.3 成长增强版)
 const LEVEL_MULTIPLIERS = {
 	# 牌型: [LV1倍率, 每级增量]
-	HandType.HIGH_CARD: [1.0, 0.2],      # 1.0x → 1.8x
-	HandType.PAIR: [1.5, 0.3],           # 1.5x → 2.7x
-	HandType.TWO_PAIR: [2.0, 0.4],       # 2.0x → 3.6x
-	HandType.THREE_KIND: [3.0, 0.6],     # 3.0x → 5.4x
-	HandType.STRAIGHT: [4.0, 0.8],       # 4.0x → 7.2x
-	HandType.FLUSH: [5.0, 1.0],          # 5.0x → 9.0x
-	HandType.FULL_HOUSE: [7.0, 1.4],     # 7.0x → 12.6x
-	HandType.FOUR_KIND: [10.0, 2.0],     # 10.0x → 18.0x
-	HandType.STRAIGHT_FLUSH: [15.0, 3.0], # 15.0x → 27.0x
-	HandType.ROYAL_FLUSH: [25.0, 5.0],   # 25.0x → 45.0x
-	HandType.FIVE_KIND: [50.0, 10.0]     # 50.0x → 90.0x
+	HandType.HIGH_CARD: [1.0, 0.15],      # LV1: 1.0x → LV5: 1.6x
+	HandType.PAIR: [1.2, 0.2],           # LV1: 1.2x → LV5: 2.0x
+	HandType.TWO_PAIR: [1.4, 0.25],      # LV1: 1.4x → LV5: 2.4x
+	HandType.THREE_KIND: [1.6, 0.35],    # LV1: 1.6x → LV5: 3.0x
+	HandType.STRAIGHT: [1.8, 0.4],       # LV1: 1.8x → LV5: 3.4x
+	HandType.FLUSH: [2.0, 0.5],          # LV1: 2.0x → LV5: 4.0x
+	HandType.FULL_HOUSE: [2.5, 0.6],     # LV1: 2.5x → LV5: 4.9x
+	HandType.FOUR_KIND: [3.0, 0.8],      # LV1: 3.0x → LV5: 6.2x
+	HandType.STRAIGHT_FLUSH: [4.0, 1.0], # LV1: 4.0x → LV5: 8.0x
+	HandType.ROYAL_FLUSH: [5.0, 1.5],    # LV1: 5.0x → LV5: 11.0x
+	HandType.FIVE_KIND: [6.0, 2.0]       # LV1: 6.0x → LV5: 14.0x
 }
 
 ## 🎯 辅助方法

@@ -14,49 +14,51 @@ const HandResultClass = preload("res://cs/卡牌系统/数据/HandResult.gd")
 const ScoreResultClass = preload("res://cs/卡牌系统/数据/ScoreResult.gd")
 const HandTypeRankingManagerClass = preload("res://cs/卡牌系统/数据/管理器/HandTypeRankingManager.gd")
 
-## 🎯 计算得分（主要接口）
-static func calculate_score(hand_result: HandResultClass, ranking_manager: HandTypeRankingManagerClass, bonus_score: int = 0) -> ScoreResultClass:
+## 🎯 计算得分（主要接口 - V2.3核心模型）
+static func calculate_score(hand_result: HandResultClass, ranking_manager: HandTypeRankingManagerClass, bonus_score: int = 0, final_multiplier: float = 1.0) -> ScoreResultClass:
 	var start_time = Time.get_ticks_msec()
-	
+
 	if not hand_result or not hand_result.is_valid():
 		return ScoreResultClass.create_empty()
-	
+
 	# 1. 获取基础牌型分
 	var base_score = hand_result.get_base_score()
-	
+
 	# 2. 计算牌面价值分（核心变化点）
 	var value_score = _calculate_value_score(hand_result)
-	
-	# 3. 获取动态倍率
+
+	# 3. 获取牌型倍率
 	var level = ranking_manager.get_hand_type_level(hand_result.hand_type)
-	var dynamic_multiplier = ranking_manager.get_multiplier(hand_result.hand_type)
-	var level_info = {"level": level, "multiplier": dynamic_multiplier}
-	
-	# 4. 应用得分公式
-	var total_base = base_score + value_score + bonus_score
-	var raw_score = float(total_base) * dynamic_multiplier
+	var hand_type_multiplier = ranking_manager.get_multiplier(hand_result.hand_type)
+	var level_info = {"level": level, "multiplier": hand_type_multiplier}
+
+	# 4. 应用V2.3得分公式
+	# 核心分数 = (基础分 + 牌面分) * 牌型倍率
+	var core_score = float(base_score + value_score) * hand_type_multiplier
+	# 最终得分 = ROUND((核心分数 + 附加分) * 最终倍率)
+	var raw_score = (core_score + bonus_score) * final_multiplier
 	var final_score = roundi(raw_score)
-	
+
 	# 5. 生成计算公式
-	var simple_formula = "ROUND((%d + %d + %d) × %.2f)" % [base_score, value_score, bonus_score, dynamic_multiplier]
-	var detailed_formula = "ROUND((基础分%d + 牌面分%d + 附加分%d) × 等级倍率%.2f)" % [base_score, value_score, bonus_score, dynamic_multiplier]
+	var simple_formula = "ROUND(((%d + %d) × %.2f + %d) × %.2f)" % [base_score, value_score, hand_type_multiplier, bonus_score, final_multiplier]
+	var detailed_formula = "ROUND(((基础分%d + 牌面分%d) × 牌型倍率%.2f + 附加分%d) × 最终倍率%.2f)" % [base_score, value_score, hand_type_multiplier, bonus_score, final_multiplier]
 	
-	# 6. 生成分步计算过程
+	# 6. 生成分步计算过程 (V2.3版本)
 	var steps = [
 		"基础牌型分: %d (%s)" % [base_score, hand_result.hand_type_name],
-		"牌面价值分: %d (%s)" % [value_score, _get_value_calculation_explanation(hand_result)],
+		"牌面价值分: %.1f (%s)" % [value_score, _get_value_calculation_explanation(hand_result)],
+		"牌型倍率: %.2fx (LV%d)" % [hand_type_multiplier, level],
+		"核心分数: (%d + %.1f) × %.2f = %.2f" % [base_score, value_score, hand_type_multiplier, core_score],
 		"附加分: %d (外部效果)" % bonus_score,
-		"基础总分: %d + %d + %d = %d" % [base_score, value_score, bonus_score, total_base],
-		"动态倍率: %.2fx (LV%d)" % [dynamic_multiplier, level],
-		"原始得分: %d × %.2f = %.2f" % [total_base, dynamic_multiplier, raw_score],
-		"最终得分: ROUND(%.2f) = %d" % [raw_score, final_score]
+		"最终倍率: %.2fx (全局效果)" % final_multiplier,
+		"最终得分: ROUND((%.2f + %d) × %.2f) = %d" % [core_score, bonus_score, final_multiplier, final_score]
 	]
-	
+
 	# 7. 构建结果对象
 	var result = ScoreResultClass.new()
 	result.set_final_score(raw_score, final_score)
 	result.set_score_components(base_score, value_score, bonus_score)
-	result.set_multiplier_info(dynamic_multiplier, level, level_info)
+	result.set_multiplier_info(hand_type_multiplier, level, level_info, final_multiplier, core_score)
 	result.set_calculation_formulas(simple_formula, detailed_formula, steps)
 	
 	var end_time = Time.get_ticks_msec()
@@ -64,7 +66,7 @@ static func calculate_score(hand_result: HandResultClass, ranking_manager: HandT
 	
 	return result
 
-## 🎯 计算牌面价值分（核心逻辑）- 符合12345.md文档规范
+## 🎯 计算牌面价值分（V2.3核心逻辑）
 static func _calculate_value_score(hand_result: HandResultClass) -> int:
 	var hand_type = hand_result.hand_type
 	var primary = hand_result.primary_value
@@ -72,46 +74,44 @@ static func _calculate_value_score(hand_result: HandResultClass) -> int:
 
 	match hand_type:
 		HandTypeEnumsClass.HandType.HIGH_CARD:
-			# 最高牌价值 × 2
-			return primary * 2
+			# 最高牌价值 × 1
+			return primary
 
 		HandTypeEnumsClass.HandType.PAIR:
-			# 对子价值 × 4
-			return primary * 4
+			# 对子价值 × 2
+			return primary * 2
 
 		HandTypeEnumsClass.HandType.TWO_PAIR:
-			# 大对子 × 6 + 小对子 × 4
-			return primary * 6 + secondary * 4
+			# 大对子 × 2.5 + 小对子 × 1.5 (保留小数，在最终计算时舍入)
+			return primary * 2.5 + secondary * 1.5
 
 		HandTypeEnumsClass.HandType.THREE_KIND:
-			# 三条价值 × 8
-			return primary * 8
+			# 三条价值 × 4
+			return primary * 4
 
 		HandTypeEnumsClass.HandType.STRAIGHT:
-			# 文档要求：所有5张牌价值总和
+			# 所有5张牌价值总和
 			return _calculate_all_cards_sum(hand_result)
 
 		HandTypeEnumsClass.HandType.FLUSH:
-			# 文档要求：(所有5张牌价值总和) × 1.2
-			var cards_sum = _calculate_all_cards_sum(hand_result)
-			return roundi(float(cards_sum) * 1.2)
+			# 所有5张牌价值总和
+			return _calculate_all_cards_sum(hand_result)
 
 		HandTypeEnumsClass.HandType.FULL_HOUSE:
-			# 三条 × 10 + 对子 × 6
-			return primary * 10 + secondary * 6
+			# 三条 × 5 + 对子 × 2
+			return primary * 5 + secondary * 2
 
 		HandTypeEnumsClass.HandType.FOUR_KIND:
-			# 四条价值 × 15
-			return primary * 15
+			# 四条价值 × 10
+			return primary * 10
 
 		HandTypeEnumsClass.HandType.STRAIGHT_FLUSH:
-			# 文档要求：(所有5张牌价值总和) × 2
-			var cards_sum = _calculate_all_cards_sum(hand_result)
-			return cards_sum * 2
+			# 最高牌价值 × 5
+			return primary * 5
 
 		HandTypeEnumsClass.HandType.ROYAL_FLUSH:
-			# 固定值 200
-			return 200
+			# 固定高额牌面分
+			return 100
 
 		HandTypeEnumsClass.HandType.FIVE_KIND:
 			# 五条价值 × 20
@@ -208,18 +208,18 @@ static func _value_to_string(value: int) -> String:
 		14: return "A"
 		_: return str(value)
 
-## 🎯 快速计算接口（用于简单场景）
-static func quick_calculate(hand_result: HandResultClass, level: int = 1, bonus_score: int = 0) -> int:
+## 🎯 快速计算接口（V2.3简化版本）
+static func quick_calculate(hand_result: HandResultClass, level: int = 1, bonus_score: int = 0, final_multiplier: float = 1.0) -> int:
 	if not hand_result or not hand_result.is_valid():
 		return 0
-	
+
 	var base_score = hand_result.get_base_score()
 	var value_score = _calculate_value_score(hand_result)
-	
-	# 使用简化的倍率计算
-	var base_multiplier = HandTypeEnumsClass.LEVEL_MULTIPLIERS.get(hand_result.hand_type, [1.0])[0]
-	var level_bonus = (level - 1) * 0.2  # 简化的等级加成
-	var multiplier = base_multiplier + level_bonus
-	
-	var total_base = base_score + value_score + bonus_score
-	return roundi(float(total_base) * multiplier)
+
+	# 使用V2.3倍率计算
+	var hand_type_multiplier = HandTypeEnumsClass.calculate_dynamic_multiplier(hand_result.hand_type, level)
+
+	# 应用V2.3公式
+	var core_score = float(base_score + value_score) * hand_type_multiplier
+	var raw_score = (core_score + bonus_score) * final_multiplier
+	return roundi(raw_score)

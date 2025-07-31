@@ -36,6 +36,35 @@ var modifiers: Dictionary = {}  # 存储各种修正值
 var permanent_changes: Dictionary = {}  # 永久性改变
 var temporary_effects: Array[Dictionary] = []  # 临时效果
 
+## 🎯 从ID中提取面值（用于牌型识别）
+func get_face_value() -> int:
+	if id.is_empty():
+		return base_value
+
+	# 提取ID中的数字部分 (如 "S1" -> 1, "H13" -> 13)
+	var number_part = id.substr(1)  # 去掉第一个字符（花色）
+	var face_value = number_part.to_int()
+
+	# 确保面值在有效范围内
+	if face_value >= 1 and face_value <= 13:
+		return face_value
+	else:
+		return base_value  # 如果ID格式不正确，回退到base_value
+
+## 🎯 从ID中提取花色（用于牌型识别）
+func get_face_suit() -> String:
+	if id.is_empty():
+		return suit
+
+	# 提取ID中的花色部分
+	var suit_char = id.substr(0, 1).to_upper()
+	match suit_char:
+		"S": return "spades"
+		"H": return "hearts"
+		"D": return "diamonds"
+		"C": return "clubs"
+		_: return suit  # 如果ID格式不正确，回退到suit属性
+
 # 获取卡牌当前修正值（考虑强化和效果）
 func get_modified_value(effect_provider = null) -> int:
 	var modified_val = base_value

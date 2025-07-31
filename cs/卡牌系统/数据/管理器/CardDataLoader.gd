@@ -14,7 +14,8 @@ const StandardDeckManagerClass = preload("res://cs/卡牌系统/数据/管理器
 
 # 标准扑克牌定义
 const STANDARD_SUITS = ["hearts", "diamonds", "clubs", "spades"]
-const STANDARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+const STANDARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]  # 标准面值1-13
+const STANDARD_BASE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]  # 允许的base_value（A可以是14）
 
 # 卡牌数据缓存（现在基于标准牌库）
 static var _card_cache: Dictionary = {}
@@ -125,8 +126,8 @@ static func _is_standard_card(card: CardData) -> bool:
 	if not STANDARD_SUITS.has(card.suit):
 		return false
 
-	# 检查数值是否标准
-	if not STANDARD_VALUES.has(card.base_value):
+	# 检查base_value是否在允许范围内
+	if not STANDARD_BASE_VALUES.has(card.base_value):
 		return false
 
 	# 检查是否有强化属性（标准卡牌不应该有强化）
@@ -134,7 +135,12 @@ static func _is_standard_card(card: CardData) -> bool:
 		return false
 
 	# 检查ID格式是否标准（例如：H1, D2, C13, S10）
-	var expected_id = _get_standard_card_id(card.suit, card.base_value)
+	# 使用面值（从ID提取）而不是base_value来验证
+	var face_value = card.get_face_value()
+	if not STANDARD_VALUES.has(face_value):
+		return false
+
+	var expected_id = _get_standard_card_id(card.suit, face_value)
 	if card.id != expected_id:
 		return false
 
@@ -178,9 +184,9 @@ static func _is_valid_base_card_id(base_id: String) -> bool:
 	if not suit_char in ["H", "D", "C", "S"]:
 		return false
 
-	# 验证数值
-	var value = value_str.to_int()
-	return STANDARD_VALUES.has(value)
+	# 验证面值（ID中的数字部分）
+	var face_value = value_str.to_int()
+	return STANDARD_VALUES.has(face_value)
 
 ## 🔧 验证标准牌库
 static func _validate_standard_deck():

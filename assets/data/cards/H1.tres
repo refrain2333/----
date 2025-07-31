@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_eyyd7")
 id = "H1"
-base_value = 1
+base_value = 14
 suit = "hearts"
 name = "红桃A"
 image_path = "res://assets/images/pokers/14.jpg"

@@ -433,7 +433,7 @@ func _on_action_performed_buttons(action_type: String, remaining_count: int, tot
 	print("SimplePlayTest: 操作执行 - %s，剩余: %d/%d" % [action_type, remaining_count, total_limit])
 	_update_button_states()
 
-# 🔧 处理弃牌按钮
+# 🔧 处理弃牌按钮（添加确认对话框）
 func _on_discard_button_pressed():
 	if not hand_dock or not turn_action_manager:
 		return
@@ -452,25 +452,68 @@ func _on_discard_button_pressed():
 		print("SimplePlayTest: 没有选中卡牌进行弃牌")
 		return
 
-	# 执行弃牌
+	# 显示确认对话框
+	_show_discard_confirmation(selected_cards)
+
+# 🔧 显示弃牌确认对话框
+func _show_discard_confirmation(selected_cards: Array):
+	var card_names = []
 	for card_view in selected_cards:
 		if card_view.has_method("get_card_data"):
 			var card_data = card_view.get_card_data()
-			# 从手牌移除到弃牌堆
+			card_names.append(card_data.name)
+
+	var confirmation_dialog = ConfirmationDialog.new()
+	confirmation_dialog.dialog_text = "确认弃置以下卡牌吗？\n\n" + "\n".join(card_names) + "\n\n弃置后将从牌库抽取新卡牌替换。"
+	confirmation_dialog.title = "确认弃牌"
+	confirmation_dialog.size = Vector2(400, 300)
+
+	# 连接确认和取消信号
+	confirmation_dialog.confirmed.connect(_execute_discard_cards.bind(selected_cards))
+	confirmation_dialog.canceled.connect(_cancel_discard)
+
+	# 添加到场景并显示
+	add_child(confirmation_dialog)
+	confirmation_dialog.popup_centered()
+
+	print("SimplePlayTest: 显示弃牌确认对话框，选中卡牌数量: %d" % selected_cards.size())
+
+# 🔧 执行弃牌操作（确认后）
+func _execute_discard_cards(selected_cards: Array):
+	print("SimplePlayTest: 用户确认弃牌，开始执行")
+
+	# 记录弃牌操作（先记录，避免重复检查）
+	turn_action_manager.perform_action("discard")
+
+	# 执行弃牌 - 只通过CardManager处理，避免重复
+	var discarded_card_names = []
+	for card_view in selected_cards:
+		if card_view.has_method("get_card_data"):
+			var card_data = card_view.get_card_data()
 			var index = card_manager.hand.find(card_data)
 			if index >= 0:
 				card_manager.hand.remove_at(index)
 				card_manager.discard_pile.append(card_data)
+				discarded_card_names.append(card_data.name)
 				print("SimplePlayTest: 弃牌 %s" % card_data.name)
 
-	# 记录弃牌操作
-	turn_action_manager.perform_action("discard")
+	# 发送手牌变化信号，让HandDock自动同步
+	if card_manager.has_signal("hand_changed"):
+		card_manager.emit_signal("hand_changed", card_manager.hand)
 
-	# 移除选中的卡牌视图
-	if hand_dock.has_method("remove_selected_cards_and_refill"):
-		hand_dock.remove_selected_cards_and_refill()
+	# 清空选择状态
+	if hand_dock.has_method("clear_selection"):
+		hand_dock.clear_selection()
 
-	print("SimplePlayTest: 弃牌操作完成")
+	# 自动补牌
+	if turn_manager and turn_manager.has_method("_auto_refill_hand"):
+		turn_manager._auto_refill_hand()
+
+	print("SimplePlayTest: 弃牌操作完成，弃置了: %s" % ", ".join(discarded_card_names))
+
+# 🔧 取消弃牌操作
+func _cancel_discard():
+	print("SimplePlayTest: 用户取消弃牌操作")
 
 # 🔧 新增：更新按钮状态（参考原始代码）
 func _update_button_states():
@@ -917,12 +960,13 @@ func _analyze_hand_type(cards: Array) -> Dictionary:
 		if card_data:
 			card_data_array.append(card_data)
 
-	# 使用V2.1系统进行分析（如果可用）
+	# 使用V2.3系统进行分析（如果可用）
 	var v2_result = null
 	if v2_system_initialized and card_data_array.size() > 0:
-		v2_result = HandTypeSystemV2.analyze_and_score(card_data_array, v2_ranking_manager)
+		# 使用V2.3接口，支持最终倍率参数
+		v2_result = HandTypeSystemV2.analyze_and_score(card_data_array, v2_ranking_manager, 0, 1.0)
 		if v2_result.is_valid:
-			print("🎯 V2.1分析完成: %s，得分: %d分，耗时: %dms" % [
+			print("🎯 V2.3分析完成: %s，得分: %d分，耗时: %dms" % [
 				v2_result.hand_result.hand_type_name,
 				v2_result.score_result.final_score,
 				v2_result.total_analysis_time
@@ -963,8 +1007,10 @@ func _merge_analysis_results(v2_result, v1_result, card_data_array: Array) -> Di
 			"base_score": score_result.base_score,
 			"value_score": score_result.value_score,
 			"bonus_score": score_result.bonus_score,
-			"multiplier": score_result.dynamic_multiplier,
-			"level_info": "LV%d (%.2fx)" % [score_result.hand_type_level, score_result.dynamic_multiplier],
+			"hand_type_multiplier": score_result.hand_type_multiplier,
+			"final_multiplier": score_result.final_multiplier,
+			"core_score": score_result.core_score,
+			"level_info": "LV%d (%.2fx)" % [score_result.hand_type_level, score_result.hand_type_multiplier],
 			"calculation_formula": score_result.calculation_formula,
 			"detailed_formula": score_result.detailed_formula,
 			"step_by_step": score_result.step_by_step,
@@ -1140,8 +1186,8 @@ func _on_deck_card_clicked_for_replacement(card_view):
 	# 关闭牌库对话框
 	_close_deck_dialog()
 
-	# 执行替换，
-	_on_replacement_card_selected(selected_card)
+	# 显示替换确认对话框
+	_show_replacement_confirmation(replacement_target_card, selected_card)
 
 ## 关闭牌库对话框
 func _close_deck_dialog():
@@ -1149,6 +1195,32 @@ func _close_deck_dialog():
 	if deck_dialog:
 		deck_dialog.queue_free()
 		print("HandTypeTest: 牌库对话框已关闭")
+
+## 🔧 显示替换确认对话框
+func _show_replacement_confirmation(old_card: CardData, new_card: CardData):
+	var confirmation_dialog = ConfirmationDialog.new()
+	confirmation_dialog.dialog_text = "确认替换卡牌吗？\n\n" + \
+		"将要替换：%s\n" % old_card.name + \
+		"替换为：%s\n\n" % new_card.name + \
+		"此操作不可撤销。"
+	confirmation_dialog.title = "确认卡牌替换"
+	confirmation_dialog.size = Vector2(400, 250)
+
+	# 连接确认和取消信号
+	confirmation_dialog.confirmed.connect(_on_replacement_card_selected.bind(new_card))
+	confirmation_dialog.canceled.connect(_on_replacement_canceled)
+
+	# 添加到场景并显示
+	add_child(confirmation_dialog)
+	confirmation_dialog.popup_centered()
+
+	print("HandTypeTest: 显示替换确认对话框: %s -> %s" % [old_card.name, new_card.name])
+
+## 🔧 处理替换取消
+func _on_replacement_canceled():
+	print("HandTypeTest: 用户取消了卡牌替换")
+	_update_status("卡牌替换已取消")
+	# 保持替换模式，用户可以重新选择
 
 func _on_replacement_card_selected(selected_card: CardData):
 	print("HandTypeTest: ✅ 选择了替换卡牌: %s" % selected_card.name)
@@ -1178,8 +1250,7 @@ func _perform_card_replacement(old_card: CardData, new_card: CardData):
 			print("HandTypeTest: ✅ CardManager替换成功")
 			_update_status("✅ 卡牌替换成功: %s -> %s" % [old_card.name, new_card.name])
 
-			# 立即更新牌型识别结果
-			call_deferred("_trigger_hand_analysis")
+			# 替换成功，不自动触发牌型分析
 		else:
 			print("HandTypeTest: ❌ CardManager替换失败")
 			_update_status("❌ 卡牌替换失败")
@@ -1217,8 +1288,7 @@ func _replace_card_via_hand_dock(old_card: CardData, new_card: CardData):
 		hand_dock.replace_card_at_index(target_index, new_card)
 		_update_status("✅ 卡牌替换成功: %s -> %s" % [old_card.name, new_card.name])
 
-		# 立即更新牌型识别结果
-		call_deferred("_trigger_hand_analysis")
+		# 替换成功，不自动触发牌型分析
 	else:
 		_update_status("❌ HandDock不支持卡牌替换")
 
@@ -1590,7 +1660,7 @@ func _run_v2_performance_tests():
 		for i in range(size):
 			var cards = CardDataLoader.get_random_cards(5)
 			if cards.size() == 5:
-				var result = HandTypeSystemV2.analyze_and_score(cards, v2_ranking_manager)
+				var result = HandTypeSystemV2.analyze_and_score(cards, v2_ranking_manager, 0, 1.0)
 				if result.is_valid:
 					success_count += 1
 

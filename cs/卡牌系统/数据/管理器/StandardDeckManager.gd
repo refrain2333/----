@@ -11,7 +11,8 @@ extends RefCounted
 
 # 标准扑克牌定义
 const STANDARD_SUITS = ["hearts", "diamonds", "clubs", "spades"]
-const STANDARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+const STANDARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]  # 标准面值1-13
+const STANDARD_BASE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]  # 允许的base_value（A可以是14）
 
 # 卡牌集合
 static var _standard_deck: Array = []           # 标准52张牌
@@ -106,20 +107,25 @@ static func _is_standard_card(card: CardData) -> bool:
 	# 检查花色是否标准
 	if not STANDARD_SUITS.has(card.suit):
 		return false
-	
-	# 检查数值是否标准
-	if not STANDARD_VALUES.has(card.base_value):
+
+	# 检查base_value是否在允许范围内
+	if not STANDARD_BASE_VALUES.has(card.base_value):
 		return false
-	
+
 	# 检查是否有强化属性（标准卡牌不应该有强化）
 	if not card.wax_seals.is_empty() or not card.frame_type.is_empty() or not card.material_type.is_empty():
 		return false
-	
+
 	# 检查ID格式是否标准（例如：H1, D2, C13, S10）
-	var expected_id = _get_standard_card_id(card.suit, card.base_value)
+	# 使用面值（从ID提取）而不是base_value来验证
+	var face_value = card.get_face_value()
+	if not STANDARD_VALUES.has(face_value):
+		return false
+
+	var expected_id = _get_standard_card_id(card.suit, face_value)
 	if card.id != expected_id:
 		return false
-	
+
 	return true
 
 ## 🔧 判断是否为变体卡牌
@@ -173,17 +179,17 @@ static func _is_valid_base_card_id(base_id: String) -> bool:
 	# 检查格式：字母+数字
 	if base_id.length() < 2:
 		return false
-	
+
 	var suit_char = base_id.substr(0, 1)
 	var value_str = base_id.substr(1)
-	
+
 	# 验证花色字符
 	if not suit_char in ["H", "D", "C", "S"]:
 		return false
-	
-	# 验证数值
-	var value = value_str.to_int()
-	return STANDARD_VALUES.has(value)
+
+	# 验证面值（ID中的数字部分）
+	var face_value = value_str.to_int()
+	return STANDARD_VALUES.has(face_value)
 
 ## 🔧 打印牌库统计
 static func _print_deck_statistics():
@@ -328,7 +334,9 @@ static func create_standard_test_hands() -> Dictionary:
 static func get_standard_card(suit: String, value: int) -> CardData:
 	_ensure_initialized()
 	for card in _standard_deck:
-		if card.suit == suit and card.base_value == value:
+		# 使用面值进行匹配（从ID提取）
+		var face_value = card.get_face_value()
+		if card.suit == suit and face_value == value:
 			return card
 	return null
 
