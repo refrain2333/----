@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://bx8lam2n5p7q"]
+[gd_scene load_steps=4 format=3 uid="uid://bx8lam2n5p7q"]
 
-[ext_resource type="Script" uid="uid://0c64gsuvp1cp" path="res://cs/tests/卡牌相关/完整计算测试/CompleteCalculationTestScript.gd" id="1_complete_calc_test"]
 [ext_resource type="PackedScene" uid="uid://qyrjutr0b5rg" path="res://cs/主场景/ui/HandDock.tscn" id="2_handdock"]
 [ext_resource type="PackedScene" uid="uid://c7aq81vj4ec5i" path="res://cs/主场景/ui/DeckWidget.tscn" id="3_deckwidget"]
 
@@ -26,7 +25,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_complete_calc_test")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
